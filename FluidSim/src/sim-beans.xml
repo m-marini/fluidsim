@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: sim-beans.xml,v 1.5 2007/08/18 08:29:57 marco Exp $ -->
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd" >
+<beans>
+	<import resource="fluid-beans.xml" />
+
+	<bean id="fluidHandler"
+		class="org.mmarini.fluid.model.FluidHandlerImpl"
+		init-method="createNew">
+		<property name="builder" ref="universeBuilder" />
+		<property name="simulator" ref="simulator" />
+		<property name="cellFunction" ref="cellFunction" />
+		<property name="relationFunction" ref="speedFunction" />
+		<property name="fluxFunction" ref="fluxFunction" />
+	</bean>
+
+	<alias alias="universeSize" name="defaultSize" />
+
+	<bean id="universeBuilder"
+		class="org.mmarini.fluid.model.AbstractUniverseBuilder">
+		<lookup-method name="createUniverse" bean="universeTemplate" />
+		<property name="universeModifier" ref="universeModifier" />
+	</bean>
+
+	<bean id="universeTemplate"
+		class="org.mmarini.fluid.model.UniverseImpl" singleton="false">
+		<property name="size" ref="universeSize" />
+		<property name="cellContext" ref="cellContext" />
+		<property name="relationContext" ref="relationContext" />
+		<property name="timeContext" ref="timeContext" />
+	</bean>
+
+	<bean id="timeContext" class="org.mmarini.fluid.model.TimeContext" />
+
+	<bean id="cellContext"
+		class="org.mmarini.fluid.model.CellUpdateContext">
+		<property name="timeContext" ref="timeContext" />
+	</bean>
+
+	<bean id="relationContext"
+		class="org.mmarini.fluid.model.RelationUpdateContext">
+		<property name="timeContext" ref="timeContext" />
+	</bean>
+
+	<bean id="cellFunction"
+		class="org.mmarini.fluid.model.CellValueFunction">
+		<property name="scale" value="10" />
+		<property name="offset" value="0.45" />
+		<!-- 		<property name="scale" value="10" />
+			<property name="offset" value="0.45" />
+		-->
+	</bean>
+
+	<bean id="fluxFunction"
+		class="org.mmarini.fluid.model.FluxValueFunction">
+		<property name="scale" value="60e-1" />
+		<property name="offset" value="0" />
+	</bean>
+
+	<bean id="speedFunction"
+		class="org.mmarini.fluid.model.RelationValueFunction">
+		<property name="scale" value="200e1" />
+		<property name="offset" value="0" />
+	</bean>
+
+	<bean id="smallSize" class="java.awt.Dimension">
+		<constructor-arg value="3" index="0" />
+		<constructor-arg value="3" index="1" />
+	</bean>
+
+	<bean id="defaultSize" class="java.awt.Dimension">
+		<constructor-arg value="80" index="0" />
+		<constructor-arg value="80" index="1" />
+	</bean>
+
+	<bean id="hugeSize" class="java.awt.Dimension">
+		<constructor-arg value="200" index="0" />
+		<constructor-arg value="150" index="1" />
+	</bean>
+
+	<bean id="simulator" class="org.mmarini.fluid.model.Simulator">
+		<property name="minElapsed" value="80" />
+		<property name="simulationRate" value="1" />
+		<property name="singleStepTime" value="0.1" />
+	</bean>
+</beans>

@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: wave-beans.xml,v 1.5 2007/08/18 08:29:57 marco Exp $ -->
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd" >
+<beans>
+	<alias alias="universeModifier" name="universe3Modifier" />
+
+	<!-- Universe modifiers -->
+	<bean id="universe3Modifier"
+		class="org.mmarini.fluid.model.CompositeModifier">
+		<property name="list">
+			<list>
+				<ref bean="backgroundModifier" />
+				<ref bean="oscillatorPointModifier" />
+				<ref bean="absorberModifier" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="universe2Modifier"
+		class="org.mmarini.fluid.model.CompositeModifier">
+		<property name="list">
+			<list>
+				<ref bean="backgroundModifier" />
+				<ref bean="oscillatorLineModifier" />
+				<ref bean="shieldModifier" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="absorberModifier"
+		class="org.mmarini.fluid.model.CompositeModifier">
+		<property name="list">
+			<list>
+				<ref bean="abs1" />
+				<ref bean="abs2" />
+				<ref bean="abs3" />
+				<ref bean="abs4" />
+				<ref bean="abs5" />
+				<ref bean="abs6" />
+				<ref bean="abs7" />
+				<ref bean="abs8" />
+				<ref bean="abs9" />
+				<ref bean="abs10" />
+				<ref bean="abs11" />
+				<ref bean="abs12" />
+				<ref bean="abs13" />
+				<ref bean="abs14" />
+				<ref bean="abs15" />
+				<ref bean="abs16" />
+				<ref bean="abs17" />
+				<ref bean="abs18" />
+				<ref bean="abs19" />
+				<ref bean="abs20" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="abs1"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="0.9" />
+		<property name="y0" value="0" />
+		<property name="x1" value="1" />
+		<property name="y1" value="0.05" />
+	</bean>
+	<bean id="abs2"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="1" />
+		<property name="y0" value="0.05" />
+		<property name="x1" value="0.9" />
+		<property name="y1" value="0.1" />
+	</bean>
+	<bean id="abs3"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="0.9" />
+		<property name="y0" value="0.1" />
+		<property name="x1" value="1" />
+		<property name="y1" value="0.15" />
+	</bean>
+	<bean id="abs4"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="1" />
+		<property name="y0" value="0.15" />
+		<property name="x1" value="0.9" />
+		<property name="y1" value="0.2" />
+	</bean>
+	<bean id="abs5"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="0.9" />
+		<property name="y0" value="0.2" />
+		<property name="x1" value="1" />
+		<property name="y1" value="0.25" />
+	</bean>
+	<bean id="abs6"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="1" />
+		<property name="y0" value="0.25" />
+		<property name="x1" value="0.9" />
+		<property name="y1" value="0.3" />
+	</bean>
+	<bean id="abs7"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="0.9" />
+		<property name="y0" value="0.3" />
+		<property name="x1" value="1" />
+		<property name="y1" value="0.35" />
+	</bean>
+	<bean id="abs8"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="1" />
+		<property name="y0" value="0.35" />
+		<property name="x1" value="0.9" />
+		<property name="y1" value="0.4" />
+	</bean>
+	<bean id="abs9"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="0.9" />
+		<property name="y0" value="0.4" />
+		<property name="x1" value="1" />
+		<property name="y1" value="0.45" />
+	</bean>
+	<bean id="abs10"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="1" />
+		<property name="y0" value="0.45" />
+		<property name="x1" value="0.9" />
+		<property name="y1" value="0.5" />
+	</bean>
+	<bean id="abs11"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="0.9" />
+		<property name="y0" value="0.5" />
+		<property name="x1" value="1" />
+		<property name="y1" value="0.55" />
+	</bean>
+	<bean id="abs12"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="1" />
+		<property name="y0" value="0.55" />
+		<property name="x1" value="0.9" />
+		<property name="y1" value="0.6" />
+	</bean>
+	<bean id="abs13"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="0.9" />
+		<property name="y0" value="0.6" />
+		<property name="x1" value="1" />
+		<property name="y1" value="0.65" />
+	</bean>
+	<bean id="abs14"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="1" />
+		<property name="y0" value="0.65" />
+		<property name="x1" value="0.9" />
+		<property name="y1" value="0.7" />
+	</bean>
+	<bean id="abs15"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="0.9" />
+		<property name="y0" value="0.7" />
+		<property name="x1" value="1" />
+		<property name="y1" value="0.75" />
+	</bean>
+	<bean id="abs16"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="1" />
+		<property name="y0" value="0.75" />
+		<property name="x1" value="0.9" />
+		<property name="y1" value="0.8" />
+	</bean>
+	<bean id="abs17"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="0.9" />
+		<property name="y0" value="0.8" />
+		<property name="x1" value="1" />
+		<property name="y1" value="0.85" />
+	</bean>
+	<bean id="abs18"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="1" />
+		<property name="y0" value="0.85" />
+		<property name="x1" value="0.9" />
+		<property name="y1" value="0.9" />
+	</bean>
+	<bean id="abs19"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="0.9" />
+		<property name="y0" value="0.9" />
+		<property name="x1" value="1" />
+		<property name="y1" value="0.95" />
+	</bean>
+	<bean id="abs20"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="1" />
+		<property name="y0" value="0.95" />
+		<property name="x1" value="0.9" />
+		<property name="y1" value="1" />
+	</bean>
+
+
+	<bean id="shieldModifier"
+		class="org.mmarini.fluid.model.CompositeModifier">
+		<property name="list">
+			<list>
+				<ref bean="upperShieldModifier" />
+				<ref bean="centerShieldModifier" />
+				<ref bean="lowerShieldModifier" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="lowerShieldModifier"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="0.25" />
+		<property name="y0" value="0" />
+		<property name="x1" value="0.25" />
+		<property name="y1" value="0.425" />
+	</bean>
+
+	<bean id="centerShieldModifier"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="0.25" />
+		<property name="y0" value="0.45" />
+		<property name="x1" value="0.25" />
+		<property name="y1" value="0.55" />
+	</bean>
+
+	<bean id="upperShieldModifier"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="shieldCellModifier" />
+		<property name="x0" value="0.25" />
+		<property name="y0" value="0.575" />
+		<property name="x1" value="0.25" />
+		<property name="y1" value="1" />
+	</bean>
+
+	<bean id="universe1Modifier"
+		class="org.mmarini.fluid.model.CompositeModifier">
+		<property name="list">
+			<list>
+				<ref bean="backgroundModifier" />
+				<ref bean="oscillatorPointModifier" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="oscillatorPointModifier"
+		class="org.mmarini.fluid.model.PointModifier">
+		<property name="cellModifier" ref="oscillatorCellModifier" />
+		<property name="x" value="0.5" />
+		<property name="y" value="0.5" />
+	</bean>
+
+	<bean id="oscillatorLineModifier"
+		class="org.mmarini.fluid.model.LineModifier">
+		<property name="cellModifier" ref="oscillatorCellModifier" />
+		<property name="x0" value="0" />
+		<property name="y0" value="0" />
+		<property name="x1" value="0" />
+		<property name="y1" value="1" />
+	</bean>
+
+	<bean id="backgroundModifier"
+		class="org.mmarini.fluid.model.RectangleModifier">
+		<property name="cellModifier"
+			ref="initialCompositeCellModifier" />
+		<property name="x0" value="0" />
+		<property name="y0" value="0" />
+		<property name="x1" value="1" />
+		<property name="y1" value="1" />
+	</bean>
+
+	<!-- Cell modifiers -->
+
+	<bean id="shieldCellModifier"
+		class="org.mmarini.fluid.model.FunctionModifier">
+		<property name="cellFunction" ref="shieldCellFunction" />
+		<property name="relationFunction" ref="shieldRelationFunction" />
+	</bean>
+
+	<bean id="initialCompositeCellModifier"
+		class="org.mmarini.fluid.model.CompositeCellModifier">
+		<property name="list">
+			<list>
+				<ref bean="initialValueCellModifier" />
+				<ref bean="initialMaterialCellModifier" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="initialValueCellModifier"
+		class="org.mmarini.fluid.model.ValueCellModifier">
+		<property name="cellValue" value="0.5" />
+		<property name="rightRelation" value="0" />
+		<property name="upRightRelation" value="0" />
+		<property name="upLeftRelation" value="0" />
+	</bean>
+
+	<bean id="initialMaterialCellModifier"
+		class="org.mmarini.fluid.model.FunctionModifier">
+		<property name="cellFunction" ref="backgroundCellFunction" />
+		<property name="relationFunction"
+			ref="backgroundRelationFunction" />
+	</bean>
+
+	<bean id="oscillatorCellModifier"
+		class="org.mmarini.fluid.model.FunctionModifier">
+		<property name="cellFunction" ref="oscillatorCellFunction" />
+		<property name="relationFunction"
+			ref="backgroundRelationFunction" />
+	</bean>
+
+	<!-- Cell functions -->
+
+	<bean id="shieldCellFunction"
+		class="org.mmarini.fluid.model.IsomorphCellFunction">
+		<property name="function" ref="zeroFunction" />
+	</bean>
+
+	<bean id="shieldRelationFunction"
+		class="org.mmarini.fluid.model.DefaultRelationFunction">
+		<property name="function" ref="zeroFunction" />
+	</bean>
+
+	<bean id="oscillatorCellFunction"
+		class="org.mmarini.fluid.model.IsomorphCellFunction">
+		<property name="function" ref="oscillatorFunction" />
+	</bean>
+
+	<bean id="backgroundCellFunction"
+		class="org.mmarini.fluid.model.IsomorphCellFunction">
+		<property name="function" ref="conservativeFunction" />
+	</bean>
+
+	<bean id="backgroundRelationFunction"
+		class="org.mmarini.fluid.model.DefaultRelationFunction">
+		<property name="function" ref="elasticFunction" />
+	</bean>
+
+	<!-- Differential functions -->
+
+	<bean id="zeroFunction"
+		class="org.mmarini.fluid.model.ConstantFunction">
+		<property name="value" value="0" />
+	</bean>
+	<bean id="oscillatorFunction"
+		class="org.mmarini.fluid.model.OscillatorFunction">
+		<property name="value" value="1" />
+		<property name="period" value="2" />
+	</bean>
+
+	<bean id="elasticFunction"
+		class="org.mmarini.fluid.model.ElasticFunction">
+		<property name="speed" value="1e1" />
+	</bean>
+
+	<bean id="conservativeFunction"
+		class="org.mmarini.fluid.model.ConservativeFunction" />
+</beans>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd" >
+<!-- $Id: gui-beans.xml,v 1.4 2007/08/18 08:29:57 marco Exp $ -->
+<beans>
+	<bean class="org.mmarini.fluid.swing.SimFrame" init-method="init">
+		<property name="mainPane" ref="tabPane" />
+		<property name="JMenuBar" ref="menuBar" />
+		<property name="toolBar" ref="toolBar" />
+		<property name="info" ref="rateBar" />
+	</bean>
+	<bean id="toolBar" class="javax.swing.JToolBar"></bean>
+	<bean id="menuBar" class="javax.swing.JMenuBar"></bean>
+	<bean id="actionHandler"
+		class="org.mmarini.fluid.swing.ActionHandler" init-method="init">
+		<property name="menuBar" ref="menuBar" />
+		<property name="toolBar" ref="toolBar" />
+		<property name="cellPane" ref="cellGraphPane" />
+		<property name="relationPane" ref="relationGraphPane" />
+		<property name="fluxPane" ref="fluxGraphPane" />
+		<property name="rateBar" ref="rateBar" />
+		<property name="fluidHandler" ref="fluidHandler" />
+	</bean>
+	<bean id="tabPane" class="org.mmarini.fluid.swing.TabbedPane"
+		init-method="init">
+		<property name="cellComponent" ref="cellGraphPane" />
+		<property name="relationComponent" ref="relationGraphPane" />
+		<property name="fluxComponent" ref="fluxGraphPane" />
+	</bean>
+	<bean id="cellGraphPane" class="org.mmarini.fluid.swing.GraphPane"
+		init-method="init">
+		<property name="function" ref="cellGraphFunction" />
+	</bean>
+	<bean id="cellGraphFunction"
+		class="org.mmarini.fluid.swing.CellGraphFunction">
+		<property name="fluidHandler" ref="fluidHandler" />
+	</bean>
+	<bean id="relationGraphPane"
+		class="org.mmarini.fluid.swing.GraphPane" init-method="init">
+		<property name="function" ref="speedGraphFunction" />
+	</bean>
+	<bean id="fluxGraphPane" class="org.mmarini.fluid.swing.GraphPane"
+		init-method="init">
+		<property name="function" ref="fluxGraphFunction" />
+	</bean>
+	<bean id="speedGraphFunction"
+		class="org.mmarini.fluid.swing.RelationGraphFunction">
+		<property name="fluidHandler" ref="fluidHandler" />
+	</bean>
+	<bean id="fluxGraphFunction"
+		class="org.mmarini.fluid.swing.FluxGraphFunction">
+		<property name="fluidHandler" ref="fluidHandler" />
+	</bean>
+	<bean id="rateBar" class="org.mmarini.fluid.swing.RateBar"
+		init-method="init">
+		<property name="fluidHandler" ref="fluidHandler" />
+		<property name="refreshPeriod" value="1000" />
+		<property name="maximum" value="200" />
+		<property name="stringPainted" value="true" />
+	</bean>
+</beans>
