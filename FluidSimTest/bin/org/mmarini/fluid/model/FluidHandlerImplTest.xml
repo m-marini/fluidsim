@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: FluidHandlerImplTest.xml,v 1.2 2007/08/09 19:31:36 marco Exp $ -->
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd" >
+<beans>
+	<bean id="fluidHandler"
+		class="org.mmarini.fluid.model.FluidHandlerImpl"
+		init-method="createNew">
+		<property name="builder" ref="waveUniverse" />
+		<property name="pulseValueConstraint" ref="sinGenerator" />
+	</bean>
+	<bean id="defaultSize" class="java.awt.Dimension">
+		<!-- 
+			<constructor-arg value="4" index="0" />
+			<constructor-arg value="3" index="1" />
+		-->
+		<constructor-arg value="8" index="0" />
+		<constructor-arg value="6" index="1" />
+	</bean>
+	<bean id="sinGenerator"
+		class="org.mmarini.fluid.model.SimConstraint">
+		<property name="period" value="0.5" />
+	</bean>
+	<bean id="pulseGenerator"
+		class="org.mmarini.fluid.model.PulseValueConstraint">
+		<property name="value" value="1" />
+		<property name="period" value="2" />
+		<property name="duration" value="1" />
+	</bean>
+	<bean id="waveUniverse"
+		class="org.mmarini.fluid.model.PointBuilder">
+		<lookup-method name="createUniverse"
+			bean="waveUniverseTemplate" />
+		<property name="heater" ref="sinGenerator" />
+	</bean>
+	<bean id="fluidUniverse"
+		class="org.mmarini.fluid.model.FluidUniverse">
+		<lookup-method name="createUniverse"
+			bean="fluidUniverseTemplate" />
+		<property name="heater" ref="heater" />
+		<property name="cooler" ref="cooler" />
+	</bean>
+	<bean id="waveUniverseTemplate"
+		class="org.mmarini.fluid.model.UniverseImpl" singleton="false">
+		<property name="size" ref="defaultSize" />
+		<property name="universeFunction" ref="waveFunction" />
+		<property name="cellConstraint">
+			<list />
+		</property>
+		<property name="relationConstraint">
+			<list />
+		</property>
+	</bean>
+	<bean id="fluidUniverseTemplate"
+		class="org.mmarini.fluid.model.UniverseImpl" singleton="false">
+		<property name="size" ref="defaultSize" />
+		<property name="universeFunction" ref="fluidFunction" />
+		<property name="cellConstraint">
+			<list />
+		</property>
+		<property name="relationConstraint">
+			<list />
+		</property>
+	</bean>
+	<bean id="waveFunction"
+		class="org.mmarini.fluid.model.FluidFunction">
+		<property name="cellConstant" value="1e2" />
+		<property name="relationConstant" value="-5e-1" />
+	</bean>
+	<bean id="fluidFunction"
+		class="org.mmarini.fluid.model.FluidFunction">
+		<property name="cellConstant" value="1e-1" />
+		<property name="relationConstant" value="-5e-0" />
+	</bean>
+	<bean id="heater"
+		class="org.mmarini.fluid.model.FixValueConstraint">
+		<property name="value" value="1" />
+	</bean>
+	<bean id="cooler"
+		class="org.mmarini.fluid.model.FixValueConstraint">
+		<property name="value" value="0" />
+	</bean>
+</beans>
