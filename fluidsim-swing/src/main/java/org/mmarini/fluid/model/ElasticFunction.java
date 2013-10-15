@@ -37,11 +37,26 @@ package org.mmarini.fluid.model;
  * 
  */
 public class ElasticFunction implements CoefficientFunction {
+	/**
+	 * @param speed
+	 */
+	public ElasticFunction(double speed) {
+		this.speed = speed;
+	}
+
+	/**
+	 * 
+	 */
+	public ElasticFunction() {
+		super();
+	}
+
 	private double speed;
 
 	/**
 	 * @see CoefficientFunction#getA(TimeContext)
 	 */
+	@Override
 	public double getA(TimeContext timeContext) {
 		return getSpeed() * timeContext.getDeltaTime();
 	}
@@ -49,6 +64,7 @@ public class ElasticFunction implements CoefficientFunction {
 	/**
 	 * @see CoefficientFunction#getB(TimeContext)
 	 */
+	@Override
 	public double getB(TimeContext timeContext) {
 		return 1;
 	}
@@ -56,6 +72,7 @@ public class ElasticFunction implements CoefficientFunction {
 	/**
 	 * @see CoefficientFunction#getC(TimeContext)
 	 */
+	@Override
 	public double getC(TimeContext timeContext) {
 		return 0;
 	}
@@ -65,7 +82,7 @@ public class ElasticFunction implements CoefficientFunction {
 	 * 
 	 * @return the speed
 	 */
-	private double getSpeed() {
+	public double getSpeed() {
 		return speed;
 	}
 

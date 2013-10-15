@@ -19,19 +19,36 @@ package org.mmarini.fluid.model;
  */
 public class ValueCellModifier implements CellModifier {
 	private double cellValue;
-
 	private double rightRelation;
-
 	private double upRightRelation;
-
 	private double upLeftRelation;
+
+	/**
+	 * 
+	 */
+	public ValueCellModifier() {
+	}
+
+	/**
+	 * @param cellValue
+	 * @param rightRelation
+	 * @param upRightRelation
+	 * @param upLeftRelation
+	 */
+	public ValueCellModifier(double cellValue, double rightRelation,
+			double upRightRelation, double upLeftRelation) {
+		this.cellValue = cellValue;
+		this.rightRelation = rightRelation;
+		this.upRightRelation = upRightRelation;
+		this.upLeftRelation = upLeftRelation;
+	}
 
 	/**
 	 * Returns the cell value to be set
 	 * 
 	 * @return the cellValue
 	 */
-	private double getCellValue() {
+	public double getCellValue() {
 		return cellValue;
 	}
 
@@ -40,7 +57,7 @@ public class ValueCellModifier implements CellModifier {
 	 * 
 	 * @return the rightRelation
 	 */
-	private double getRightRelation() {
+	public double getRightRelation() {
 		return rightRelation;
 	}
 
@@ -49,7 +66,7 @@ public class ValueCellModifier implements CellModifier {
 	 * 
 	 * @return the upLeftRelation
 	 */
-	private double getUpLeftRelation() {
+	public double getUpLeftRelation() {
 		return upLeftRelation;
 	}
 
@@ -58,7 +75,7 @@ public class ValueCellModifier implements CellModifier {
 	 * 
 	 * @return the upRightRelation
 	 */
-	private double getUpRightRelation() {
+	public double getUpRightRelation() {
 		return upRightRelation;
 	}
 
@@ -69,6 +86,7 @@ public class ValueCellModifier implements CellModifier {
 	 * @see org.mmarini.fluid.model.CellModifier#modify(org.mmarini.fluid.model.Universe,
 	 *      int, int)
 	 */
+	@Override
 	public void modify(Universe universe, int i, int j) {
 		DoubleBufferedDouble function = universe.getCell(i, j);
 		function.setNextValue(getCellValue());

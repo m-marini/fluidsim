@@ -28,7 +28,6 @@ import org.mmarini.fluid.model.RelationFunction;
 import org.mmarini.fluid.model.RelationValueFunction;
 import org.mmarini.fluid.model.Simulator;
 import org.mmarini.fluid.model.UniverseBuilderImpl;
-import org.mmarini.fluid.model.UniverseModifier;
 import org.mmarini.fluid.model.ValueCellModifier;
 
 /**
@@ -253,11 +252,8 @@ public class Main {
 		rightFluxGenerator.setX1(1);
 		rightFluxGenerator.setY1(1);
 
-		List<UniverseModifier> list7 = new ArrayList<UniverseModifier>();
-		list7.add(leftFluxGenerator);
-		list7.add(rightFluxGenerator);
-		CompositeModifier compositeFluxGenerator = new CompositeModifier();
-		compositeFluxGenerator.setList(list7);
+		CompositeModifier compositeFluxGenerator = new CompositeModifier(
+				leftFluxGenerator, rightFluxGenerator);
 
 		RectangleModifier backgroundModifier = new RectangleModifier();
 		backgroundModifier.setCellModifier(initialCompositeCellModifier);
@@ -266,19 +262,11 @@ public class Main {
 		backgroundModifier.setX1(1);
 		backgroundModifier.setY1(1);
 
-		List<UniverseModifier> list6 = new ArrayList<UniverseModifier>();
-		list6.add(backgroundModifier);
-		list6.add(compositeFluxGenerator);
-		CompositeModifier windTunnel = new CompositeModifier();
-		windTunnel.setList(list6);
+		CompositeModifier windTunnel = new CompositeModifier(
+				backgroundModifier, compositeFluxGenerator);
 
-		List<UniverseModifier> list4 = new ArrayList<UniverseModifier>();
-		list4.add(windTunnel);
-		list4.add(lowerWing);
-		list4.add(upperLeftWing);
-		list4.add(upperRightWing);
-		CompositeModifier wing = new CompositeModifier();
-		wing.setList(list4);
+		CompositeModifier wing = new CompositeModifier(windTunnel, lowerWing,
+				upperLeftWing, upperRightWing);
 
 		LineModifier flap = new LineModifier();
 		flap.setCellModifier(shieldCellModifier);
@@ -287,34 +275,7 @@ public class Main {
 		flap.setX1(0.74);
 		flap.setY1(0.39);
 
-		List<UniverseModifier> list3 = new ArrayList<UniverseModifier>();
-		list3.add(wing);
-		list3.add(flap);
-		CompositeModifier wingFlap = new CompositeModifier();
-		wingFlap.setList(list3);
-
-		LineModifier upperVenturiModifier = new LineModifier();
-		upperVenturiModifier.setCellModifier(shieldCellModifier);
-		upperVenturiModifier.setX0(0.2);
-		upperVenturiModifier.setY0(0.7);
-		upperVenturiModifier.setX1(0.8);
-		upperVenturiModifier.setY1(0.55);
-
-		LineModifier lowerVenturiModifier = new LineModifier();
-		lowerVenturiModifier.setCellModifier(shieldCellModifier);
-		lowerVenturiModifier.setX0(0.2);
-		lowerVenturiModifier.setY0(0.3);
-		lowerVenturiModifier.setX1(0.8);
-		lowerVenturiModifier.setY1(0.45);
-
-		List<UniverseModifier> list5 = new ArrayList<UniverseModifier>();
-		list5.add(windTunnel);
-		list5.add(lowerVenturiModifier);
-		list5.add(upperVenturiModifier);
-		CompositeModifier venturi = new CompositeModifier();
-		venturi.setList(list5);
-
-		return wingFlap;
+		return new CompositeModifier(wing, flap);
 	}
 
 	/**

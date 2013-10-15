@@ -24,11 +24,24 @@ public abstract class AbstractUniverseModifier implements UniverseModifier {
 	private CellModifier cellModifier;
 
 	/**
+	 * 
+	 */
+	protected AbstractUniverseModifier() {
+	}
+
+	/**
+	 * @param cellModifier
+	 */
+	protected AbstractUniverseModifier(CellModifier cellModifier) {
+		this.cellModifier = cellModifier;
+	}
+
+	/**
 	 * Returns the cell modifier.
 	 * 
 	 * @return the cellModifier
 	 */
-	protected CellModifier getCellModifier() {
+	public CellModifier getCellModifier() {
 		return cellModifier;
 	}
 

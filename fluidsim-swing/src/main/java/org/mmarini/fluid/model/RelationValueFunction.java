@@ -47,6 +47,7 @@ public class RelationValueFunction implements UniverseDoubleFunction {
 	 * @see org.mmarini.fluid.model.UniverseDoubleFunction#getValue(org.mmarini.fluid.model.Universe,
 	 *      int, int)
 	 */
+	@Override
 	public double getValue(Universe universe, int i, int j) {
 		double v0 = getValue(universe, FluidConstants.RIGHT, i, j)
 				- getValue(universe, FluidConstants.LEFT, i, j);

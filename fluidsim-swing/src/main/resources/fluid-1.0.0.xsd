@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.mmarini.org/fluid-1.0.0"
+	elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:f="http://www.mmarini.org/fluid-1.0.0">
+
+	<element name="universe" type="f:Universe"></element>
+
+
+	<complexType name="Universe">
+		<sequence>
+			<element ref="f:def" maxOccurs="unbounded" minOccurs="1"></element>
+			<group ref="f:ModifierGroup" maxOccurs="1" minOccurs="1"></group>
+		</sequence>
+	</complexType>
+
+	<element name="group" type="f:Group">
+		<annotation>
+			<documentation>Mapped to CompositeModifier</documentation>
+		</annotation>
+	</element>
+
+	<group name="ModifierGroup">
+		<choice>
+			<element ref="f:point"></element>
+			<element ref="f:line"></element>
+			<element ref="f:rect"></element>
+			<element ref="f:group"></element>
+		</choice>
+	</group>
+
+
+
+	<element name="line" type="f:DoublePoint">
+		<annotation>
+			<documentation>Mapped to LineModifier</documentation>
+		</annotation>
+	</element>
+
+	<element name="point" type="f:Point">
+		<annotation>
+			<documentation>Mapped to PointModifier</documentation>
+		</annotation>
+	</element>
+
+	<element name="rect" type="f:DoublePoint">
+		<annotation>
+			<documentation>Mapped to RectangleModifier</documentation>
+		</annotation>
+	</element>
+
+	<complexType name="Point">
+		<complexContent>
+			<extension base="f:ModifierType">
+				<attribute name="x" type="double" default="0.0"></attribute>
+				<attribute name="y" type="double" default="0.0"></attribute>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="DoublePoint">
+		<complexContent>
+			<extension base="f:ModifierType">
+				<attribute name="x0" type="double" default="0.0"></attribute>
+				<attribute name="y0" type="double" default="0.0"></attribute>
+				<attribute name="x1" type="double" default="0.0"></attribute>
+				<attribute name="y1" type="double" default="0.0"></attribute>
+
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="Group">
+		<sequence maxOccurs="unbounded" minOccurs="1">
+			<group ref="f:ModifierGroup"></group>
+		</sequence>
+	</complexType>
+
+	<complexType name="ModifierType">
+		<attribute name="function" use="required" type="IDREF">
+		</attribute>
+	</complexType>
+
+	<element name="modifyGroup" type="f:CellFunGroupType">
+		<annotation>
+			<documentation>Mapped to CompositeCellModifier</documentation>
+		</annotation>
+	</element>
+
+	<element name="def" type="f:DefFunction"></element>
+
+	<complexType name="DefFunction">
+		<sequence maxOccurs="1" minOccurs="1">
+			<group ref="f:CellFunGroup"></group>
+		</sequence>
+		<attribute name="id" use="required" type="ID">
+		</attribute>
+	</complexType>
+
+
+	<element name="modifyRelations" type="f:ChangeRelationsType">
+		<annotation>
+			<documentation>
+				Mapped to RelationCellModifier
+			</documentation>
+		</annotation>
+	</element>
+
+	<element name="modifyValue" type="f:ValueCellFunType">
+		<annotation>
+			<documentation>Mapped to ValueCellModifier</documentation>
+		</annotation>
+	</element>
+
+	<group name="CellFunGroup">
+		<choice>
+			<element ref="f:modifyGroup"></element>
+			<element ref="f:modifyRelations"></element>
+			<element ref="f:modifyValue"></element>
+			<element ref="f:modifyCell"></element>
+		</choice>
+	</group>
+
+	<element name="modifyCell" type="f:CellFunctionModifierType">
+		<annotation>
+			<documentation>Mapped to FunctionModifier</documentation>
+		</annotation>
+	</element>
+
+	<complexType name="CellFunGroupType">
+		<sequence maxOccurs="unbounded" minOccurs="1">
+			<group ref="f:CellFunGroup"></group>
+		</sequence>
+	</complexType>
+
+	<complexType name="ValueCellFunType">
+		<attribute name="value" type="double" use="optional"
+			default="0.0"></attribute>
+		<attribute name="right" type="double" use="optional"
+			default="0.0"></attribute>
+		<attribute name="upRight" type="double" use="optional"
+			default="0.0"></attribute>
+		<attribute name="upLeft" type="double" use="optional"
+			default="0.0"></attribute>
+	</complexType>
+
+	<element name="const" type="double" default="0.0">
+		<annotation>
+			<documentation>Mapped to ConstantFunction</documentation>
+		</annotation>
+	</element>
+
+	<element name="diffusion" type="double" default="0.0">
+		<annotation>
+			<documentation>Mapped to DiffusinFunction</documentation>
+		</annotation>
+	</element>
+
+	<element name="elastic" type="double" default="0.0">
+		<annotation>
+			<documentation>Mapped to ElasticFunction</documentation>
+		</annotation>
+	</element>
+
+	<element name="sin" type="f:SinFunction">
+		<annotation>
+			<documentation>Mapped to OscillatorFunction</documentation>
+		</annotation>
+	</element>
+
+	<complexType name="SinFunction">
+		<attribute name="value" type="double" default="0.0"></attribute>
+		<attribute name="period" type="double" default="0.0"></attribute>
+	</complexType>
+
+	<group name="FunctionGroup">
+		<choice>
+			<element ref="f:const"></element>
+			<element ref="f:diffusion"></element>
+			<element ref="f:elastic"></element>
+			<element ref="f:sin"></element>
+			<element ref="f:conservative"></element>
+			<element ref="f:fluid"></element>
+		</choice>
+	</group>
+
+	<complexType name="CellFunctionModifierType">
+		<sequence>
+			<element ref="f:cell"></element>
+			<element ref="f:relation"></element>
+		</sequence>
+	</complexType>
+
+	<element name="cell" type="f:FunctionType">
+		<annotation>
+			<documentation>Mapped to IsomorphCellFunction</documentation>
+		</annotation>
+	</element>
+
+	<element name="conservative" type="f:EmptyType">
+		<annotation>
+			<documentation>Mapped to ConservativeFunction</documentation>
+		</annotation>
+	</element>
+
+	<complexType name="EmptyType"></complexType>
+
+	<complexType name="FunctionType">
+		<sequence>
+			<group ref="f:FunctionGroup"></group>
+		</sequence>
+	</complexType>
+
+	<element name="relation" type="f:FunctionType">
+		<annotation>
+			<documentation>Mapped to DefaultRelationFunction</documentation>
+		</annotation>
+	</element>
+
+	<complexType name="ChangeRelationsType">
+		<sequence maxOccurs="6" minOccurs="1">
+			<group ref="f:FunctionGroup"></group>
+		</sequence>
+	</complexType>
+
+    <element name="fluid" type="f:FluidType"></element>
+
+	<complexType name="FluidType">
+		<attribute name="speed" type="double" default="0.0"></attribute>
+		<attribute name="viscosity" type="double" default="0.0"></attribute>
+	</complexType>
+</schema>

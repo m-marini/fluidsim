@@ -9,6 +9,8 @@
  */
 package org.mmarini.fluid.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,6 +29,32 @@ public class CompositeCellModifier implements CellModifier {
 	private List<CellModifier> list;
 
 	/**
+	 *
+	 */
+	public CompositeCellModifier() {
+		list = new ArrayList<CellModifier>();
+	}
+
+	/**
+	 * 
+	 * @param modifiers
+	 */
+	public CompositeCellModifier(CellModifier... modifiers) {
+		this();
+		for (CellModifier m : modifiers) {
+			list.add(m);
+		}
+	}
+
+	/**
+	 * 
+	 * @param list
+	 */
+	public CompositeCellModifier(Collection<CellModifier> list) {
+		this.list = new ArrayList<CellModifier>(list);
+	}
+
+	/**
 	 * Returns the list of modifiers
 	 * 
 	 * @return the list
@@ -38,6 +66,7 @@ public class CompositeCellModifier implements CellModifier {
 	/**
 	 * Modifies the cell applibg all the modifier in the list.
 	 */
+	@Override
 	public void modify(Universe universe, int i, int j) {
 		for (Iterator<CellModifier> iter = getList().iterator(); iter.hasNext();) {
 			iter.next().modify(universe, i, j);

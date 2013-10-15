@@ -9,6 +9,7 @@
  */
 package org.mmarini.fluid.model;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -24,11 +25,28 @@ public class RelationCellModifier implements CellModifier {
 	private List<RelationFunction> list;
 
 	/**
+	 * 
+	 */
+	public RelationCellModifier() {
+		list = new ArrayList<RelationFunction>();
+	}
+
+	/**
+	 * 
+	 */
+	public RelationCellModifier(RelationFunction... functions) {
+		this();
+		for (RelationFunction f : functions) {
+			list.add(f);
+		}
+	}
+
+	/**
 	 * Returns the list of relation functions.
 	 * 
 	 * @return the list
 	 */
-	private List<RelationFunction> getList() {
+	public List<RelationFunction> getList() {
 		return list;
 	}
 
@@ -36,6 +54,7 @@ public class RelationCellModifier implements CellModifier {
 	 * @see org.mmarini.fluid.model.CellModifier#modify(org.mmarini.fluid.model.Universe,
 	 *      int, int)
 	 */
+	@Override
 	public void modify(Universe universe, int i, int j) {
 		int direction = 0;
 		for (Iterator<RelationFunction> iter = getList().iterator(); iter

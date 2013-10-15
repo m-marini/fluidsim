@@ -22,12 +22,32 @@ package org.mmarini.fluid.model;
  */
 public class LineModifier extends AbstractUniverseModifier {
 	private double x0;
-
 	private double y0;
-
 	private double x1;
-
 	private double y1;
+
+	/**
+	 * 
+	 */
+	public LineModifier() {
+	}
+
+	/**
+	 * 
+	 * @param cellModifier
+	 * @param x0
+	 * @param y0
+	 * @param x1
+	 * @param y1
+	 */
+	public LineModifier(CellModifier cellModifier, double x0, double y0,
+			double x1, double y1) {
+		super(cellModifier);
+		this.x0 = x0;
+		this.y0 = y0;
+		this.x1 = x1;
+		this.y1 = y1;
+	}
 
 	/**
 	 * Returns the x0 valu
@@ -68,6 +88,7 @@ public class LineModifier extends AbstractUniverseModifier {
 	/**
 	 * @see UniverseModifier#modify(Universe)
 	 */
+	@Override
 	public void modify(Universe universe) {
 		double x02 = getX0();
 		double y02 = getY0();

@@ -23,8 +23,23 @@ package org.mmarini.fluid.model;
  */
 public class FunctionModifier implements CellModifier {
 	private CellFunction cellFunction;
-
 	private RelationFunction relationFunction;
+
+	/**
+	 * 
+	 */
+	public FunctionModifier() {
+	}
+
+	/**
+	 * @param cellFunction
+	 * @param relationFunction
+	 */
+	public FunctionModifier(CellFunction cellFunction,
+			RelationFunction relationFunction) {
+		this.cellFunction = cellFunction;
+		this.relationFunction = relationFunction;
+	}
 
 	/**
 	 * Returns the cell function.
@@ -48,11 +63,10 @@ public class FunctionModifier implements CellModifier {
 	 * @see org.mmarini.fluid.model.CellModifier#modify(org.mmarini.fluid.model.Universe,
 	 *      int, int)
 	 */
+	@Override
 	public void modify(Universe universe, int i, int j) {
-		CellFunction cellFunction = getCellFunction();
 		if (cellFunction != null)
 			universe.setCellFunction(i, j, cellFunction);
-		RelationFunction relationFunction = getRelationFunction();
 		if (relationFunction != null)
 			universe.setRelationFunction(i, j, relationFunction);
 	}

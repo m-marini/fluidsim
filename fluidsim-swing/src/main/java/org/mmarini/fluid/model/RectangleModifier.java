@@ -33,8 +33,25 @@ public class RectangleModifier extends AbstractUniverseModifier {
 	}
 
 	/**
+	 * @param cellModifier
+	 * @param x0
+	 * @param y0
+	 * @param x1
+	 * @param y1
+	 */
+	public RectangleModifier(CellModifier cellModifier, double x0, double y0,
+			double x1, double y1) {
+		super(cellModifier);
+		this.x0 = x0;
+		this.y0 = y0;
+		this.x1 = x1;
+		this.y1 = y1;
+	}
+
+	/**
 	 * @see UniverseModifier#modify(Universe)
 	 */
+	@Override
 	public void modify(Universe universe) {
 		double x02 = x0;
 		double y02 = y0;
@@ -90,5 +107,33 @@ public class RectangleModifier extends AbstractUniverseModifier {
 	 */
 	public void setY1(double height) {
 		this.y1 = height;
+	}
+
+	/**
+	 * @return the x0
+	 */
+	public double getX0() {
+		return x0;
+	}
+
+	/**
+	 * @return the y0
+	 */
+	public double getY0() {
+		return y0;
+	}
+
+	/**
+	 * @return the x1
+	 */
+	public double getX1() {
+		return x1;
+	}
+
+	/**
+	 * @return the y1
+	 */
+	public double getY1() {
+		return y1;
 	}
 }

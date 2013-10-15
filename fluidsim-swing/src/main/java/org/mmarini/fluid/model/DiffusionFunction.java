@@ -15,11 +15,25 @@ package org.mmarini.fluid.model;
  * @version $Id: DiffusionFunction.java,v 1.3 2007/08/18 08:29:54 marco Exp $
  */
 public class DiffusionFunction implements CoefficientFunction {
+	/**
+	 * @param diffusion
+	 */
+	public DiffusionFunction(double diffusion) {
+		this.diffusion = diffusion;
+	}
+
+	/**
+	 * 
+	 */
+	public DiffusionFunction() {
+	}
+
 	private double diffusion;
 
 	/**
 	 * @see org.mmarini.fluid.model.CoefficientFunction#getA(org.mmarini.fluid.model.TimeContext)
 	 */
+	@Override
 	public double getA(TimeContext timeContext) {
 		return getDiffusion();
 	}
@@ -27,6 +41,7 @@ public class DiffusionFunction implements CoefficientFunction {
 	/**
 	 * @see org.mmarini.fluid.model.CoefficientFunction#getB(org.mmarini.fluid.model.TimeContext)
 	 */
+	@Override
 	public double getB(TimeContext timeContext) {
 		return 0;
 	}
@@ -34,6 +49,7 @@ public class DiffusionFunction implements CoefficientFunction {
 	/**
 	 * @see org.mmarini.fluid.model.CoefficientFunction#getC(org.mmarini.fluid.model.TimeContext)
 	 */
+	@Override
 	public double getC(TimeContext timeContext) {
 		return 0;
 	}
@@ -41,7 +57,7 @@ public class DiffusionFunction implements CoefficientFunction {
 	/**
 	 * @return the diffusion
 	 */
-	private double getDiffusion() {
+	public double getDiffusion() {
 		return diffusion;
 	}
 

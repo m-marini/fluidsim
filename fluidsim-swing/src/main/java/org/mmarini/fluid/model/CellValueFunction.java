@@ -47,6 +47,7 @@ public class CellValueFunction implements UniverseDoubleFunction {
 	 * @see org.mmarini.fluid.model.UniverseDoubleFunction#getValue(org.mmarini.fluid.model.Universe,
 	 *      int, int)
 	 */
+	@Override
 	public double getValue(Universe universe, int i, int j) {
 		return (universe.getCell(i, j).getValue() - getOffset()) * getScale();
 	}

@@ -9,6 +9,8 @@
  */
 package org.mmarini.fluid.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -23,8 +25,34 @@ public class CompositeModifier implements UniverseModifier {
 	private List<UniverseModifier> list;
 
 	/**
+	 * 
+	 */
+	public CompositeModifier() {
+		list = new ArrayList<UniverseModifier>();
+	}
+
+	/**
+	 * 
+	 */
+	public CompositeModifier(UniverseModifier... modifiers) {
+		this();
+		for (UniverseModifier m : modifiers) {
+			list.add(m);
+		}
+	}
+
+	/**
+	 * 
+	 * @param list
+	 */
+	public CompositeModifier(Collection<UniverseModifier> list) {
+		this.list = new ArrayList<UniverseModifier>(list);
+	}
+
+	/**
 	 * @see org.mmarini.fluid.model.UniverseModifier#modify(org.mmarini.fluid.model.Universe)
 	 */
+	@Override
 	public void modify(Universe universe) {
 		for (UniverseModifier m : list) {
 			m.modify(universe);
@@ -32,12 +60,9 @@ public class CompositeModifier implements UniverseModifier {
 	}
 
 	/**
-	 * Sets the list of universe modifiers.
-	 * 
-	 * @param list
-	 *            the list to set
+	 * @return the list
 	 */
-	public void setList(List<UniverseModifier> list) {
-		this.list = list;
+	public List<UniverseModifier> getList() {
+		return list;
 	}
 }

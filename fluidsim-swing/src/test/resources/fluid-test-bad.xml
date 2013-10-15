@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<universe xmlns="http://www.mmarini.org/fluid-1.0.0" xmlns:f="http://www.mmarini.org/fluid-1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mmarini.org/fluid-1.1.0 fluid-1.0.0.xsd ">
+	<def id="initial">
+		<modifyGroup>
+			<modifyValue value="bad value" />
+			<modifyCell>
+				<cell>
+					<conservative />
+				</cell>
+				<relation>
+					<fluid speed="10" viscosity="0.4" />
+				</relation>
+			</modifyCell>
+		</modifyGroup>
+	</def>
+	<def id="fluxGenerator">
+		<modifyRelations>
+			<const>-50e-3</const>
+			<const />
+			<const />
+			<const>-50e-3</const>
+			<const />
+			<const />
+		</modifyRelations>
+	</def>
+	<def id="shield">
+		<modifyCell>
+			<cell>
+				<const />
+			</cell>
+			<relation>
+				<const />
+			</relation>
+		</modifyCell>
+	</def>
+	<group>
+		<rect function="initial" x1="1" y1="1" />
+		<line function="fluxGenerator" x0="1.0" y0="0.0" x1="1.0" y1="1.0" />
+		<line function="fluxGenerator" x0="0.0" y0="0.0" x1="0.0" y1="1.0" />
+		<line function="shield" x0="0.3" y0="0.55" x1="0.35" y1="0.6" />
+		<line function="shield" x0="0.35" y0="0.6" x1="0.7" y1="0.45" />
+		<line function="shield" x0="0.3" y0="0.55" x1="0.7" y1="0.45" />
+		<line function="shield" x0="0.72" y0="0.44" x1="0.74" y1="0.39" />
+	</group>
+</universe>

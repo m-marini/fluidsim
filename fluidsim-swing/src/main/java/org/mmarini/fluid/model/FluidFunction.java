@@ -39,6 +39,21 @@ package org.mmarini.fluid.model;
  * 
  */
 public class FluidFunction extends ElasticFunction {
+	/**
+	 * @param speed
+	 * @param viscosity
+	 */
+	public FluidFunction(double speed, double viscosity) {
+		super(speed);
+		this.viscosity = viscosity;
+	}
+
+	/**
+	 * 
+	 */
+	public FluidFunction() {
+	}
+
 	private double viscosity;
 
 	/**

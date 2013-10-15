@@ -23,13 +23,27 @@ package org.mmarini.fluid.model;
  * @version $Id: IsomorphCellFunction.java,v 1.3 2007/08/18 08:29:54 marco Exp $
  */
 public class IsomorphCellFunction implements CellFunction, FluidConstants {
+	/**
+	 * @param function
+	 */
+	public IsomorphCellFunction(CoefficientFunction function) {
+		this.function = function;
+	}
+
+	/**
+	 * 
+	 */
+	public IsomorphCellFunction() {
+	}
+
 	private CoefficientFunction function;
 
 	/**
 	 * @see CellFunction#getA(int, TimeContext)
 	 */
+	@Override
 	public double getA(int direction, TimeContext timeContext) {
-		double v = getFunction().getA(timeContext);
+		double v = function.getA(timeContext);
 		if (direction < RELATION_DIRECTIONS)
 			return v;
 		return -v;
@@ -38,24 +52,17 @@ public class IsomorphCellFunction implements CellFunction, FluidConstants {
 	/**
 	 * @see CellFunction#getB(TimeContext)
 	 */
+	@Override
 	public double getB(TimeContext timeContext) {
-		return getFunction().getB(timeContext);
+		return function.getB(timeContext);
 	}
 
 	/**
 	 * @see CellFunction#getC(TimeContext)
 	 */
+	@Override
 	public double getC(TimeContext timeContext) {
-		return getFunction().getC(timeContext);
-	}
-
-	/**
-	 * Returns the delegate coefficent function.
-	 * 
-	 * @return the function
-	 */
-	private CoefficientFunction getFunction() {
-		return function;
+		return function.getC(timeContext);
 	}
 
 	/**
@@ -66,6 +73,13 @@ public class IsomorphCellFunction implements CellFunction, FluidConstants {
 	 */
 	public void setFunction(CoefficientFunction cellFunction) {
 		this.function = cellFunction;
+	}
+
+	/**
+	 * @return the function
+	 */
+	public CoefficientFunction getFunction() {
+		return function;
 	}
 
 }

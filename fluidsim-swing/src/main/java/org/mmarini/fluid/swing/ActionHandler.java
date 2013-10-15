@@ -63,6 +63,7 @@ public class ActionHandler {
 	private Action newAction = new AbstractAction() {
 		private static final long serialVersionUID = 1L;
 
+		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			createUniverse();
 		}
@@ -71,6 +72,7 @@ public class ActionHandler {
 	private Action closeAction = new AbstractAction() {
 		private static final long serialVersionUID = 1L;
 
+		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			System.exit(0);
 		}
@@ -79,6 +81,7 @@ public class ActionHandler {
 	private Action runAction = new AbstractAction() {
 		private static final long serialVersionUID = 1L;
 
+		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			startSimualtion();
 		}
@@ -87,6 +90,7 @@ public class ActionHandler {
 	private Action stepAction = new AbstractAction() {
 		private static final long serialVersionUID = 1L;
 
+		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			stepSimulate();
 		}
@@ -96,6 +100,7 @@ public class ActionHandler {
 	private Action stopAction = new AbstractAction() {
 		private static final long serialVersionUID = 1L;
 
+		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			stopSimualtion();
 		}
@@ -104,6 +109,7 @@ public class ActionHandler {
 
 	private Runnable ticker = new Runnable() {
 
+		@Override
 		public void run() {
 			tick();
 		}

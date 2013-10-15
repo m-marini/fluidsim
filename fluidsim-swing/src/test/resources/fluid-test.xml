@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<universe xmlns="http://www.mmarini.org/fluid-1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mmarini.org/fluid-1.0.0 ../../main/resources/fluid-1.0.0.xsd ">
+	<def id="f1">
+		<modifyGroup>
+			<modifyCell>
+				<cell>
+					<const>1</const>
+				</cell>
+				<relation>
+					<const>2</const>
+				</relation>
+			</modifyCell>
+			<modifyGroup>
+				<modifyValue value="3" />
+				<modifyValue value="4" />
+			</modifyGroup>
+		</modifyGroup>
+	</def>
+	<def id="f2">
+		<modifyRelations>
+			<conservative />
+			<const />
+			<diffusion>5</diffusion>
+			<elastic>6</elastic>
+			<fluid speed="7.0" viscosity="8.0" />
+			<sin value="9" period="10" />
+		</modifyRelations>
+	</def>
+	<group>
+		<rect function="f1" x0="20" y0="21" x1="22" y1="23" />
+		<group>
+			<point function="f2" x="24" y="25" />
+			<line function="f1" x0="26" y0="27" x1="28" y1="29" />
+		</group>
+	</group>
+</universe>

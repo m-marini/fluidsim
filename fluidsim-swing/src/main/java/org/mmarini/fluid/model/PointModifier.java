@@ -20,8 +20,24 @@ package org.mmarini.fluid.model;
  * @version $Id: PointModifier.java,v 1.3 2007/08/18 08:29:54 marco Exp $
  */
 public class PointModifier extends AbstractUniverseModifier {
-	private double x;
+	/**
+	 * 
+	 */
+	public PointModifier() {
+	}
 
+	/**
+	 * @param cellModifier
+	 * @param x
+	 * @param y
+	 */
+	public PointModifier(CellModifier cellModifier, double x, double y) {
+		super(cellModifier);
+		this.x = x;
+		this.y = y;
+	}
+
+	private double x;
 	private double y;
 
 	/**
@@ -45,6 +61,7 @@ public class PointModifier extends AbstractUniverseModifier {
 	/**
 	 * @see UniverseModifier#modify(Universe)
 	 */
+	@Override
 	public void modify(Universe universe) {
 		double x02 = getX();
 		double y02 = getY();
