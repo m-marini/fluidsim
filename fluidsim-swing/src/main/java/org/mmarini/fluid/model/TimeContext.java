@@ -42,33 +42,13 @@ public class TimeContext {
 	}
 
 	/**
-	 * Set the current simulation interval.
-	 * 
-	 * @param deltaTime
-	 *            the deltaTime to set in seconds
-	 */
-	private void setDeltaTime(double deltaTime) {
-		this.deltaTime = deltaTime;
-	}
-
-	/**
-	 * Sets the total simulation time.
-	 * 
-	 * @param time
-	 *            the time to set in seconds
-	 */
-	private void setTime(double time) {
-		this.time = time;
-	}
-
-	/**
 	 * Update the time parameters.
 	 * 
 	 * @param deltaTime
 	 *            the interval in seconds
 	 */
 	public void update(double deltaTime) {
-		setDeltaTime(deltaTime);
-		setTime(getTime() + deltaTime);
+		this.deltaTime = deltaTime;
+		time += deltaTime;
 	}
 }

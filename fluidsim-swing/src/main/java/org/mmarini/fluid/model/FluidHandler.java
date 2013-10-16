@@ -10,6 +10,12 @@
 package org.mmarini.fluid.model;
 
 import java.awt.Dimension;
+import java.io.IOException;
+import java.net.URL;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 /**
  * This is the interface of the fluid handler.
@@ -74,6 +80,16 @@ public interface FluidHandler {
 	 * @return the size
 	 */
 	public abstract Dimension getSize();
+
+	/**
+	 * 
+	 * @param resource
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 */
+	public abstract void loadUniverseModifier(URL resource)
+			throws ParserConfigurationException, SAXException, IOException;
 
 	/**
 	 * Performs a simulation cycle.

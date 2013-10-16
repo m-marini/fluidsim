@@ -11,11 +11,9 @@ package org.mmarini.fluid.swing;
 
 import java.awt.Dimension;
 
-import org.mmarini.fluid.model.FluidHandler;
-
 /**
- * The AbstractGraphFunction adapts the functionality of GraphPane from the data
- * model to be drawn.
+ * The GraphFunction adapts the functionality of GraphPane from the data model
+ * to be drawn.
  * <p>
  * The adapter must implements the following methods:
  * <dl>
@@ -30,26 +28,14 @@ import org.mmarini.fluid.model.FluidHandler;
  * @version $Id: AbstractGraphFunction.java,v 1.3 2007/08/18 08:29:55 marco Exp
  *          $
  */
-public abstract class AbstractGraphFunction {
-	private FluidHandler fluidHandler;
-
-	/**
-	 * Returns the fluid handler
-	 * 
-	 * @return the fluidHandler
-	 */
-	protected FluidHandler getFluidHandler() {
-		return fluidHandler;
-	}
+public interface GraphFunction {
 
 	/**
 	 * Returns the size of data.
 	 * 
 	 * @return the size
 	 */
-	public Dimension getSize() {
-		return fluidHandler.getSize();
-	}
+	public abstract Dimension getSize();
 
 	/**
 	 * Returns the value of a item in i-row and j-column.
@@ -64,14 +50,4 @@ public abstract class AbstractGraphFunction {
 	 * @return the value
 	 */
 	public abstract double getValue(int i, int j);
-
-	/**
-	 * Sets the fluid handler.
-	 * 
-	 * @param fluidHandler
-	 *            the fluidHandler to set
-	 */
-	public void setFluidHandler(FluidHandler fluidHandler) {
-		this.fluidHandler = fluidHandler;
-	}
 }

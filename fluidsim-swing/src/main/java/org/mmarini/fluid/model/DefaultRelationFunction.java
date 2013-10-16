@@ -16,6 +16,14 @@ package org.mmarini.fluid.model;
  *          Exp $
  */
 public class DefaultRelationFunction implements RelationFunction {
+	private CoefficientFunction function;
+
+	/**
+	 * 
+	 */
+	public DefaultRelationFunction() {
+	}
+
 	/**
 	 * @param function
 	 */
@@ -24,20 +32,12 @@ public class DefaultRelationFunction implements RelationFunction {
 	}
 
 	/**
-	 * 
-	 */
-	public DefaultRelationFunction() {
-	}
-
-	private CoefficientFunction function;
-
-	/**
 	 * @see org.mmarini.fluid.model.RelationFunction#getA(int,
 	 *      org.mmarini.fluid.model.TimeContext)
 	 */
 	@Override
 	public double getA(int index, TimeContext timeContext) {
-		double v = getFunction().getA(timeContext);
+		double v = function.getA(timeContext);
 		if (index == 0)
 			return -v;
 		return v;
@@ -48,7 +48,7 @@ public class DefaultRelationFunction implements RelationFunction {
 	 */
 	@Override
 	public double getB(TimeContext timeContext) {
-		return getFunction().getB(timeContext);
+		return function.getB(timeContext);
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class DefaultRelationFunction implements RelationFunction {
 	 */
 	@Override
 	public double getC(TimeContext timeContext) {
-		return getFunction().getC(timeContext);
+		return function.getC(timeContext);
 	}
 
 	/**

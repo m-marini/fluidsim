@@ -9,6 +9,7 @@
  */
 package org.mmarini.fluid.swing;
 
+import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -25,6 +26,16 @@ public class Messages {
 			.getBundle(BUNDLE_NAME);
 
 	/**
+	 * 
+	 * @param key
+	 * @param parms
+	 * @return
+	 */
+	public static String format(String key, Object... parms) {
+		return MessageFormat.format(Messages.getString(key), parms);
+	}
+
+	/**
 	 * Returns the localized message.
 	 * 
 	 * @param key
@@ -39,6 +50,9 @@ public class Messages {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private Messages() {
 	}
 }

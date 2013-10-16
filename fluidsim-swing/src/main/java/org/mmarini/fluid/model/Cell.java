@@ -18,9 +18,15 @@ package org.mmarini.fluid.model;
  * 
  */
 public class Cell {
-	private DoubleBufferedDouble value = new DoubleBufferedDouble();
-
+	private DoubleBufferedDouble value;
 	private CellFunction function;
+
+	/**
+	 * 
+	 */
+	public Cell() {
+		value = new DoubleBufferedDouble();
+	}
 
 	/**
 	 * Returns the cell function.

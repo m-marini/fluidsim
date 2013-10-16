@@ -66,14 +66,4 @@ public class RelationCellModifier implements CellModifier {
 		}
 	}
 
-	/**
-	 * Sets the list of relation functions.
-	 * 
-	 * @param list
-	 *            the list to set
-	 */
-	public void setList(List<RelationFunction> list) {
-		this.list = list;
-	}
-
 }

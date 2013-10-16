@@ -39,6 +39,14 @@ package org.mmarini.fluid.model;
  * 
  */
 public class FluidFunction extends ElasticFunction {
+	private double viscosity;
+
+	/**
+	 * 
+	 */
+	public FluidFunction() {
+	}
+
 	/**
 	 * @param speed
 	 * @param viscosity
@@ -47,14 +55,6 @@ public class FluidFunction extends ElasticFunction {
 		super(speed);
 		this.viscosity = viscosity;
 	}
-
-	/**
-	 * 
-	 */
-	public FluidFunction() {
-	}
-
-	private double viscosity;
 
 	/**
 	 * @see CoefficientFunction#getB(TimeContext)

@@ -43,7 +43,7 @@ public class CellUpdateContext extends AbstractUpdaterContext {
 	 * @return the value
 	 */
 	public double getA(int direction) {
-		return getFunction().getA(direction, getTimeContext());
+		return function.getA(direction, getTimeContext());
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class CellUpdateContext extends AbstractUpdaterContext {
 	 * @return the value
 	 */
 	public double getB() {
-		return getFunction().getB(getTimeContext());
+		return function.getB(getTimeContext());
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class CellUpdateContext extends AbstractUpdaterContext {
 	 * @return the value
 	 */
 	public double getC() {
-		return getFunction().getC(getTimeContext());
+		return function.getC(getTimeContext());
 	}
 
 	/**

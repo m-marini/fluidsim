@@ -9,7 +9,7 @@
  */
 package org.mmarini.fluid.swing;
 
-import java.text.MessageFormat;
+import static org.mmarini.fluid.swing.Messages.format;
 
 import javax.swing.JProgressBar;
 
@@ -36,88 +36,21 @@ public class RateBar extends JProgressBar {
 	private static final long serialVersionUID = 1L;
 
 	private FluidHandler fluidHandler;
-
 	private long refreshTimeout;
-
 	private long refreshPeriod;
-
-	private double maxValue = 2;
-
-	private double minValue = 1;
+	private double maxValue;
+	private double minValue;
 
 	/**
-	 * Creates the message to be shown in the bar.
-	 * <p>
-	 * The message show the value of rate in steps per second if greter then one
-	 * or in seconds per step if lower.
-	 * </p>
 	 * 
-	 * @param value
-	 *            the rate in steps per second
-	 * @return
 	 */
-	private String createMessage(double value) {
-		if (value >= 1) {
-			return MessageFormat
-					.format(Messages.getString("RateBar.stepPerSec.message"), new Object[] { value }); //$NON-NLS-1$
-		}
-		return MessageFormat
-				.format(Messages.getString("RateBar.secPerStep.message"), new Object[] { 1 / value }); //$NON-NLS-1$
-	}
+	public RateBar() {
+		maxValue = 2;
+		minValue = 1;
+		refreshPeriod = 1000;
 
-	/**
-	 * Returns the fluid handler.
-	 * 
-	 * @return the fluidHandler
-	 */
-	private FluidHandler getFluidHandler() {
-		return fluidHandler;
-	}
-
-	/**
-	 * Returns the current max value of rate bar.
-	 * 
-	 * @return the maxValue
-	 */
-	private double getMaxValue() {
-		return maxValue;
-	}
-
-	/**
-	 * Returns the minimum value of the rate bar.
-	 * 
-	 * @return the minValue
-	 */
-	private double getMinValue() {
-		return minValue;
-	}
-
-	/**
-	 * Returns the refresh period.
-	 * 
-	 * @return the refreshPeriod in msec.
-	 */
-	private long getRefreshPeriod() {
-		return refreshPeriod;
-	}
-
-	/**
-	 * Returns the refresh timeout.
-	 * <p>
-	 * If the current time is greater then the timeout the rate sùhave to be
-	 * repainted.
-	 * </p>
-	 * 
-	 * @return the refreshTimeout
-	 */
-	private long getRefreshTimeout() {
-		return refreshTimeout;
-	}
-
-	/**
-	 * Initializes the bar.
-	 */
-	public void init() {
+		setMaximum(200);
+		setStringPainted(true);
 	}
 
 	/**
@@ -125,9 +58,9 @@ public class RateBar extends JProgressBar {
 	 */
 	public void refresh() {
 		long time = System.currentTimeMillis();
-		if (time >= getRefreshTimeout()) {
+		if (time >= refreshTimeout) {
 			refreshBar();
-			setRefreshTimeout(time + getRefreshPeriod());
+			refreshTimeout = time + refreshPeriod;
 		}
 	}
 
@@ -135,13 +68,13 @@ public class RateBar extends JProgressBar {
 	 * Refresh and repaint the bar.
 	 */
 	private void refreshBar() {
-		double v = getFluidHandler().getSimulationRate();
-		if (v > getMaxValue() || v < getMinValue()) {
+		double v = fluidHandler.getSimulationRate();
+		if (v > maxValue || v < minValue) {
 			scaleBar(v);
 		}
 		log.debug("Simulation Speed = " + v + " step/sec"); //$NON-NLS-1$ //$NON-NLS-2$
-		int bar = (int) Math.round(getMaximum() * v / getMaxValue());
-		setString(createMessage(v));
+		int bar = (int) Math.round(getMaximum() * v / maxValue);
+		setString(format("RateBar.stepPerSec.message", v >= 1 ? v : 1 / v));
 		setValue(bar);
 	}
 
@@ -165,8 +98,8 @@ public class RateBar extends JProgressBar {
 			min = max;
 			max = scale * 10;
 		}
-		setMinValue(min);
-		setMaxValue(max);
+		minValue = min;
+		maxValue = max;
 		log.debug("Min = " + min); //$NON-NLS-1$ 
 		log.debug("Max = " + max); //$NON-NLS-1$ 
 	}
@@ -182,32 +115,6 @@ public class RateBar extends JProgressBar {
 	}
 
 	/**
-	 * Sets the maximum value of the rate bar.
-	 * <p>
-	 * A value greater then the maximum determines a recalculation of the rate
-	 * scale.
-	 * </p>
-	 * 
-	 * @param maxValue
-	 *            the maxValue to set
-	 */
-	private void setMaxValue(double maxValue) {
-		this.maxValue = maxValue;
-	}
-
-	/**
-	 * Sets the minimum value of the rate bar.
-	 * <p>
-	 * A value less then the minumum determines a recalulation of the bar scale-
-	 * 
-	 * @param minValue
-	 *            the minValue to set
-	 */
-	private void setMinValue(double minValue) {
-		this.minValue = minValue;
-	}
-
-	/**
 	 * Sets the refresh period.
 	 * <p>
 	 * The property determines how often the rate bar will be repoainted.
@@ -217,15 +124,5 @@ public class RateBar extends JProgressBar {
 	 */
 	public void setRefreshPeriod(long refreshPeriod) {
 		this.refreshPeriod = refreshPeriod;
-	}
-
-	/**
-	 * Sets the refresh timeout.
-	 * 
-	 * @param refreshTimeout
-	 *            the refreshTimeout to set
-	 */
-	private void setRefreshTimeout(long lastRefresh) {
-		this.refreshTimeout = lastRefresh;
 	}
 }

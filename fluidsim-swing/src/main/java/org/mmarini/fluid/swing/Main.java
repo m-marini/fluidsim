@@ -3,38 +3,46 @@
  */
 package org.mmarini.fluid.swing;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.io.IOException;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import javax.xml.parsers.ParserConfigurationException;
 
-import org.mmarini.fluid.model.CellModifier;
-import org.mmarini.fluid.model.CellValueFunction;
-import org.mmarini.fluid.model.CompositeCellModifier;
-import org.mmarini.fluid.model.CompositeModifier;
-import org.mmarini.fluid.model.ConservativeFunction;
-import org.mmarini.fluid.model.ConstantFunction;
-import org.mmarini.fluid.model.DefaultRelationFunction;
-import org.mmarini.fluid.model.FluidFunction;
+import org.mmarini.fluid.model.FluidHandler;
 import org.mmarini.fluid.model.FluidHandlerImpl;
-import org.mmarini.fluid.model.FluxValueFunction;
-import org.mmarini.fluid.model.FunctionModifier;
-import org.mmarini.fluid.model.IsomorphCellFunction;
-import org.mmarini.fluid.model.LineModifier;
-import org.mmarini.fluid.model.RectangleModifier;
-import org.mmarini.fluid.model.RelationCellModifier;
-import org.mmarini.fluid.model.RelationFunction;
-import org.mmarini.fluid.model.RelationValueFunction;
-import org.mmarini.fluid.model.Simulator;
-import org.mmarini.fluid.model.UniverseBuilderImpl;
-import org.mmarini.fluid.model.ValueCellModifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 /**
  * @author us00852
  * 
  */
 public class Main {
+
+	private static final String DEFAULT_MODIFIER_RESOURCE = "/wing.xml";
+	public static final String DISABLED_ICON = "selectedIcon"; //$NON-NLS-1$
+	private static final int INITIAL_WIDTH = 400;
+	private static final int INITIAL_HEIGHT = 300;
+
+	private static Logger log = LoggerFactory.getLogger(Main.class);
 
 	/**
 	 * @param args
@@ -43,246 +51,330 @@ public class Main {
 		new Main().start();
 	}
 
-	private SimFrame frame;
-	private FluidHandlerImpl fluidHandler;
-	private CompositeModifier universeModifier;
+	private JFrame frame;
+	private JToolBar toolBar;
+	private JMenuBar menuBar;
+	private GraphPane cellPane;
+	private GraphPane relationPane;
+	private GraphPane fluxPane;
+	private RateBar rateBar;
+	private Action newAction;
+	private Action closeAction;
+	private Action runAction;
+	private Action stepAction;
+	private Action stopAction;
+	private Runnable ticker;
+	private FluidHandler fluidHandler;
 
 	/**
 	 * 
 	 */
 	public Main() {
-		universeModifier = createFluidBeans();
-		fluidHandler = createModelBeans();
-		frame = createUIBeans();
+		toolBar = new JToolBar();
+		menuBar = new JMenuBar();
+		rateBar = new RateBar();
+		fluxPane = new GraphPane(new GraphFunction() {
+
+			@Override
+			public Dimension getSize() {
+				return fluidHandler.getSize();
+			}
+
+			@Override
+			public double getValue(int i, int j) {
+				return fluidHandler.getFluxValue(i, j);
+			}
+		});
+		relationPane = new GraphPane(new GraphFunction() {
+
+			@Override
+			public Dimension getSize() {
+				return fluidHandler.getSize();
+			}
+
+			@Override
+			public double getValue(int i, int j) {
+				return fluidHandler.getRelationValue(i, j);
+			}
+		});
+		cellPane = new GraphPane(new GraphFunction() {
+
+			@Override
+			public Dimension getSize() {
+				return fluidHandler.getSize();
+			}
+
+			@Override
+			public double getValue(int i, int j) {
+				return fluidHandler.getCellValue(i, j);
+			}
+		});
+		frame = new JFrame();
+
+		newAction = new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				createUniverse();
+			}
+		};
+		closeAction = new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		};
+		runAction = new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				startSimualtion();
+			}
+		};
+		stepAction = new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				stepSimulate();
+			}
+
+		};
+		stopAction = new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				stopSimualtion();
+			}
+
+		};
+
+		ticker = new Runnable() {
+
+			@Override
+			public void run() {
+				tick();
+			}
+
+		};
+		fluidHandler = new FluidHandlerImpl();
 	}
 
 	/**
 	 * 
+	 * @param key
+	 * @return
 	 */
-	private SimFrame createUIBeans() {
-		RateBar rateBar = new RateBar();
-		rateBar.setFluidHandler(fluidHandler);
-		rateBar.setRefreshPeriod(1000);
-		rateBar.setMaximum(200);
-		rateBar.setStringPainted(true);
-		rateBar.init();
-
-		FluxGraphFunction fluxGraphFunction = new FluxGraphFunction();
-		fluxGraphFunction.setFluidHandler(fluidHandler);
-
-		RelationGraphFunction speedGraphFunction = new RelationGraphFunction();
-		speedGraphFunction.setFluidHandler(fluidHandler);
-
-		CellGraphFunction cellGraphFunction = new CellGraphFunction();
-		cellGraphFunction.setFluidHandler(fluidHandler);
-
-		GraphPane fluxGraphPane = new GraphPane();
-		fluxGraphPane.setFunction(fluxGraphFunction);
-		fluxGraphPane.init();
-
-		GraphPane relationGraphPane = new GraphPane();
-		relationGraphPane.setFunction(speedGraphFunction);
-		relationGraphPane.init();
-
-		GraphPane cellGraphPane = new GraphPane();
-		cellGraphPane.setFunction(cellGraphFunction);
-		cellGraphPane.init();
-
-		TabbedPane tabPane = new TabbedPane();
-		tabPane.setCellComponent(cellGraphPane);
-		tabPane.setRelationComponent(relationGraphPane);
-		tabPane.setFluxComponent(fluxGraphPane);
-		tabPane.init();
-
-		JToolBar toolBar = new JToolBar();
-
-		JMenuBar jMenuBar = new JMenuBar();
-
-		ActionHandler actionHandler = new ActionHandler();
-		actionHandler.setMenuBar(jMenuBar);
-		actionHandler.setToolBar(toolBar);
-		actionHandler.setCellPane(cellGraphPane);
-		actionHandler.setRelationPane(relationGraphPane);
-		actionHandler.setFluxPane(fluxGraphPane);
-		actionHandler.setRateBar(rateBar);
-		actionHandler.setFluidHandler(fluidHandler);
-		actionHandler.init();
-
-		SimFrame frame = new SimFrame();
-		frame.setMainPane(tabPane);
-		frame.setJMenuBar(jMenuBar);
-		frame.setToolBar(toolBar);
-		frame.setInfo(rateBar);
-		frame.init();
-
-		return frame;
+	private ImageIcon createIcon(String key) {
+		String value = Messages.getString(key);
+		return !value.startsWith("!") ? new ImageIcon(getClass().getResource(
+				value)) : null;
 	}
 
 	/**
 	 * 
 	 * @return
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
 	 */
-	private FluidHandlerImpl createModelBeans() {
+	private void createModelBeans() throws ParserConfigurationException,
+			SAXException, IOException {
+		fluidHandler.loadUniverseModifier(getClass().getResource(
+				DEFAULT_MODIFIER_RESOURCE));
+	}
 
-		UniverseBuilderImpl builder = new UniverseBuilderImpl();
-		builder.setUniverseModifier(universeModifier);
-
-		Simulator simulator = new Simulator();
-		simulator.setMinElapsed(80);
-		simulator.setSimulationRate(1);
-		simulator.setSingleStepTime(0.1);
-
-		CellValueFunction cellFunction = new CellValueFunction();
-		cellFunction.setScale(10);
-		cellFunction.setOffset(0.45);
-
-		RelationValueFunction speedFunction = new RelationValueFunction();
-		speedFunction.setOffset(0);
-		speedFunction.setScale(2000);
-
-		FluxValueFunction fluxFunction = new FluxValueFunction();
-		fluxFunction.setScale(600e-3);
-		fluxFunction.setOffset(0);
-
-		FluidHandlerImpl fluidHandler = new FluidHandlerImpl();
-		fluidHandler.setBuilder(builder);
-		fluidHandler.setSimulator(simulator);
-		fluidHandler.setCellFunction(cellFunction);
-		fluidHandler.setRelationFunction(speedFunction);
-		fluidHandler.setFluxFunction(fluxFunction);
-		fluidHandler.createNew();
-		return fluidHandler;
-
+	/**
+	 * 
+	 * 
+	 * @return
+	 */
+	private JTabbedPane createTabPane() {
+		JTabbedPane tabPane = new JTabbedPane();
+		tabPane.addTab(Messages.getString("Main.cellTab.text"), cellPane); //$NON-NLS-1$
+		tabPane.setToolTipTextAt(0, Messages.getString("Main.cellTab.tips")); //$NON-NLS-1$
+		tabPane.addTab(
+				Messages.getString("Main.relationTab.text"), relationPane); //$NON-NLS-1$
+		tabPane.setToolTipTextAt(1,
+				Messages.getString("Main.relationlTab.tips")); //$NON-NLS-1$
+		tabPane.addTab(Messages.getString("Main.fluxTab.text"), fluxPane); //$NON-NLS-1$
+		tabPane.setToolTipTextAt(2, Messages.getString("Main.fluxTab.tips")); //$NON-NLS-1$
+		return tabPane;
 	}
 
 	/**
 	 * 
 	 */
-	private CompositeModifier createFluidBeans() {
-		FluidFunction fluidFunction = new FluidFunction();
-		fluidFunction.setSpeed(10.0);
-		fluidFunction.setViscosity(0.4);
+	private void createUIBeans() {
+		rateBar.setFluidHandler(fluidHandler);
 
-		ConstantFunction zeroFunction = new ConstantFunction();
-		zeroFunction.setValue(0);
+		fluxPane.init();
+		relationPane.init();
+		cellPane.init();
 
-		ConstantFunction generatorFunction = new ConstantFunction();
-		generatorFunction.setValue(-50e-3);
+		initAction();
+		initMenuBar();
+		initToolBar();
 
-		DefaultRelationFunction backgroundRelationFunction = new DefaultRelationFunction();
-		backgroundRelationFunction.setFunction(fluidFunction);
+		Container contentPane = frame.getContentPane();
+		contentPane.setLayout(new BorderLayout());
+		contentPane.add(toolBar, BorderLayout.NORTH);
+		contentPane.add(createTabPane(), BorderLayout.CENTER);
+		contentPane.add(rateBar, BorderLayout.SOUTH);
 
-		DefaultRelationFunction zeroRelationFunction = new DefaultRelationFunction();
-		zeroRelationFunction.setFunction(zeroFunction);
+		frame.setJMenuBar(menuBar);
+		frame.setTitle(Messages.getString("Main.title")); //$NON-NLS-1$ 
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		DefaultRelationFunction generatorRelationFunction = new DefaultRelationFunction();
-		generatorRelationFunction.setFunction(generatorFunction);
+		/*
+		 * Set size and center the frame in the screen
+		 */
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		frame.setSize(INITIAL_WIDTH, INITIAL_HEIGHT);
+		frame.setLocation((screen.width - INITIAL_WIDTH) / 2,
+				(screen.height - INITIAL_HEIGHT) / 2);
+	}
 
-		ConservativeFunction conservativeFunction = new ConservativeFunction();
+	/**
+	 * Creates the universe.
+	 */
+	private void createUniverse() {
+		log.debug("createUniverse"); //$NON-NLS-1$
+		fluidHandler.createNew();
+	}
 
-		IsomorphCellFunction backgroundCellFunction = new IsomorphCellFunction();
-		backgroundCellFunction.setFunction(conservativeFunction);
+	/**
+	 * Initializes the action labels.
+	 */
+	private void initAction() {
+		setupAction(newAction, "newAction"); //$NON-NLS-1$
+		setupAction(closeAction, "closeAction"); //$NON-NLS-1$
+		setupAction(runAction, "runAction"); //$NON-NLS-1$
+		setupAction(stopAction, "stopAction"); //$NON-NLS-1$
+		setupAction(stepAction, "stepAction"); //$NON-NLS-1$
+		stepAction.setEnabled(false);
+	}
 
-		IsomorphCellFunction zeroCellFunction = new IsomorphCellFunction();
-		zeroCellFunction.setFunction(zeroFunction);
+	/**
+	 * Initializes the menu bar.
+	 */
+	private void initMenuBar() {
+		JMenu menu = new JMenu(Messages.getString("Main.fileMenu.text")); //$NON-NLS-1$
+		menu.add(new JMenuItem(newAction));
+		menu.add(new JSeparator());
+		menu.add(new JMenuItem(closeAction));
+		menuBar.add(menu);
 
-		FunctionModifier initialMaterialCellModifier = new FunctionModifier();
-		initialMaterialCellModifier.setCellFunction(backgroundCellFunction);
-		initialMaterialCellModifier
-				.setRelationFunction(backgroundRelationFunction);
+		menu = new JMenu(Messages.getString("Main.simulateMenu.text")); //$NON-NLS-1$
+		menu.add(new JMenuItem(stepAction));
+		menu.add(new JSeparator());
+		menu.add(new JMenuItem(runAction));
+		menu.add(new JMenuItem(stopAction));
+		menuBar.add(menu);
+	}
 
-		ValueCellModifier initialValueCellModifier = new ValueCellModifier();
-		initialValueCellModifier.setCellValue(0.5);
-		initialValueCellModifier.setRightRelation(0);
-		initialValueCellModifier.setUpRightRelation(0);
-		initialValueCellModifier.setUpLeftRelation(0);
+	/**
+	 * Initializes the tool bar.
+	 */
+	private void initToolBar() {
+		toolBar.add(new JButton(newAction));
+		toolBar.add(new JButton(stepAction));
+		toolBar.add(new JButton(runAction));
+		toolBar.add(new JButton(stopAction));
+	}
 
-		List<CellModifier> list1 = new ArrayList<CellModifier>();
-		list1.add(initialValueCellModifier);
-		list1.add(initialMaterialCellModifier);
-		CompositeCellModifier initialCompositeCellModifier = new CompositeCellModifier();
-		initialCompositeCellModifier.setList(list1);
+	/**
+	 * Sets up an action loading the properties of the action.
+	 * 
+	 * @param action
+	 *            the action to be set up
+	 * @param name
+	 *            the action name used in the localized resource file
+	 */
+	private void setupAction(Action action, String name) {
+		action.putValue(Action.NAME,
+				Messages.getString("Main." + name + ".name"));
+		action.putValue(
+				Action.ACCELERATOR_KEY,
+				KeyStroke.getKeyStroke(Messages.getString("Main." + name
+						+ ".accelerator")));
+		action.putValue(Action.MNEMONIC_KEY,
+				(int) Messages.getString("Main." + name + ".mnemonic")
+						.charAt(0));
+		action.putValue(Action.SHORT_DESCRIPTION,
+				Messages.getString("Main." + name + ".tip"));
 
-		List<RelationFunction> list2 = new ArrayList<RelationFunction>();
-		list2.add(generatorRelationFunction);
-		list2.add(zeroRelationFunction);
-		list2.add(zeroRelationFunction);
-		list2.add(generatorRelationFunction);
-		list2.add(zeroRelationFunction);
-		list2.add(zeroRelationFunction);
-		RelationCellModifier fluxGeneratorCellModifier = new RelationCellModifier();
-		fluxGeneratorCellModifier.setList(list2);
-
-		FunctionModifier shieldCellModifier = new FunctionModifier();
-		shieldCellModifier.setCellFunction(zeroCellFunction);
-		shieldCellModifier.setRelationFunction(zeroRelationFunction);
-
-		LineModifier lowerWing = new LineModifier();
-		lowerWing.setCellModifier(shieldCellModifier);
-		lowerWing.setX0(0.3);
-		lowerWing.setY0(0.55);
-		lowerWing.setX1(0.7);
-		lowerWing.setY1(0.45);
-
-		LineModifier upperLeftWing = new LineModifier();
-		upperLeftWing.setCellModifier(shieldCellModifier);
-		upperLeftWing.setX0(0.3);
-		upperLeftWing.setY0(0.55);
-		upperLeftWing.setX1(0.35);
-		upperLeftWing.setY1(0.6);
-
-		LineModifier upperRightWing = new LineModifier();
-		upperRightWing.setCellModifier(shieldCellModifier);
-		upperRightWing.setX0(0.35);
-		upperRightWing.setY0(0.6);
-		upperRightWing.setX1(0.7);
-		upperRightWing.setY1(0.45);
-
-		LineModifier leftFluxGenerator = new LineModifier();
-		leftFluxGenerator.setCellModifier(fluxGeneratorCellModifier);
-		leftFluxGenerator.setX0(0);
-		leftFluxGenerator.setY0(0);
-		leftFluxGenerator.setX1(0);
-		leftFluxGenerator.setY1(1);
-
-		LineModifier rightFluxGenerator = new LineModifier();
-		rightFluxGenerator.setCellModifier(fluxGeneratorCellModifier);
-		rightFluxGenerator.setX0(1);
-		rightFluxGenerator.setY0(0);
-		rightFluxGenerator.setX1(1);
-		rightFluxGenerator.setY1(1);
-
-		CompositeModifier compositeFluxGenerator = new CompositeModifier(
-				leftFluxGenerator, rightFluxGenerator);
-
-		RectangleModifier backgroundModifier = new RectangleModifier();
-		backgroundModifier.setCellModifier(initialCompositeCellModifier);
-		backgroundModifier.setX0(0);
-		backgroundModifier.setY0(0);
-		backgroundModifier.setX1(1);
-		backgroundModifier.setY1(1);
-
-		CompositeModifier windTunnel = new CompositeModifier(
-				backgroundModifier, compositeFluxGenerator);
-
-		CompositeModifier wing = new CompositeModifier(windTunnel, lowerWing,
-				upperLeftWing, upperRightWing);
-
-		LineModifier flap = new LineModifier();
-		flap.setCellModifier(shieldCellModifier);
-		flap.setX0(0.72);
-		flap.setY0(0.44);
-		flap.setX1(0.74);
-		flap.setY1(0.39);
-
-		return new CompositeModifier(wing, flap);
+		ImageIcon ic = createIcon("Main." + name + ".icon"); //$NON-NLS-1$ //$NON-NLS-2$
+		if (ic != null) {
+			action.putValue(Action.SMALL_ICON, ic);
+		}
+		ImageIcon icd = createIcon("Main." + name + "." + DISABLED_ICON); //$NON-NLS-1$ //$NON-NLS-2$
+		if (icd != null) {
+			action.putValue(DISABLED_ICON, icd);
+		}
 	}
 
 	/**
 	 * 
 	 */
 	private void start() {
-		frame.setVisible(true);
+		try {
+			createModelBeans();
+			createUIBeans();
+			frame.setVisible(true);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
 	}
 
+	/**
+	 * Starts the real time simulation.
+	 */
+	private void startSimualtion() {
+		log.debug("starting simulation ..."); //$NON-NLS-1$
+		runAction.setEnabled(false);
+		stepAction.setEnabled(false);
+		stopAction.setEnabled(true);
+		fluidHandler.startSimulation();
+		SwingUtilities.invokeLater(ticker);
+	}
+
+	/**
+	 * Perform a single simulation step.
+	 */
+	private void stepSimulate() {
+		fluidHandler.singleStepSimulation();
+		cellPane.repaint();
+		relationPane.repaint();
+		fluxPane.repaint();
+	}
+
+	/**
+	 * Stops the real time simulation.
+	 */
+	private void stopSimualtion() {
+		log.debug("stopping simulation ..."); //$NON-NLS-1$
+		runAction.setEnabled(true);
+		stepAction.setEnabled(true);
+		stopAction.setEnabled(false);
+	}
+
+	/**
+	 * Perform a simulation step during the real time simulation.
+	 */
+	private void tick() {
+		if (!runAction.isEnabled()) {
+			fluidHandler.simulate();
+			cellPane.repaint();
+			relationPane.repaint();
+			fluxPane.repaint();
+			rateBar.refresh();
+			SwingUtilities.invokeLater(ticker);
+		}
+	}
 }

@@ -25,17 +25,32 @@ package org.mmarini.fluid.model;
  * @version $Id: Simulator.java,v 1.4 2007/08/18 08:29:54 marco Exp $
  */
 public class Simulator {
-	private double singleStepTime;
+	private double singleStepInterval;
 
 	private double simulationRate;
 
-	private long minElapsed;
-
+	private long minInterval;
 	private long lastTime;
-
 	private int lastCount;
-
 	private long lastElapsed;
+
+	/**
+	 * 
+	 */
+	public Simulator() {
+	}
+
+	/**
+	 * @param singleStepTime
+	 * @param simulationRate
+	 * @param minElapsed
+	 */
+	public Simulator(double singleStepTime, double simulationRate,
+			long minElapsed) {
+		this.singleStepInterval = singleStepTime;
+		this.simulationRate = simulationRate;
+		this.minInterval = minElapsed;
+	}
 
 	/**
 	 * Returns the last simulation step count.
@@ -56,77 +71,11 @@ public class Simulator {
 	}
 
 	/**
-	 * Returns the last simulation time
-	 * 
-	 * @return the lastTime in msec
-	 */
-	private long getLastTime() {
-		return lastTime;
-	}
-
-	/**
-	 * Returns the minimum simulation interval
-	 * 
-	 * @return the minElapsed in msec.
-	 */
-	private long getMinElapsed() {
-		return minElapsed;
-	}
-
-	/**
-	 * Returns the simulation rate.
-	 * 
-	 * @return the simulationRate
-	 */
-	private double getSimulationRate() {
-		return simulationRate;
-	}
-
-	/**
-	 * Returns the single step time.
-	 * 
-	 * @return the singleStepTime in seconds
-	 */
-	private double getSingleStepTime() {
-		return singleStepTime;
-	}
-
-	/**
-	 * Sets the last simulation count.
-	 * 
-	 * @param lastCount
-	 *            the lastCount to set
-	 */
-	private void setLastCount(int lastCount) {
-		this.lastCount = lastCount;
-	}
-
-	/**
-	 * Sets the last simulation interval
-	 * 
-	 * @param lastElapsed
-	 *            the lastElapsed to set in msec.
-	 */
-	private void setLastElapsed(long lastElapsed) {
-		this.lastElapsed = lastElapsed;
-	}
-
-	/**
-	 * Sets the last simulation time
-	 * 
-	 * @param lastTime
-	 *            the lastTime to set in msec
-	 */
-	private void setLastTime(long lastTime) {
-		this.lastTime = lastTime;
-	}
-
-	/**
 	 * @param minElapsed
 	 *            the minElapsed to set
 	 */
-	public void setMinElapsed(long minElapsed) {
-		this.minElapsed = minElapsed;
+	public void setMinInterval(long minElapsed) {
+		this.minInterval = minElapsed;
 	}
 
 	/**
@@ -152,8 +101,8 @@ public class Simulator {
 	 * @param singleStepTime
 	 *            the singleStepTime to set in seconds
 	 */
-	public void setSingleStepTime(double singleStepTime) {
-		this.singleStepTime = singleStepTime;
+	public void setSingleStepInterval(double singleStepTime) {
+		this.singleStepInterval = singleStepTime;
 	}
 
 	/**
@@ -163,24 +112,24 @@ public class Simulator {
 	 *            the universe to simulate
 	 */
 	public void simulate(Universe universe) {
-		long lastTime = getLastTime();
+		long lastTime = this.lastTime;
 		long lastStepTime = lastTime;
 		int stepCount = 0;
 		long elapsed = 0;
 		for (;;) {
 			long time = System.currentTimeMillis();
 			elapsed = time - lastTime;
-			if (elapsed > getMinElapsed() && stepCount > 1)
+			if (elapsed > minInterval && stepCount > 1)
 				break;
 			long stepElaps = time - lastStepTime;
-			double dt = getSimulationRate() * stepElaps / 1000;
+			double dt = simulationRate * stepElaps / 1000;
 			simulate(universe, dt);
 			++stepCount;
 			lastStepTime = time;
 		}
-		setLastCount(stepCount);
-		setLastElapsed(elapsed);
-		setLastTime(lastStepTime);
+		lastCount = stepCount;
+		lastElapsed = elapsed;
+		this.lastTime = lastStepTime;
 	}
 
 	/**
@@ -201,13 +150,13 @@ public class Simulator {
 	 *            the universe to simulate
 	 */
 	public void singleStepSimulation(Universe universe) {
-		simulate(universe, getSingleStepTime());
+		simulate(universe, singleStepInterval);
 	}
 
 	/**
 	 * Starts the timers of real time simulation.
 	 */
 	public void startSimulation() {
-		setLastTime(System.currentTimeMillis());
+		lastTime = System.currentTimeMillis();
 	}
 }

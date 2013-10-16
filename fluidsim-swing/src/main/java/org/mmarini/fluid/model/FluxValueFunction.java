@@ -19,14 +19,29 @@ package org.mmarini.fluid.model;
  * @author marco.marini@mmarini.org
  * @version $Id: FluxValueFunction.java,v 1.2 2007/08/18 08:29:54 marco Exp $
  */
-public class FluxValueFunction implements UniverseDoubleFunction {
+public class FluxValueFunction implements UniverseFunction {
 	private static final double SIN60 = Math.sin(Math.PI / 3);
-
 	private static final double COS60 = Math.cos(Math.PI / 3);
 
 	private double scale;
 
 	private double offset;
+
+	/**
+	 * 
+	 */
+	public FluxValueFunction() {
+	}
+
+	/**
+	 * @param scale
+	 * @param offset
+	 */
+	public FluxValueFunction(double scale, double offset) {
+		super();
+		this.scale = scale;
+		this.offset = offset;
+	}
 
 	/**
 	 * Returns the offset of the function.
@@ -47,7 +62,7 @@ public class FluxValueFunction implements UniverseDoubleFunction {
 	}
 
 	/**
-	 * @see org.mmarini.fluid.model.UniverseDoubleFunction#getValue(org.mmarini.fluid.model.Universe,
+	 * @see org.mmarini.fluid.model.UniverseFunction#getValue(org.mmarini.fluid.model.Universe,
 	 *      int, int)
 	 */
 	@Override
@@ -78,10 +93,7 @@ public class FluxValueFunction implements UniverseDoubleFunction {
 	 */
 	private double getValue(Universe universe, int direction, int i, int j) {
 		DoubleBufferedDouble rel = universe.getRelation(direction, i, j);
-		if (rel != null) {
-			return rel.getValue();
-		}
-		return 0;
+		return rel != null ? rel.getValue() : 0;
 	}
 
 	/**

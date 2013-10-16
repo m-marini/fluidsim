@@ -59,9 +59,8 @@ public class CellShape {
 	 */
 	private static final int HEIGHT = 2 * RADIUS;
 
-	private int[][] template = new int[2][EDGES_COUNT];
-
-	private int[][] points = new int[2][EDGES_COUNT];
+	private int[][] template;
+	private int[][] points;
 
 	/**
 	 * Creates the Shape.
@@ -70,12 +69,13 @@ public class CellShape {
 	 * </p>
 	 */
 	public CellShape() {
-		int[] templx = getTemplate()[0];
-		int[] temply = getTemplate()[1];
+		template = new int[2][EDGES_COUNT];
+		points = new int[2][EDGES_COUNT];
+
 		for (int i = 0; i < EDGES_COUNT; ++i) {
 			double a = Math.PI * 2 * i / EDGES_COUNT;
-			templx[i] = (int) Math.round(Math.sin(a) * RADIUS + XOFFSET);
-			temply[i] = (int) Math.round(Math.cos(a) * RADIUS + YOFFSET);
+			template[0][i] = (int) Math.round(Math.sin(a) * RADIUS + XOFFSET);
+			template[1][i] = (int) Math.round(Math.cos(a) * RADIUS + YOFFSET);
 		}
 	}
 
@@ -97,10 +97,10 @@ public class CellShape {
 		if (w <= MIN_SIZE || h <= MIN_SIZE) {
 			gr.fillRect(x, y, w, h);
 		} else {
-			int[] ptsx = getPoints()[0];
-			int[] ptsy = getPoints()[1];
-			int[] templx = getTemplate()[0];
-			int[] temply = getTemplate()[1];
+			int[] ptsx = points[0];
+			int[] ptsy = points[1];
+			int[] templx = template[0];
+			int[] temply = template[1];
 			int w1 = (w - 1);
 			int h1 = (h - 1);
 			for (int i = 0; i < EDGES_COUNT; ++i) {
@@ -109,24 +109,6 @@ public class CellShape {
 			}
 			gr.fillPolygon(ptsx, ptsy, EDGES_COUNT);
 		}
-	}
-
-	/**
-	 * Returns the array used to store the drawing coordinates.
-	 * 
-	 * @return the points
-	 */
-	private int[][] getPoints() {
-		return points;
-	}
-
-	/**
-	 * Returns the array of the coordinates of the template shape.
-	 * 
-	 * @return the template
-	 */
-	private int[][] getTemplate() {
-		return template;
 	}
 
 	/**

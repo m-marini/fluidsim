@@ -44,39 +44,10 @@ public class ValueCellModifier implements CellModifier {
 	}
 
 	/**
-	 * Returns the cell value to be set
-	 * 
 	 * @return the cellValue
 	 */
 	public double getCellValue() {
 		return cellValue;
-	}
-
-	/**
-	 * Returns the right relation value
-	 * 
-	 * @return the rightRelation
-	 */
-	public double getRightRelation() {
-		return rightRelation;
-	}
-
-	/**
-	 * Returns the upper left relation value.
-	 * 
-	 * @return the upLeftRelation
-	 */
-	public double getUpLeftRelation() {
-		return upLeftRelation;
-	}
-
-	/**
-	 * Returns the upper right relation value.
-	 * 
-	 * @return the upRightRelation
-	 */
-	public double getUpRightRelation() {
-		return upRightRelation;
 	}
 
 	/**
@@ -89,63 +60,22 @@ public class ValueCellModifier implements CellModifier {
 	@Override
 	public void modify(Universe universe, int i, int j) {
 		DoubleBufferedDouble function = universe.getCell(i, j);
-		function.setNextValue(getCellValue());
+		function.setNextValue(cellValue);
 		function.swap();
 		function = universe.getRelation(FluidConstants.RIGHT, i, j);
 		if (function != null) {
-			function.setNextValue(getRightRelation());
+			function.setNextValue(rightRelation);
 			function.swap();
 		}
 		function = universe.getRelation(FluidConstants.UP_RIGHT, i, j);
 		if (function != null) {
-			function.setNextValue(getUpRightRelation());
+			function.setNextValue(upRightRelation);
 			function.swap();
 		}
 		function = universe.getRelation(FluidConstants.UP_LEFT, i, j);
 		if (function != null) {
-			function.setNextValue(getUpLeftRelation());
+			function.setNextValue(upLeftRelation);
 			function.swap();
 		}
 	}
-
-	/**
-	 * Sets the cell value
-	 * 
-	 * @param cellValue
-	 *            the cellValue to set
-	 */
-	public void setCellValue(double cellValue) {
-		this.cellValue = cellValue;
-	}
-
-	/**
-	 * Sets the right relation value
-	 * 
-	 * @param rightRelation
-	 *            the rightRelation to set
-	 */
-	public void setRightRelation(double rightRelation) {
-		this.rightRelation = rightRelation;
-	}
-
-	/**
-	 * Sets the upper left relation value.
-	 * 
-	 * @param upLeftRelation
-	 *            the upLeftRelation to set
-	 */
-	public void setUpLeftRelation(double upLeftRelation) {
-		this.upLeftRelation = upLeftRelation;
-	}
-
-	/**
-	 * Sets the upper left relation value.
-	 * 
-	 * @param upRightRelation
-	 *            the upRightRelation to set
-	 */
-	public void setUpRightRelation(double upRightRelation) {
-		this.upRightRelation = upRightRelation;
-	}
-
 }

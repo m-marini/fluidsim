@@ -10,6 +10,13 @@
 package org.mmarini.fluid.model;
 
 import java.awt.Dimension;
+import java.io.IOException;
+import java.net.URL;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.mmarini.fluid.xml.FluidParser;
+import org.xml.sax.SAXException;
 
 /**
  * The FluidHandlerImpl is the concrete implementation of a fluid handler.
@@ -23,17 +30,33 @@ import java.awt.Dimension;
  * 
  */
 public class FluidHandlerImpl implements FluidHandler {
+	private static final double FLUX_OFFSET = 0.;
+	private static final double FLUX_SCALE = 600e-3;
+	private static final double SPEED_SCALE = 2000.;
+	private static final double SPEED_OFFSET = 0.;
+	private static final double CELL_OFFSET = 0.45;
+	private static final double CELL_SCALE = 10.;
+	private static final long MIN_INTERVAL = 80;
+	private static final double SIMULATION_RATE = 1.0;
+	private static final double SINGLE_STEP_INTERVAL = 0.1;
+
 	private Universe universe;
-	private UniverseBuilder builder;
+	private UniverseBuilderImpl builder;
 	private Simulator simulator;
-	private UniverseDoubleFunction cellFunction;
-	private UniverseDoubleFunction relationFunction;
-	private UniverseDoubleFunction fluxFunction;
+	private UniverseFunction cellFunction;
+	private UniverseFunction relationFunction;
+	private UniverseFunction fluxFunction;
 
 	/**
 	 * 
 	 */
 	public FluidHandlerImpl() {
+		simulator = new Simulator(SINGLE_STEP_INTERVAL, SIMULATION_RATE,
+				MIN_INTERVAL);
+		cellFunction = new CellValueFunction(CELL_SCALE, CELL_OFFSET);
+		relationFunction = new RelationValueFunction(SPEED_SCALE, SPEED_OFFSET);
+		fluxFunction = new FluxValueFunction(FLUX_SCALE, FLUX_OFFSET);
+		builder = new UniverseBuilderImpl();
 	}
 
 	/**
@@ -85,62 +108,18 @@ public class FluidHandlerImpl implements FluidHandler {
 	}
 
 	/**
-	 * Sets the universe builder.
-	 * <p>
-	 * The builder is used to generate a new universe.
-	 * </p>
 	 * 
-	 * @param builder
-	 *            the builder to set
+	 * @param url
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
 	 */
-	public void setBuilder(UniverseBuilder builder) {
-		this.builder = builder;
-	}
-
-	/**
-	 * Sets the cell function.
-	 * <p>
-	 * The cell function is used to calculate the cell graphic.
-	 * </p>
-	 * 
-	 * @param cellFunction
-	 *            the cellFunction to set
-	 */
-	public void setCellFunction(UniverseDoubleFunction cellFunction) {
-		this.cellFunction = cellFunction;
-	}
-
-	/**
-	 * Sets the flux function.
-	 * 
-	 * @param fluxFunction
-	 *            the fluxFunction to set
-	 */
-	public void setFluxFunction(UniverseDoubleFunction fluxFunction) {
-		this.fluxFunction = fluxFunction;
-	}
-
-	/**
-	 * Sets the relation function.
-	 * <p>
-	 * The relation function is used to calculate the relation graphic.
-	 * </p>
-	 * 
-	 * @param relationFunction
-	 *            the relationFunction to set
-	 */
-	public void setRelationFunction(UniverseDoubleFunction relationFunction) {
-		this.relationFunction = relationFunction;
-	}
-
-	/**
-	 * Sets the simulator.
-	 * 
-	 * @param simulator
-	 *            the simulator to set
-	 */
-	public void setSimulator(Simulator simulator) {
-		this.simulator = simulator;
+	@Override
+	public void loadUniverseModifier(URL url)
+			throws ParserConfigurationException, SAXException, IOException {
+		UniverseModifier universeModifier = new FluidParser().parse(url);
+		builder.setUniverseModifier(universeModifier);
+		createNew();
 	}
 
 	/**

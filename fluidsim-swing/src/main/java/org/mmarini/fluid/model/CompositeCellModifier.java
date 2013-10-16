@@ -72,14 +72,4 @@ public class CompositeCellModifier implements CellModifier {
 			iter.next().modify(universe, i, j);
 		}
 	}
-
-	/**
-	 * Sets the list of modifiers
-	 * 
-	 * @param list
-	 *            the list to set
-	 */
-	public void setList(List<CellModifier> list) {
-		this.list = list;
-	}
 }

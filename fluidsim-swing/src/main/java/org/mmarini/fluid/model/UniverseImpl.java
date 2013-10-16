@@ -37,17 +37,11 @@ import java.awt.Dimension;
  */
 
 public class UniverseImpl implements Universe, FluidConstants {
-
 	private Cell[][] cell;
-
 	private Relation[][][] relation;
-
 	private Dimension size;
-
 	private CellUpdateContext cellContext;
-
 	private RelationUpdateContext relationContext;
-
 	private TimeContext timeContext;
 
 	/**
@@ -69,38 +63,11 @@ public class UniverseImpl implements Universe, FluidConstants {
 	}
 
 	/**
-	 * Returns the cell array.
-	 * 
-	 * @return the cell
-	 */
-	private Cell[][] getCell() {
-		return cell;
-	}
-
-	/**
 	 * @see Universe#getCell(int, int)
 	 */
 	@Override
 	public DoubleBufferedDouble getCell(int i, int j) {
-		return getCell()[i][j].getValue();
-	}
-
-	/**
-	 * Returns the cell update context.
-	 * 
-	 * @return the cellContext
-	 */
-	private CellUpdateContext getCellContext() {
-		return cellContext;
-	}
-
-	/**
-	 * Returns the relation structure between adjacent cells.
-	 * 
-	 * @return the horizontalRelation
-	 */
-	private Relation[][][] getRelation() {
-		return relation;
+		return cell[i][j].getValue();
 	}
 
 	/**
@@ -123,15 +90,6 @@ public class UniverseImpl implements Universe, FluidConstants {
 	}
 
 	/**
-	 * Returns the relation array.
-	 * 
-	 * @return the relationContext
-	 */
-	private RelationUpdateContext getRelationContext() {
-		return relationContext;
-	}
-
-	/**
 	 * Return a relation.
 	 * 
 	 * @param direction
@@ -146,7 +104,6 @@ public class UniverseImpl implements Universe, FluidConstants {
 		Dimension size = getSize();
 		int w = size.width;
 		int h = size.height;
-		Relation[][][] relation = getRelation();
 		switch (direction) {
 		case LEFT:
 			if (j > 0) {
@@ -192,15 +149,6 @@ public class UniverseImpl implements Universe, FluidConstants {
 	@Override
 	public Dimension getSize() {
 		return size;
-	}
-
-	/**
-	 * Returns the time context.
-	 * 
-	 * @return the timeContext
-	 */
-	private TimeContext getTimeContext() {
-		return timeContext;
 	}
 
 	/**
@@ -285,7 +233,7 @@ public class UniverseImpl implements Universe, FluidConstants {
 	 */
 	@Override
 	public void setCellFunction(int i, int j, CellFunction function) {
-		getCell()[i][j].setFunction(function);
+		cell[i][j].setFunction(function);
 	}
 
 	/**
@@ -357,7 +305,7 @@ public class UniverseImpl implements Universe, FluidConstants {
 	 */
 	@Override
 	public void simulate(double time) {
-		getTimeContext().update(time);
+		timeContext.update(time);
 		updateRelations();
 		updateCells();
 		swapRelations();
@@ -368,7 +316,6 @@ public class UniverseImpl implements Universe, FluidConstants {
 	 * Swaps the cell values.
 	 */
 	private void swapCells() {
-		Cell[][] cell = getCell();
 		int n = cell.length;
 		for (int i = 0; i < n; ++i) {
 			int m = cell[i].length;
@@ -382,7 +329,7 @@ public class UniverseImpl implements Universe, FluidConstants {
 	 * Swaps the relation values.
 	 */
 	private void swapRelations() {
-		Relation[][][] rel = getRelation();
+		Relation[][][] rel = relation;
 		int l = rel.length;
 		for (int i = 0; i < l; ++i) {
 			if (rel[i] != null) {
@@ -429,9 +376,9 @@ public class UniverseImpl implements Universe, FluidConstants {
 	 * Updates the cell values.
 	 */
 	private void updateCells() {
-		CellUpdateContext ctx = getCellContext();
+		CellUpdateContext ctx = cellContext;
 		DoubleBufferedDouble[] rel = ctx.getAdjacents();
-		Cell[][] cells = getCell();
+		Cell[][] cells = cell;
 		Dimension size = getSize();
 		int h = size.height;
 		int w = size.width;
@@ -474,10 +421,10 @@ public class UniverseImpl implements Universe, FluidConstants {
 	 * Update the relation values.
 	 */
 	private void updateRelations() {
-		RelationUpdateContext ctx = getRelationContext();
+		RelationUpdateContext ctx = relationContext;
 		DoubleBufferedDouble[] adjacent = ctx.getAdjacents();
-		Cell[][] cell = getCell();
-		Relation[][][] relation = getRelation();
+		Cell[][] cell = this.cell;
+		Relation[][][] relation = this.relation;
 
 		/*
 		 * Horizontal relations

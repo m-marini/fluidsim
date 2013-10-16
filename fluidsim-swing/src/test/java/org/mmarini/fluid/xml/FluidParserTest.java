@@ -42,6 +42,110 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 public class FluidParserTest {
+	private static Matcher<Object> has2Points(double x0, double y0, double x1,
+			double y1) {
+		return allOf(hasProperty("x0", equalTo(x0)),
+				hasProperty("y0", equalTo(y0)), hasProperty("x1", equalTo(x1)),
+				hasProperty("y1", equalTo(y1)));
+	}
+
+	private static Matcher<? super UniverseModifier> hasCellFunction(
+			Matcher<Object> matcher) {
+		return hasFunctionModifier(hasProperty("cellFunction", matcher));
+	}
+
+	private static Matcher<? super UniverseModifier> hasF1(
+			Matcher<Object> matcher) {
+		return hasRect1(hasProperty("cellModifier", matcher));
+	}
+
+	private static Matcher<? super UniverseModifier> hasF1Group(
+			Matcher<Object> matcher) {
+		return hasF1(hasProperty("list", hasItemAt(1, 2, matcher)));
+	}
+
+	private static Matcher<? super UniverseModifier> hasFunction1(
+			Matcher<Object> matcher) {
+		return hasCellFunction(hasProperty("function", matcher));
+	}
+
+	private static Matcher<? super UniverseModifier> hasFunction2(
+			Matcher<Object> matcher) {
+		return hasRelationFunction(hasProperty("function", matcher));
+	}
+
+	private static Matcher<? super UniverseModifier> hasFunctionModifier(
+			Matcher<Object> matcher) {
+		return hasF1(hasListWithItemAt(0, 2, matcher));
+	}
+
+	private static Matcher<? super UniverseModifier> hasFunctionN(int index,
+			Matcher<Object> matcher) {
+		return hasRelationFunctionN(index, hasProperty("function", matcher));
+	}
+
+	private static Matcher<? super UniverseModifier> hasGroup1(
+			Matcher<Object> matcher) {
+		return hasListWithItemAt(1, 2, matcher);
+	}
+
+	private static <E> Matcher<Iterable<? extends E>> hasItemAt(int idx,
+			int size, Matcher<? super E> matcher) {
+		List<Matcher<? super E>> list = new ArrayList<Matcher<? super E>>();
+		for (int i = 0; i < size; ++i) {
+			if (i == idx)
+				list.add(matcher);
+			else
+				list.add(anything());
+		}
+		return contains(list);
+	}
+
+	private static Matcher<? super UniverseModifier> hasLine(
+			Matcher<Object> matcher) {
+		return hasGroup1(hasListWithItemAt(1, 2, matcher));
+	}
+
+	private static Matcher<Object> hasListWithItemAt(int index, int size,
+			Matcher<Object> matcher) {
+		return hasProperty("list", hasItemAt(index, size, matcher));
+	}
+
+	private static Matcher<? super UniverseModifier> hasPoint(
+			Matcher<Object> matcher) {
+		return hasGroup1(hasListWithItemAt(0, 2, matcher));
+	}
+
+	private static Matcher<? super UniverseModifier> hasRect1(
+			Matcher<Object> other) {
+		return hasListWithItemAt(0, 2, other);
+	}
+
+	private static Matcher<? super UniverseModifier> hasRelationCellModifier(
+			Matcher<Object> matcher) {
+		return hasPoint(hasProperty("cellModifier", matcher));
+	}
+
+	private static Matcher<? super UniverseModifier> hasRelationFunction(
+			Matcher<Object> matcher) {
+		return hasFunctionModifier(hasProperty("relationFunction", matcher));
+	}
+
+	private static Matcher<? super UniverseModifier> hasRelationFunctionN(
+			int index, Matcher<Object> matcher) {
+		return hasRelationCellModifier(hasListWithItemAt(index, 6, matcher));
+	}
+
+	private static Matcher<? super UniverseModifier> hasValueCellModifier3(
+			Matcher<Object> matcher) {
+		return hasF1Group(hasListWithItemAt(0, 2, matcher));
+	}
+
+	private static Matcher<? super UniverseModifier> hasValueCellModifier4(
+			Matcher<Object> matcher) {
+		return hasF1Group(hasListWithItemAt(1, 2, matcher));
+	}
+
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
@@ -148,103 +252,6 @@ public class FluidParserTest {
 		assertThat(m, hasLine(instanceOf(LineModifier.class)));
 	}
 
-	private static Matcher<? super UniverseModifier> hasLine(
-			Matcher<Object> matcher) {
-		return hasGroup1(hasListWithItemAt(1, 2, matcher));
-	}
-
-	private static Matcher<? super UniverseModifier> hasFunctionN(int index,
-			Matcher<Object> matcher) {
-		return hasRelationFunctionN(index, hasProperty("function", matcher));
-	}
-
-	private static Matcher<? super UniverseModifier> hasRelationFunctionN(
-			int index, Matcher<Object> matcher) {
-		return hasRelationCellModifier(hasListWithItemAt(index, 6, matcher));
-	}
-
-	private static Matcher<? super UniverseModifier> hasRelationCellModifier(
-			Matcher<Object> matcher) {
-		return hasPoint(hasProperty("cellModifier", matcher));
-	}
-
-	private static Matcher<? super UniverseModifier> hasPoint(
-			Matcher<Object> matcher) {
-		return hasGroup1(hasListWithItemAt(0, 2, matcher));
-	}
-
-	private static Matcher<Object> hasListWithItemAt(int index, int size,
-			Matcher<Object> matcher) {
-		return hasProperty("list", hasItemAt(index, size, matcher));
-	}
-
-	private static Matcher<? super UniverseModifier> hasGroup1(
-			Matcher<Object> matcher) {
-		return hasListWithItemAt(1, 2, matcher);
-	}
-
-	private static Matcher<? super UniverseModifier> hasValueCellModifier4(
-			Matcher<Object> matcher) {
-		return hasF1Group(hasListWithItemAt(1, 2, matcher));
-	}
-
-	private static Matcher<? super UniverseModifier> hasValueCellModifier3(
-			Matcher<Object> matcher) {
-		return hasF1Group(hasListWithItemAt(0, 2, matcher));
-	}
-
-	private static Matcher<? super UniverseModifier> hasF1Group(
-			Matcher<Object> matcher) {
-		return hasF1(hasProperty("list", hasItemAt(1, 2, matcher)));
-	}
-
-	private static Matcher<? super UniverseModifier> hasFunction2(
-			Matcher<Object> matcher) {
-		return hasRelationFunction(hasProperty("function", matcher));
-	}
-
-	private static Matcher<? super UniverseModifier> hasFunction1(
-			Matcher<Object> matcher) {
-		return hasCellFunction(hasProperty("function", matcher));
-	}
-
-	private static Matcher<? super UniverseModifier> hasCellFunction(
-			Matcher<Object> matcher) {
-		return hasFunctionModifier(hasProperty("cellFunction", matcher));
-	}
-
-	private static Matcher<? super UniverseModifier> hasRelationFunction(
-			Matcher<Object> matcher) {
-		return hasFunctionModifier(hasProperty("relationFunction", matcher));
-	}
-
-	private static Matcher<? super UniverseModifier> hasFunctionModifier(
-			Matcher<Object> matcher) {
-		return hasF1(hasListWithItemAt(0, 2, matcher));
-	}
-
-	private static Matcher<? super UniverseModifier> hasF1(
-			Matcher<Object> matcher) {
-		return hasRect1(hasProperty("cellModifier", matcher));
-	}
-
-	private static Matcher<? super UniverseModifier> hasRect1(
-			Matcher<Object> other) {
-		return hasListWithItemAt(0, 2, other);
-	}
-
-	private static <E> Matcher<Iterable<? extends E>> hasItemAt(int idx,
-			int size, Matcher<? super E> matcher) {
-		List<Matcher<? super E>> list = new ArrayList<Matcher<? super E>>();
-		for (int i = 0; i < size; ++i) {
-			if (i == idx)
-				list.add(matcher);
-			else
-				list.add(anything());
-		}
-		return contains(list);
-	}
-
 	@Test
 	public void testParseBad() throws MalformedURLException,
 			ParserConfigurationException, SAXException, IOException {
@@ -252,13 +259,6 @@ public class FluidParserTest {
 		thrown.expectMessage(containsString("bad value"));
 		FluidParser p = new FluidParser();
 		p.parse(getClass().getResource("/fluid-test-bad.xml"));
-	}
-
-	private static Matcher<Object> has2Points(double x0, double y0, double x1,
-			double y1) {
-		return allOf(hasProperty("x0", equalTo(x0)),
-				hasProperty("y0", equalTo(y0)), hasProperty("x1", equalTo(x1)),
-				hasProperty("y1", equalTo(y1)));
 	}
 
 }

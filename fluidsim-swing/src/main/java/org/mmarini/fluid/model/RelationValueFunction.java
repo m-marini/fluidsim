@@ -20,10 +20,25 @@ package org.mmarini.fluid.model;
  * @version $Id: RelationValueFunction.java,v 1.1.2.1 2007/08/16 08:07:29 marco
  *          Exp $
  */
-public class RelationValueFunction implements UniverseDoubleFunction {
+public class RelationValueFunction implements UniverseFunction {
 	private double scale;
 
 	private double offset;
+
+	/**
+	 * 
+	 */
+	public RelationValueFunction() {
+	}
+
+	/**
+	 * @param scale
+	 * @param offset
+	 */
+	public RelationValueFunction(double scale, double offset) {
+		this.scale = scale;
+		this.offset = offset;
+	}
 
 	/**
 	 * Returns the offset of the function.
@@ -44,7 +59,7 @@ public class RelationValueFunction implements UniverseDoubleFunction {
 	}
 
 	/**
-	 * @see org.mmarini.fluid.model.UniverseDoubleFunction#getValue(org.mmarini.fluid.model.Universe,
+	 * @see org.mmarini.fluid.model.UniverseFunction#getValue(org.mmarini.fluid.model.Universe,
 	 *      int, int)
 	 */
 	@Override
@@ -73,10 +88,7 @@ public class RelationValueFunction implements UniverseDoubleFunction {
 	 */
 	private double getValue(Universe universe, int direction, int i, int j) {
 		DoubleBufferedDouble rel = universe.getRelation(direction, i, j);
-		if (rel != null) {
-			return rel.getValue();
-		}
-		return 0;
+		return rel != null ? rel.getValue() : 0;
 	}
 
 	/**

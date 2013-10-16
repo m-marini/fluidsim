@@ -17,7 +17,7 @@ package org.mmarini.fluid.model;
  * @version $Id: UniverseDoubleFunction.java,v 1.3 2007/08/18 08:29:54 marco Exp
  *          $
  */
-public interface UniverseDoubleFunction {
+public interface UniverseFunction {
 	/**
 	 * Returns the value to be drawn.
 	 * 

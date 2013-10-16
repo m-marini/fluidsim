@@ -15,12 +15,7 @@ package org.mmarini.fluid.model;
  * @version $Id: ConstantFunction.java,v 1.3 2007/08/18 08:29:54 marco Exp $
  */
 public class ConstantFunction implements CoefficientFunction {
-	/**
-	 * @param value
-	 */
-	public ConstantFunction(double value) {
-		this.value = value;
-	}
+	private double value;
 
 	/**
 	 * @param value
@@ -29,7 +24,12 @@ public class ConstantFunction implements CoefficientFunction {
 		this(0);
 	}
 
-	private double value;
+	/**
+	 * @param value
+	 */
+	public ConstantFunction(double value) {
+		this.value = value;
+	}
 
 	/**
 	 * @see org.mmarini.fluid.model.CoefficientFunction#getA(org.mmarini.fluid.model.TimeContext)
@@ -60,13 +60,5 @@ public class ConstantFunction implements CoefficientFunction {
 	 */
 	public double getValue() {
 		return value;
-	}
-
-	/**
-	 * @param value
-	 *            the value to set
-	 */
-	public void setValue(double value) {
-		this.value = value;
 	}
 }

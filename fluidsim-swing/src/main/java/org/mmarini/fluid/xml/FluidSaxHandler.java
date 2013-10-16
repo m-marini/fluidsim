@@ -225,22 +225,6 @@ public class FluidSaxHandler extends DefaultHandler {
 	}
 
 	/**
-	 * 
-	 * @param relationFunction
-	 */
-	private void push(RelationFunction relationFunction) {
-		this.relationFunction = relationFunction;
-	}
-
-	/**
-	 * 
-	 * @param cellFunction
-	 */
-	private void push(CellFunction cellFunction) {
-		this.cellFunction = cellFunction;
-	}
-
-	/**
 	 * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
 	 */
 	@Override
@@ -393,6 +377,14 @@ public class FluidSaxHandler extends DefaultHandler {
 
 	/**
 	 * 
+	 * @param cellFunction
+	 */
+	private void push(CellFunction cellFunction) {
+		this.cellFunction = cellFunction;
+	}
+
+	/**
+	 * 
 	 * @param modifier
 	 */
 	private void push(CellModifier modifier) {
@@ -405,6 +397,14 @@ public class FluidSaxHandler extends DefaultHandler {
 	 */
 	private void push(CoefficientFunction function) {
 		functionStack.offer(function);
+	}
+
+	/**
+	 * 
+	 * @param relationFunction
+	 */
+	private void push(RelationFunction relationFunction) {
+		this.relationFunction = relationFunction;
 	}
 
 	/**

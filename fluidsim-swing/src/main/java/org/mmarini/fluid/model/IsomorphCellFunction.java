@@ -23,12 +23,7 @@ package org.mmarini.fluid.model;
  * @version $Id: IsomorphCellFunction.java,v 1.3 2007/08/18 08:29:54 marco Exp $
  */
 public class IsomorphCellFunction implements CellFunction, FluidConstants {
-	/**
-	 * @param function
-	 */
-	public IsomorphCellFunction(CoefficientFunction function) {
-		this.function = function;
-	}
+	private CoefficientFunction function;
 
 	/**
 	 * 
@@ -36,7 +31,12 @@ public class IsomorphCellFunction implements CellFunction, FluidConstants {
 	public IsomorphCellFunction() {
 	}
 
-	private CoefficientFunction function;
+	/**
+	 * @param function
+	 */
+	public IsomorphCellFunction(CoefficientFunction function) {
+		this.function = function;
+	}
 
 	/**
 	 * @see CellFunction#getA(int, TimeContext)
@@ -66,6 +66,13 @@ public class IsomorphCellFunction implements CellFunction, FluidConstants {
 	}
 
 	/**
+	 * @return the function
+	 */
+	public CoefficientFunction getFunction() {
+		return function;
+	}
+
+	/**
 	 * Sets the delegate coefficent function.
 	 * 
 	 * @param function
@@ -73,13 +80,6 @@ public class IsomorphCellFunction implements CellFunction, FluidConstants {
 	 */
 	public void setFunction(CoefficientFunction cellFunction) {
 		this.function = cellFunction;
-	}
-
-	/**
-	 * @return the function
-	 */
-	public CoefficientFunction getFunction() {
-		return function;
 	}
 
 }

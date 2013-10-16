@@ -31,13 +31,14 @@ import org.slf4j.LoggerFactory;
  */
 public class GraphPane extends JPanel {
 	private static final float BRIGHTNESS_OFFSET = 0.3f;
+
 	private static final float BRIGHTNESS_SCALE = 0.5f;
 	private static final float HUE_SCALE = 0.8f;
 	private static final int MAX = 1;
 	private static final long serialVersionUID = 1L;
-
 	private static Logger log = LoggerFactory.getLogger(GraphPane.class);
-	private AbstractGraphFunction function;
+
+	private GraphFunction function;
 	private CellShape cellShape;
 
 	/**
@@ -45,6 +46,14 @@ public class GraphPane extends JPanel {
 	 */
 	public GraphPane() {
 		cellShape = new CellShape();
+	}
+
+	/**
+	 * @param function
+	 */
+	public GraphPane(GraphFunction function) {
+		this();
+		this.function = function;
 	}
 
 	/**
@@ -146,7 +155,7 @@ public class GraphPane extends JPanel {
 	 * @param function
 	 *            the function to set
 	 */
-	public void setFunction(AbstractGraphFunction function) {
+	public void setFunction(GraphFunction function) {
 		this.function = function;
 	}
 

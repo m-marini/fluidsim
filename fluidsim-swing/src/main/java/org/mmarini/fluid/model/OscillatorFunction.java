@@ -23,6 +23,18 @@ package org.mmarini.fluid.model;
  * @version $Id: OscillatorFunction.java,v 1.3 2007/08/18 08:29:54 marco Exp $
  */
 public class OscillatorFunction implements CoefficientFunction {
+	private static final double PI2 = Math.PI * 2;
+
+	private double period;
+
+	private double value;
+
+	/**
+	 * 
+	 */
+	public OscillatorFunction() {
+	}
+
 	/**
 	 * @param value
 	 * @param period
@@ -31,18 +43,6 @@ public class OscillatorFunction implements CoefficientFunction {
 		this.value = value;
 		this.period = period;
 	}
-
-	/**
-	 * 
-	 */
-	public OscillatorFunction() {
-	}
-
-	private static final double PI2 = Math.PI * 2;
-
-	private double period;
-
-	private double value;
 
 	/**
 	 * @see CoefficientFunction#getA(TimeContext)
@@ -65,8 +65,8 @@ public class OscillatorFunction implements CoefficientFunction {
 	 */
 	@Override
 	public double getC(TimeContext timeContext) {
-		return getValue() * Math.sin(PI2 * timeContext.getTime() / getPeriod())
-				* 0.5 + 0.5;
+		return value * Math.sin(PI2 * timeContext.getTime() / period) * 0.5
+				+ 0.5;
 	}
 
 	/**

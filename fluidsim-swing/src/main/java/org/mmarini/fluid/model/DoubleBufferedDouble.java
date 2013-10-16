@@ -14,8 +14,13 @@ package org.mmarini.fluid.model;
  */
 public class DoubleBufferedDouble {
 	private double value;
-
 	private double nextValue;
+
+	/**
+	 * 
+	 */
+	public DoubleBufferedDouble() {
+	}
 
 	/**
 	 * Returns the next value.
@@ -46,33 +51,9 @@ public class DoubleBufferedDouble {
 	}
 
 	/**
-	 * Sets the current value.
-	 * 
-	 * @param value
-	 *            the value to set
-	 */
-	private void setValue(double value) {
-		this.value = value;
-	}
-
-	/**
 	 * Copy the next value to the current value.
 	 */
 	public void swap() {
-		setValue(getNextValue());
-	}
-
-	/**
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		StringBuffer bfr = new StringBuffer();
-		bfr.append("(value=");
-		bfr.append(getValue());
-		bfr.append(",nextValue=");
-		bfr.append(getNextValue());
-		bfr.append(")");
-		return bfr.toString();
+		value = nextValue;
 	}
 }

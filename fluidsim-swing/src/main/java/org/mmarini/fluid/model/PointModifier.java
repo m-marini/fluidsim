@@ -20,6 +20,9 @@ package org.mmarini.fluid.model;
  * @version $Id: PointModifier.java,v 1.3 2007/08/18 08:29:54 marco Exp $
  */
 public class PointModifier extends AbstractUniverseModifier {
+	private double x;
+	private double y;
+
 	/**
 	 * 
 	 */
@@ -36,9 +39,6 @@ public class PointModifier extends AbstractUniverseModifier {
 		this.x = x;
 		this.y = y;
 	}
-
-	private double x;
-	private double y;
 
 	/**
 	 * Returns the x value

@@ -49,6 +49,34 @@ public class RectangleModifier extends AbstractUniverseModifier {
 	}
 
 	/**
+	 * @return the x0
+	 */
+	public double getX0() {
+		return x0;
+	}
+
+	/**
+	 * @return the x1
+	 */
+	public double getX1() {
+		return x1;
+	}
+
+	/**
+	 * @return the y0
+	 */
+	public double getY0() {
+		return y0;
+	}
+
+	/**
+	 * @return the y1
+	 */
+	public double getY1() {
+		return y1;
+	}
+
+	/**
 	 * @see UniverseModifier#modify(Universe)
 	 */
 	@Override
@@ -107,33 +135,5 @@ public class RectangleModifier extends AbstractUniverseModifier {
 	 */
 	public void setY1(double height) {
 		this.y1 = height;
-	}
-
-	/**
-	 * @return the x0
-	 */
-	public double getX0() {
-		return x0;
-	}
-
-	/**
-	 * @return the y0
-	 */
-	public double getY0() {
-		return y0;
-	}
-
-	/**
-	 * @return the x1
-	 */
-	public double getX1() {
-		return x1;
-	}
-
-	/**
-	 * @return the y1
-	 */
-	public double getY1() {
-		return y1;
 	}
 }

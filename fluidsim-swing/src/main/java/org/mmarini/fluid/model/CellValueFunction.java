@@ -20,10 +20,25 @@ package org.mmarini.fluid.model;
  * @version $Id: CellValueFunction.java,v 1.3 2007/08/18 08:29:54 marco Exp $
  * 
  */
-public class CellValueFunction implements UniverseDoubleFunction {
+public class CellValueFunction implements UniverseFunction {
 	private double scale;
 
 	private double offset;
+
+	/**
+	 * 
+	 */
+	public CellValueFunction() {
+	}
+
+	/**
+	 * @param scale
+	 * @param offset
+	 */
+	public CellValueFunction(double scale, double offset) {
+		this.scale = scale;
+		this.offset = offset;
+	}
 
 	/**
 	 * Returns the offset of function.
@@ -44,7 +59,7 @@ public class CellValueFunction implements UniverseDoubleFunction {
 	}
 
 	/**
-	 * @see org.mmarini.fluid.model.UniverseDoubleFunction#getValue(org.mmarini.fluid.model.Universe,
+	 * @see org.mmarini.fluid.model.UniverseFunction#getValue(org.mmarini.fluid.model.Universe,
 	 *      int, int)
 	 */
 	@Override
@@ -70,6 +85,17 @@ public class CellValueFunction implements UniverseDoubleFunction {
 	 */
 	public void setScale(double scale) {
 		this.scale = scale;
+	}
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("CellValueFunction [scale=").append(scale)
+				.append(", offset=").append(offset).append("]");
+		return builder.toString();
 	}
 
 }

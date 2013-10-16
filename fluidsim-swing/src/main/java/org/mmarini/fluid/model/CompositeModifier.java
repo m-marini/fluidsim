@@ -33,6 +33,14 @@ public class CompositeModifier implements UniverseModifier {
 
 	/**
 	 * 
+	 * @param list
+	 */
+	public CompositeModifier(Collection<UniverseModifier> list) {
+		this.list = new ArrayList<UniverseModifier>(list);
+	}
+
+	/**
+	 * 
 	 */
 	public CompositeModifier(UniverseModifier... modifiers) {
 		this();
@@ -42,11 +50,10 @@ public class CompositeModifier implements UniverseModifier {
 	}
 
 	/**
-	 * 
-	 * @param list
+	 * @return the list
 	 */
-	public CompositeModifier(Collection<UniverseModifier> list) {
-		this.list = new ArrayList<UniverseModifier>(list);
+	public List<UniverseModifier> getList() {
+		return list;
 	}
 
 	/**
@@ -57,12 +64,5 @@ public class CompositeModifier implements UniverseModifier {
 		for (UniverseModifier m : list) {
 			m.modify(universe);
 		}
-	}
-
-	/**
-	 * @return the list
-	 */
-	public List<UniverseModifier> getList() {
-		return list;
 	}
 }
