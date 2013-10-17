@@ -14,15 +14,18 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.mmarini.fluid.model.FluidHandler;
@@ -37,7 +40,7 @@ import org.xml.sax.SAXException;
  */
 public class Main {
 
-	private static final String DEFAULT_MODIFIER_RESOURCE = "/wing.xml";
+	private static final String DEFAULT_MODIFIER_RESOURCE = "/wing.xml"; //$NON-NLS-1$
 	public static final String DISABLED_ICON = "selectedIcon"; //$NON-NLS-1$
 	private static final int INITIAL_WIDTH = 400;
 	private static final int INITIAL_HEIGHT = 300;
@@ -59,10 +62,12 @@ public class Main {
 	private GraphPane fluxPane;
 	private RateBar rateBar;
 	private Action newAction;
-	private Action closeAction;
+	private Action openAction;
+	private Action exitAction;
 	private Action runAction;
 	private Action stepAction;
 	private Action stopAction;
+	private JFileChooser fileChooser;
 	private Runnable ticker;
 	private FluidHandler fluidHandler;
 
@@ -73,6 +78,7 @@ public class Main {
 		toolBar = new JToolBar();
 		menuBar = new JMenuBar();
 		rateBar = new RateBar();
+		fileChooser = new JFileChooser();
 		fluxPane = new GraphPane(new GraphFunction() {
 
 			@Override
@@ -119,7 +125,15 @@ public class Main {
 				createUniverse();
 			}
 		};
-		closeAction = new AbstractAction() {
+		openAction = new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				open();
+			}
+		};
+		exitAction = new AbstractAction() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -167,6 +181,32 @@ public class Main {
 
 	/**
 	 * 
+	 */
+	private void open() {
+		if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+			try {
+				fluidHandler.loadUniverseModifier(fileChooser.getSelectedFile()
+						.toURI().toURL());
+				createUniverse();
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
+				showError(e);
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param e
+	 */
+	private void showError(Exception e) {
+		JOptionPane.showMessageDialog(frame, e.getLocalizedMessage(),
+				Messages.getString("Main.error.title"), //$NON-NLS-1$
+				JOptionPane.ERROR_MESSAGE);
+	}
+
+	/**
+	 * 
 	 * @param key
 	 * @return
 	 */
@@ -203,7 +243,7 @@ public class Main {
 		tabPane.setToolTipTextAt(1,
 				Messages.getString("Main.relationlTab.tips")); //$NON-NLS-1$
 		tabPane.addTab(Messages.getString("Main.fluxTab.text"), fluxPane); //$NON-NLS-1$
-		tabPane.setToolTipTextAt(2, Messages.getString("Main.fluxTab.tips")); //$NON-NLS-1$
+		tabPane.setToolTipTextAt(2, Messages.getString("Main.cellTab.tips")); //$NON-NLS-1$
 		return tabPane;
 	}
 
@@ -211,6 +251,8 @@ public class Main {
 	 * 
 	 */
 	private void createUIBeans() {
+		fileChooser.setFileFilter(new FileNameExtensionFilter(Messages.getString("Main.fileType.text"), //$NON-NLS-1$
+				"xml")); //$NON-NLS-1$
 		rateBar.setFluidHandler(fluidHandler);
 
 		fluxPane.init();
@@ -253,7 +295,8 @@ public class Main {
 	 */
 	private void initAction() {
 		setupAction(newAction, "newAction"); //$NON-NLS-1$
-		setupAction(closeAction, "closeAction"); //$NON-NLS-1$
+		setupAction(openAction, "openAction"); //$NON-NLS-1$
+		setupAction(exitAction, "exitAction"); //$NON-NLS-1$
 		setupAction(runAction, "runAction"); //$NON-NLS-1$
 		setupAction(stopAction, "stopAction"); //$NON-NLS-1$
 		setupAction(stepAction, "stepAction"); //$NON-NLS-1$
@@ -266,8 +309,9 @@ public class Main {
 	private void initMenuBar() {
 		JMenu menu = new JMenu(Messages.getString("Main.fileMenu.text")); //$NON-NLS-1$
 		menu.add(new JMenuItem(newAction));
+		menu.add(new JMenuItem(openAction));
 		menu.add(new JSeparator());
-		menu.add(new JMenuItem(closeAction));
+		menu.add(new JMenuItem(exitAction));
 		menuBar.add(menu);
 
 		menu = new JMenu(Messages.getString("Main.simulateMenu.text")); //$NON-NLS-1$
@@ -283,6 +327,7 @@ public class Main {
 	 */
 	private void initToolBar() {
 		toolBar.add(new JButton(newAction));
+		toolBar.add(new JButton(openAction));
 		toolBar.add(new JButton(stepAction));
 		toolBar.add(new JButton(runAction));
 		toolBar.add(new JButton(stopAction));
@@ -298,16 +343,15 @@ public class Main {
 	 */
 	private void setupAction(Action action, String name) {
 		action.putValue(Action.NAME,
-				Messages.getString("Main." + name + ".name"));
-		action.putValue(
-				Action.ACCELERATOR_KEY,
-				KeyStroke.getKeyStroke(Messages.getString("Main." + name
-						+ ".accelerator")));
+				Messages.getString("Main." + name + ".name")); //$NON-NLS-1$ //$NON-NLS-2$
+		action.putValue(Action.ACCELERATOR_KEY,
+				KeyStroke.getKeyStroke(Messages.getString("Main." + name //$NON-NLS-1$
+						+ ".accelerator"))); //$NON-NLS-1$
 		action.putValue(Action.MNEMONIC_KEY,
-				(int) Messages.getString("Main." + name + ".mnemonic")
+				(int) Messages.getString("Main." + name + ".mnemonic") //$NON-NLS-1$ //$NON-NLS-2$
 						.charAt(0));
 		action.putValue(Action.SHORT_DESCRIPTION,
-				Messages.getString("Main." + name + ".tip"));
+				Messages.getString("Main." + name + ".tip")); //$NON-NLS-1$ //$NON-NLS-2$
 
 		ImageIcon ic = createIcon("Main." + name + ".icon"); //$NON-NLS-1$ //$NON-NLS-2$
 		if (ic != null) {

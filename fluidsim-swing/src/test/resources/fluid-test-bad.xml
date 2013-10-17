@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <universe xmlns="http://www.mmarini.org/fluid-1.0.0" xmlns:f="http://www.mmarini.org/fluid-1.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mmarini.org/fluid-1.1.0 fluid-1.0.0.xsd ">
+	xsi:schemaLocation="http://www.mmarini.org/fluid-1.0.0 ../../main/resources/fluid-1.0.0.xsd ">
 	<def id="initial">
 		<modifyGroup>
 			<modifyValue value="bad value" />
