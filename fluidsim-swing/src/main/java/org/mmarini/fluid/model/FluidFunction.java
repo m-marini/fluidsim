@@ -51,7 +51,7 @@ public class FluidFunction extends ElasticFunction {
 	 * @param speed
 	 * @param viscosity
 	 */
-	public FluidFunction(double speed, double viscosity) {
+	public FluidFunction(final double speed, final double viscosity) {
 		super(speed);
 		this.viscosity = viscosity;
 	}
@@ -60,7 +60,7 @@ public class FluidFunction extends ElasticFunction {
 	 * @see CoefficientFunction#getB(TimeContext)
 	 */
 	@Override
-	public double getB(TimeContext timeContext) {
+	public double getB(final TimeContext timeContext) {
 		return 1 - getViscosity() * timeContext.getDeltaTime();
 	}
 
@@ -79,7 +79,7 @@ public class FluidFunction extends ElasticFunction {
 	 * @param viscosity
 	 *            the viscosity to set
 	 */
-	public void setViscosity(double fluidity) {
+	public void setViscosity(final double fluidity) {
 		this.viscosity = fluidity;
 	}
 }

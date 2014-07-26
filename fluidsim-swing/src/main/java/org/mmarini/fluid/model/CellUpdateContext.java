@@ -42,7 +42,7 @@ public class CellUpdateContext extends AbstractUpdaterContext {
 	 *            the direction
 	 * @return the value
 	 */
-	public double getA(int direction) {
+	public double getA(final int direction) {
 		return function.getA(direction, getTimeContext());
 	}
 
@@ -79,7 +79,7 @@ public class CellUpdateContext extends AbstractUpdaterContext {
 	 * @param function
 	 *            the function to set
 	 */
-	public void setFunction(CellFunction function) {
+	public void setFunction(final CellFunction function) {
 		this.function = function;
 	}
 }

@@ -59,8 +59,8 @@ public class CellShape {
 	 */
 	private static final int HEIGHT = 2 * RADIUS;
 
-	private int[][] template;
-	private int[][] points;
+	private final int[][] template;
+	private final int[][] points;
 
 	/**
 	 * Creates the Shape.
@@ -73,7 +73,7 @@ public class CellShape {
 		points = new int[2][EDGES_COUNT];
 
 		for (int i = 0; i < EDGES_COUNT; ++i) {
-			double a = Math.PI * 2 * i / EDGES_COUNT;
+			final double a = Math.PI * 2 * i / EDGES_COUNT;
 			template[0][i] = (int) Math.round(Math.sin(a) * RADIUS + XOFFSET);
 			template[1][i] = (int) Math.round(Math.cos(a) * RADIUS + YOFFSET);
 		}
@@ -93,16 +93,17 @@ public class CellShape {
 	 * @param h
 	 *            the heigh of the cell
 	 */
-	public void draw(Graphics gr, int x, int y, int w, int h) {
+	public void draw(final Graphics gr, final int x, final int y, final int w,
+			final int h) {
 		if (w <= MIN_SIZE || h <= MIN_SIZE) {
 			gr.fillRect(x, y, w, h);
 		} else {
-			int[] ptsx = points[0];
-			int[] ptsy = points[1];
-			int[] templx = template[0];
-			int[] temply = template[1];
-			int w1 = (w - 1);
-			int h1 = (h - 1);
+			final int[] ptsx = points[0];
+			final int[] ptsy = points[1];
+			final int[] templx = template[0];
+			final int[] temply = template[1];
+			final int w1 = (w - 1);
+			final int h1 = (h - 1);
 			for (int i = 0; i < EDGES_COUNT; ++i) {
 				ptsx[i] = x + roundDiv(templx[i] * w1, WITDH);
 				ptsy[i] = y + roundDiv(temply[i] * h1, HEIGHT);
@@ -120,7 +121,7 @@ public class CellShape {
 	 *            the denominator
 	 * @return the value
 	 */
-	private int roundDiv(int n, int d) {
+	private int roundDiv(final int n, final int d) {
 		return (n + n + d) / (2 * d);
 	}
 

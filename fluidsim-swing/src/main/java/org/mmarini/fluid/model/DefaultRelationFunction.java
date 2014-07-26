@@ -27,7 +27,7 @@ public class DefaultRelationFunction implements RelationFunction {
 	/**
 	 * @param function
 	 */
-	public DefaultRelationFunction(CoefficientFunction function) {
+	public DefaultRelationFunction(final CoefficientFunction function) {
 		this.function = function;
 	}
 
@@ -36,8 +36,8 @@ public class DefaultRelationFunction implements RelationFunction {
 	 *      org.mmarini.fluid.model.TimeContext)
 	 */
 	@Override
-	public double getA(int index, TimeContext timeContext) {
-		double v = function.getA(timeContext);
+	public double getA(final int index, final TimeContext timeContext) {
+		final double v = function.getA(timeContext);
 		if (index == 0)
 			return -v;
 		return v;
@@ -47,7 +47,7 @@ public class DefaultRelationFunction implements RelationFunction {
 	 * @see org.mmarini.fluid.model.RelationFunction#getB(org.mmarini.fluid.model.TimeContext)
 	 */
 	@Override
-	public double getB(TimeContext timeContext) {
+	public double getB(final TimeContext timeContext) {
 		return function.getB(timeContext);
 	}
 
@@ -55,7 +55,7 @@ public class DefaultRelationFunction implements RelationFunction {
 	 * @see org.mmarini.fluid.model.RelationFunction#getC(org.mmarini.fluid.model.TimeContext)
 	 */
 	@Override
-	public double getC(TimeContext timeContext) {
+	public double getC(final TimeContext timeContext) {
 		return function.getC(timeContext);
 	}
 
@@ -70,7 +70,7 @@ public class DefaultRelationFunction implements RelationFunction {
 	 * @param function
 	 *            the function to set
 	 */
-	public void setFunction(CoefficientFunction function) {
+	public void setFunction(final CoefficientFunction function) {
 		this.function = function;
 	}
 

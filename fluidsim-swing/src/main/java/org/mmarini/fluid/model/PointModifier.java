@@ -34,7 +34,8 @@ public class PointModifier extends AbstractUniverseModifier {
 	 * @param x
 	 * @param y
 	 */
-	public PointModifier(CellModifier cellModifier, double x, double y) {
+	public PointModifier(final CellModifier cellModifier, final double x,
+			final double y) {
 		super(cellModifier);
 		this.x = x;
 		this.y = y;
@@ -62,11 +63,11 @@ public class PointModifier extends AbstractUniverseModifier {
 	 * @see UniverseModifier#modify(Universe)
 	 */
 	@Override
-	public void modify(Universe universe) {
-		double x02 = getX();
-		double y02 = getY();
-		int x0 = Utils.transformToColumn(universe, x02, y02);
-		int y0 = Utils.transformToRow(universe, x02, y02);
+	public void modify(final Universe universe) {
+		final double x02 = getX();
+		final double y02 = getY();
+		final int x0 = Utils.transformToColumn(universe, x02, y02);
+		final int y0 = Utils.transformToRow(universe, x02, y02);
 		getCellModifier().modify(universe, y0, x0);
 	}
 
@@ -76,7 +77,7 @@ public class PointModifier extends AbstractUniverseModifier {
 	 * @param x
 	 *            the x to set
 	 */
-	public void setX(double x) {
+	public void setX(final double x) {
 		this.x = x;
 	}
 
@@ -86,7 +87,7 @@ public class PointModifier extends AbstractUniverseModifier {
 	 * @param y
 	 *            the y to set
 	 */
-	public void setY(double y) {
+	public void setY(final double y) {
 		this.y = y;
 	}
 }

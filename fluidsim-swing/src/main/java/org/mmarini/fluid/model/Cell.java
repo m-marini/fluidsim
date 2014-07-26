@@ -18,7 +18,7 @@ package org.mmarini.fluid.model;
  * 
  */
 public class Cell {
-	private DoubleBufferedDouble value;
+	private final DoubleBufferedDouble value;
 	private CellFunction function;
 
 	/**
@@ -56,7 +56,7 @@ public class Cell {
 	 * @param function
 	 *            the function to set
 	 */
-	public void setFunction(CellFunction function) {
+	public void setFunction(final CellFunction function) {
 		this.function = function;
 	}
 }

@@ -22,7 +22,7 @@ import java.util.List;
  * 
  */
 public class RelationCellModifier implements CellModifier {
-	private List<RelationFunction> list;
+	private final List<RelationFunction> list;
 
 	/**
 	 * 
@@ -34,9 +34,9 @@ public class RelationCellModifier implements CellModifier {
 	/**
 	 * 
 	 */
-	public RelationCellModifier(RelationFunction... functions) {
+	public RelationCellModifier(final RelationFunction... functions) {
 		this();
-		for (RelationFunction f : functions) {
+		for (final RelationFunction f : functions) {
 			list.add(f);
 		}
 	}
@@ -55,11 +55,11 @@ public class RelationCellModifier implements CellModifier {
 	 *      int, int)
 	 */
 	@Override
-	public void modify(Universe universe, int i, int j) {
+	public void modify(final Universe universe, final int i, final int j) {
 		int direction = 0;
-		for (Iterator<RelationFunction> iter = getList().iterator(); iter
+		for (final Iterator<RelationFunction> iter = getList().iterator(); iter
 				.hasNext(); ++direction) {
-			RelationFunction rf = iter.next();
+			final RelationFunction rf = iter.next();
 			if (rf != null) {
 				universe.setRelationFunction(direction, i, j, rf);
 			}

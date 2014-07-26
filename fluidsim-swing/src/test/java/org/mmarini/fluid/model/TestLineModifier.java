@@ -50,10 +50,10 @@ public class TestLineModifier {
 	 */
 	@Test
 	public void testModify() {
-		UniverseMock universeMock = new UniverseMock();
+		final UniverseMock universeMock = new UniverseMock();
 		universeMock.setSize(new Dimension(10, 10));
 
-		CellModifierMock cellModifierMock = new CellModifierMock();
+		final CellModifierMock cellModifierMock = new CellModifierMock();
 
 		lineModifier.setCellModifier(cellModifierMock);
 		lineModifier.setX0(1);

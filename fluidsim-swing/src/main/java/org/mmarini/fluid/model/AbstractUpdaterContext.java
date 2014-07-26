@@ -59,7 +59,7 @@ public abstract class AbstractUpdaterContext {
 	 * @param adjacents
 	 *            the adjacents to set
 	 */
-	public void setAdjacents(DoubleBufferedDouble[] relative) {
+	public void setAdjacents(final DoubleBufferedDouble[] relative) {
 		this.adjacents = relative;
 	}
 
@@ -69,7 +69,7 @@ public abstract class AbstractUpdaterContext {
 	 * @param subject
 	 *            the subject to set
 	 */
-	public void setSubject(DoubleBufferedDouble subject) {
+	public void setSubject(final DoubleBufferedDouble subject) {
 		this.subject = subject;
 	}
 
@@ -79,7 +79,7 @@ public abstract class AbstractUpdaterContext {
 	 * @param timeContext
 	 *            the timeContext to set
 	 */
-	public void setTimeContext(TimeContext timeContext) {
+	public void setTimeContext(final TimeContext timeContext) {
 		this.timeContext = timeContext;
 	}
 }

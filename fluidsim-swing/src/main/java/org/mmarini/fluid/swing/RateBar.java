@@ -57,7 +57,7 @@ public class RateBar extends JProgressBar {
 	 * Refreshes the bar.
 	 */
 	public void refresh() {
-		long time = System.currentTimeMillis();
+		final long time = System.currentTimeMillis();
 		if (time >= refreshTimeout) {
 			refreshBar();
 			refreshTimeout = time + refreshPeriod;
@@ -68,12 +68,12 @@ public class RateBar extends JProgressBar {
 	 * Refresh and repaint the bar.
 	 */
 	private void refreshBar() {
-		double v = fluidHandler.getSimulationRate();
+		final double v = fluidHandler.getSimulationRate();
 		if (v > maxValue || v < minValue) {
 			scaleBar(v);
 		}
 		log.debug("Simulation Speed = " + v + " step/sec"); //$NON-NLS-1$ //$NON-NLS-2$
-		int bar = (int) Math.round(getMaximum() * v / maxValue);
+		final int bar = (int) Math.round(getMaximum() * v / maxValue);
 		setString(format("RateBar.stepPerSec.message", v >= 1 ? v : 1 / v));
 		setValue(bar);
 	}
@@ -84,10 +84,10 @@ public class RateBar extends JProgressBar {
 	 * @param v
 	 *            the value of rate.
 	 */
-	private void scaleBar(double v) {
-		double lv = Math.log10(v);
-		double ls = Math.floor(lv);
-		double scale = Math.pow(10, ls);
+	private void scaleBar(final double v) {
+		final double lv = Math.log10(v);
+		final double ls = Math.floor(lv);
+		final double scale = Math.pow(10, ls);
 		double min = scale;
 		double max = 2 * scale;
 		if (v > max) {
@@ -110,7 +110,7 @@ public class RateBar extends JProgressBar {
 	 * @param fluidHandler
 	 *            the fluidHandler to set
 	 */
-	public void setFluidHandler(FluidHandler fluidHandler) {
+	public void setFluidHandler(final FluidHandler fluidHandler) {
 		this.fluidHandler = fluidHandler;
 	}
 
@@ -122,7 +122,7 @@ public class RateBar extends JProgressBar {
 	 * @param refreshPeriod
 	 *            the refreshPeriod to set in msec.
 	 */
-	public void setRefreshPeriod(long refreshPeriod) {
+	public void setRefreshPeriod(final long refreshPeriod) {
 		this.refreshPeriod = refreshPeriod;
 	}
 }

@@ -37,7 +37,7 @@ public class FluxValueFunction implements UniverseFunction {
 	 * @param scale
 	 * @param offset
 	 */
-	public FluxValueFunction(double scale, double offset) {
+	public FluxValueFunction(final double scale, final double offset) {
 		super();
 		this.scale = scale;
 		this.offset = offset;
@@ -66,15 +66,15 @@ public class FluxValueFunction implements UniverseFunction {
 	 *      int, int)
 	 */
 	@Override
-	public double getValue(Universe universe, int i, int j) {
-		double v0 = getValue(universe, FluidConstants.RIGHT, i, j)
+	public double getValue(final Universe universe, final int i, final int j) {
+		final double v0 = getValue(universe, FluidConstants.RIGHT, i, j)
 				+ getValue(universe, FluidConstants.LEFT, i, j);
-		double v1 = getValue(universe, FluidConstants.UP_RIGHT, i, j)
+		final double v1 = getValue(universe, FluidConstants.UP_RIGHT, i, j)
 				+ getValue(universe, FluidConstants.DOWN_LEFT, i, j);
-		double v2 = getValue(universe, FluidConstants.UP_LEFT, i, j)
+		final double v2 = getValue(universe, FluidConstants.UP_LEFT, i, j)
 				+ getValue(universe, FluidConstants.DOWN_RIGHT, i, j);
-		double vx = v0 + SIN60 * (v1 - v2);
-		double vy = COS60 * (v1 + v2);
+		final double vx = v0 + SIN60 * (v1 - v2);
+		final double vy = COS60 * (v1 + v2);
 		return (Math.sqrt(vx * vx + vy * vy) + getOffset()) * getScale();
 	}
 
@@ -91,8 +91,9 @@ public class FluxValueFunction implements UniverseFunction {
 	 *            the column index
 	 * @return the value
 	 */
-	private double getValue(Universe universe, int direction, int i, int j) {
-		DoubleBufferedDouble rel = universe.getRelation(direction, i, j);
+	private double getValue(final Universe universe, final int direction,
+			final int i, final int j) {
+		final DoubleBufferedDouble rel = universe.getRelation(direction, i, j);
 		return rel != null ? rel.getValue() : 0;
 	}
 
@@ -102,7 +103,7 @@ public class FluxValueFunction implements UniverseFunction {
 	 * @param offset
 	 *            the offset to set
 	 */
-	public void setOffset(double offset) {
+	public void setOffset(final double offset) {
 		this.offset = offset;
 	}
 
@@ -112,7 +113,7 @@ public class FluxValueFunction implements UniverseFunction {
 	 * @param scale
 	 *            the scale to set
 	 */
-	public void setScale(double scale) {
+	public void setScale(final double scale) {
 		this.scale = scale;
 	}
 }

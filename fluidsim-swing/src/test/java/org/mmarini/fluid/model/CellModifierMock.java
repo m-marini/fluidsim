@@ -19,7 +19,7 @@ import java.util.List;
  * 
  */
 public class CellModifierMock implements CellModifier {
-	private List<Point> points;
+	private final List<Point> points;
 
 	/**
 	 * 
@@ -40,7 +40,7 @@ public class CellModifierMock implements CellModifier {
 	 *      int, int)
 	 */
 	@Override
-	public void modify(Universe universe, int i, int j) {
+	public void modify(final Universe universe, final int i, final int j) {
 		points.add(new Point(i, j));
 	}
 

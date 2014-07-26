@@ -45,8 +45,8 @@ public class Simulator {
 	 * @param simulationRate
 	 * @param minElapsed
 	 */
-	public Simulator(double singleStepTime, double simulationRate,
-			long minElapsed) {
+	public Simulator(final double singleStepTime, final double simulationRate,
+			final long minElapsed) {
 		this.singleStepInterval = singleStepTime;
 		this.simulationRate = simulationRate;
 		this.minInterval = minElapsed;
@@ -74,7 +74,7 @@ public class Simulator {
 	 * @param minElapsed
 	 *            the minElapsed to set
 	 */
-	public void setMinInterval(long minElapsed) {
+	public void setMinInterval(final long minElapsed) {
 		this.minInterval = minElapsed;
 	}
 
@@ -88,7 +88,7 @@ public class Simulator {
 	 * @param simulationRate
 	 *            the simulationRate to set
 	 */
-	public void setSimulationRate(double simulationRate) {
+	public void setSimulationRate(final double simulationRate) {
 		this.simulationRate = simulationRate;
 	}
 
@@ -101,7 +101,7 @@ public class Simulator {
 	 * @param singleStepTime
 	 *            the singleStepTime to set in seconds
 	 */
-	public void setSingleStepInterval(double singleStepTime) {
+	public void setSingleStepInterval(final double singleStepTime) {
 		this.singleStepInterval = singleStepTime;
 	}
 
@@ -111,18 +111,18 @@ public class Simulator {
 	 * @param universe
 	 *            the universe to simulate
 	 */
-	public void simulate(Universe universe) {
-		long lastTime = this.lastTime;
+	public void simulate(final Universe universe) {
+		final long lastTime = this.lastTime;
 		long lastStepTime = lastTime;
 		int stepCount = 0;
 		long elapsed = 0;
 		for (;;) {
-			long time = System.currentTimeMillis();
+			final long time = System.currentTimeMillis();
 			elapsed = time - lastTime;
 			if (elapsed > minInterval && stepCount > 1)
 				break;
-			long stepElaps = time - lastStepTime;
-			double dt = simulationRate * stepElaps / 1000;
+			final long stepElaps = time - lastStepTime;
+			final double dt = simulationRate * stepElaps / 1000;
 			simulate(universe, dt);
 			++stepCount;
 			lastStepTime = time;
@@ -139,7 +139,7 @@ public class Simulator {
 	 *            the universe to simulate
 	 * 
 	 */
-	private void simulate(Universe universe, double time) {
+	private void simulate(final Universe universe, final double time) {
 		universe.simulate(time);
 	}
 
@@ -149,7 +149,7 @@ public class Simulator {
 	 * @param universe
 	 *            the universe to simulate
 	 */
-	public void singleStepSimulation(Universe universe) {
+	public void singleStepSimulation(final Universe universe) {
 		simulate(universe, singleStepInterval);
 	}
 

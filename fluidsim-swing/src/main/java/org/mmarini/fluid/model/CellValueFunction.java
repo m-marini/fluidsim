@@ -35,7 +35,7 @@ public class CellValueFunction implements UniverseFunction {
 	 * @param scale
 	 * @param offset
 	 */
-	public CellValueFunction(double scale, double offset) {
+	public CellValueFunction(final double scale, final double offset) {
 		this.scale = scale;
 		this.offset = offset;
 	}
@@ -63,7 +63,7 @@ public class CellValueFunction implements UniverseFunction {
 	 *      int, int)
 	 */
 	@Override
-	public double getValue(Universe universe, int i, int j) {
+	public double getValue(final Universe universe, final int i, final int j) {
 		return (universe.getCell(i, j).getValue() - getOffset()) * getScale();
 	}
 
@@ -73,7 +73,7 @@ public class CellValueFunction implements UniverseFunction {
 	 * @param offset
 	 *            the offset to set
 	 */
-	public void setOffset(double offset) {
+	public void setOffset(final double offset) {
 		this.offset = offset;
 	}
 
@@ -83,7 +83,7 @@ public class CellValueFunction implements UniverseFunction {
 	 * @param scale
 	 *            the scale to set
 	 */
-	public void setScale(double scale) {
+	public void setScale(final double scale) {
 		this.scale = scale;
 	}
 
@@ -92,7 +92,7 @@ public class CellValueFunction implements UniverseFunction {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		builder.append("CellValueFunction [scale=").append(scale)
 				.append(", offset=").append(offset).append("]");
 		return builder.toString();

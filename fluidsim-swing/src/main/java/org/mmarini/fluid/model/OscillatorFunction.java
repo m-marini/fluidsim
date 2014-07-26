@@ -39,7 +39,7 @@ public class OscillatorFunction implements CoefficientFunction {
 	 * @param value
 	 * @param period
 	 */
-	public OscillatorFunction(double value, double period) {
+	public OscillatorFunction(final double value, final double period) {
 		this.value = value;
 		this.period = period;
 	}
@@ -48,7 +48,7 @@ public class OscillatorFunction implements CoefficientFunction {
 	 * @see CoefficientFunction#getA(TimeContext)
 	 */
 	@Override
-	public double getA(TimeContext timeContext) {
+	public double getA(final TimeContext timeContext) {
 		return 0;
 	}
 
@@ -56,7 +56,7 @@ public class OscillatorFunction implements CoefficientFunction {
 	 * @see CoefficientFunction#getB(TimeContext)
 	 */
 	@Override
-	public double getB(TimeContext timeContext) {
+	public double getB(final TimeContext timeContext) {
 		return 0;
 	}
 
@@ -64,7 +64,7 @@ public class OscillatorFunction implements CoefficientFunction {
 	 * @see CoefficientFunction#getC(TimeContext)
 	 */
 	@Override
-	public double getC(TimeContext timeContext) {
+	public double getC(final TimeContext timeContext) {
 		return value * Math.sin(PI2 * timeContext.getTime() / period) * 0.5
 				+ 0.5;
 	}
@@ -93,7 +93,7 @@ public class OscillatorFunction implements CoefficientFunction {
 	 * @param period
 	 *            the period to set in seconds
 	 */
-	public void setPeriod(double period) {
+	public void setPeriod(final double period) {
 		this.period = period;
 	}
 
@@ -103,7 +103,7 @@ public class OscillatorFunction implements CoefficientFunction {
 	 * @param value
 	 *            the value to set
 	 */
-	public void setValue(double value) {
+	public void setValue(final double value) {
 		this.value = value;
 	}
 }

@@ -45,14 +45,13 @@ public class GraphPane extends JPanel {
 	 * 
 	 */
 	public GraphPane() {
-		cellShape = new CellShape();
+		this(null);
 	}
 
 	/**
 	 * @param function
 	 */
-	public GraphPane(GraphFunction function) {
-		this();
+	public GraphPane(final GraphFunction function) {
 		this.function = function;
 	}
 
@@ -65,7 +64,7 @@ public class GraphPane extends JPanel {
 	 *            the denominator
 	 * @return the value
 	 */
-	private int ceilDiv(int n, int d) {
+	private int ceilDiv(final int n, final int d) {
 		return (n + d - 1) / d;
 	}
 
@@ -78,9 +77,9 @@ public class GraphPane extends JPanel {
 	 */
 	private Color getColor(double value) {
 		value = Math.max(0, Math.min(value, MAX));
-		float s = 1f;
-		float h = HUE_SCALE - (float) value * HUE_SCALE;
-		float b = (float) value * BRIGHTNESS_SCALE + BRIGHTNESS_OFFSET;
+		final float s = 1f;
+		final float h = HUE_SCALE - (float) value * HUE_SCALE;
+		final float b = (float) value * BRIGHTNESS_SCALE + BRIGHTNESS_OFFSET;
 		return new Color(Color.HSBtoRGB(h, s, b));
 	}
 
@@ -98,9 +97,9 @@ public class GraphPane extends JPanel {
 	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
 	 */
 	@Override
-	protected void paintComponent(Graphics gr) {
+	protected void paintComponent(final Graphics gr) {
 		gr.setColor(Color.BLACK);
-		Dimension size = getSize();
+		final Dimension size = getSize();
 		gr.fillRect(0, 0, size.width, size.height);
 		if (function != null)
 			paintStructure(gr);
@@ -112,24 +111,24 @@ public class GraphPane extends JPanel {
 	 * @param gr
 	 *            the graphics context
 	 */
-	private void paintStructure(Graphics gr) {
-		Dimension uSize = function.getSize();
-		Dimension gSize = getSize();
-		int uh = uSize.height;
-		int uw = uSize.width;
-		int gw = gSize.width - 1;
-		int gh = gSize.height - 1;
-		int kw = (2 * uw + 1); // Divider constant of width
-		int cw = ceilDiv(2 * gw, kw); // Cell width
-		int nh = gh; // Multiplier constant of height
-		int dh = 3 * uh + 1; // Diverder constant of height
-		int nh2 = 3 * nh; // Multiplier constant2 of height
-		int ch = ceilDiv(4 * nh, dh); // Cell height
+	private void paintStructure(final Graphics gr) {
+		final Dimension uSize = function.getSize();
+		final Dimension gSize = getSize();
+		final int uh = uSize.height;
+		final int uw = uSize.width;
+		final int gw = gSize.width - 1;
+		final int gh = gSize.height - 1;
+		final int kw = (2 * uw + 1); // Divider constant of width
+		final int cw = ceilDiv(2 * gw, kw); // Cell width
+		final int nh = gh; // Multiplier constant of height
+		final int dh = 3 * uh + 1; // Diverder constant of height
+		final int nh2 = 3 * nh; // Multiplier constant2 of height
+		final int ch = ceilDiv(4 * nh, dh); // Cell height
 		for (int i = 0; i < uh; i += 2) {
-			int y = gh - ch - ceilDiv(i * nh2, dh);
+			final int y = gh - ch - ceilDiv(i * nh2, dh);
 			for (int j = 0; j < uw; ++j) {
-				double v = function.getValue(i, j);
-				Color col = getColor(v);
+				final double v = function.getValue(i, j);
+				final Color col = getColor(v);
 				gr.setColor(col);
 				int x = j * 2 * gw;
 				x = ceilDiv(x, kw);
@@ -137,10 +136,10 @@ public class GraphPane extends JPanel {
 			}
 		}
 		for (int i = 1; i < uh; i += 2) {
-			int y = gh - ch - ceilDiv(i * nh2, dh);
+			final int y = gh - ch - ceilDiv(i * nh2, dh);
 			for (int j = 0; j < uw; ++j) {
-				double v = function.getValue(i, j);
-				Color col = getColor(v);
+				final double v = function.getValue(i, j);
+				final Color col = getColor(v);
 				gr.setColor(col);
 				int x = (j * 2 + 1) * gw;
 				x = ceilDiv(x, kw);
@@ -155,7 +154,7 @@ public class GraphPane extends JPanel {
 	 * @param function
 	 *            the function to set
 	 */
-	public void setFunction(GraphFunction function) {
+	public void setFunction(final GraphFunction function) {
 		this.function = function;
 	}
 

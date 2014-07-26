@@ -35,8 +35,9 @@ public class ValueCellModifier implements CellModifier {
 	 * @param upRightRelation
 	 * @param upLeftRelation
 	 */
-	public ValueCellModifier(double cellValue, double rightRelation,
-			double upRightRelation, double upLeftRelation) {
+	public ValueCellModifier(final double cellValue,
+			final double rightRelation, final double upRightRelation,
+			final double upLeftRelation) {
 		this.cellValue = cellValue;
 		this.rightRelation = rightRelation;
 		this.upRightRelation = upRightRelation;
@@ -58,7 +59,7 @@ public class ValueCellModifier implements CellModifier {
 	 *      int, int)
 	 */
 	@Override
-	public void modify(Universe universe, int i, int j) {
+	public void modify(final Universe universe, final int i, final int j) {
 		DoubleBufferedDouble function = universe.getCell(i, j);
 		function.setNextValue(cellValue);
 		function.swap();

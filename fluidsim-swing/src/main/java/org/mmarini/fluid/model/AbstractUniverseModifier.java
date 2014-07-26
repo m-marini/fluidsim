@@ -32,7 +32,7 @@ public abstract class AbstractUniverseModifier implements UniverseModifier {
 	/**
 	 * @param cellModifier
 	 */
-	protected AbstractUniverseModifier(CellModifier cellModifier) {
+	protected AbstractUniverseModifier(final CellModifier cellModifier) {
 		this.cellModifier = cellModifier;
 	}
 
@@ -51,7 +51,7 @@ public abstract class AbstractUniverseModifier implements UniverseModifier {
 	 * @param modifier
 	 *            the cellModifier to set
 	 */
-	public void setCellModifier(CellModifier modifier) {
+	public void setCellModifier(final CellModifier modifier) {
 		this.cellModifier = modifier;
 	}
 }

@@ -35,8 +35,8 @@ public class FunctionModifier implements CellModifier {
 	 * @param cellFunction
 	 * @param relationFunction
 	 */
-	public FunctionModifier(CellFunction cellFunction,
-			RelationFunction relationFunction) {
+	public FunctionModifier(final CellFunction cellFunction,
+			final RelationFunction relationFunction) {
 		this.cellFunction = cellFunction;
 		this.relationFunction = relationFunction;
 	}
@@ -64,7 +64,7 @@ public class FunctionModifier implements CellModifier {
 	 *      int, int)
 	 */
 	@Override
-	public void modify(Universe universe, int i, int j) {
+	public void modify(final Universe universe, final int i, final int j) {
 		if (cellFunction != null)
 			universe.setCellFunction(i, j, cellFunction);
 		if (relationFunction != null)
@@ -77,7 +77,7 @@ public class FunctionModifier implements CellModifier {
 	 * @param cellFunction
 	 *            the cellFunction to set or null if not present
 	 */
-	public void setCellFunction(CellFunction function) {
+	public void setCellFunction(final CellFunction function) {
 		this.cellFunction = function;
 	}
 
@@ -87,7 +87,7 @@ public class FunctionModifier implements CellModifier {
 	 * @param relationFunction
 	 *            the relationFunction to set or null if not present
 	 */
-	public void setRelationFunction(RelationFunction relationFunction) {
+	public void setRelationFunction(final RelationFunction relationFunction) {
 		this.relationFunction = relationFunction;
 	}
 }

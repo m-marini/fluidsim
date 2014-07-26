@@ -39,8 +39,8 @@ public class RectangleModifier extends AbstractUniverseModifier {
 	 * @param x1
 	 * @param y1
 	 */
-	public RectangleModifier(CellModifier cellModifier, double x0, double y0,
-			double x1, double y1) {
+	public RectangleModifier(final CellModifier cellModifier, final double x0,
+			final double y0, final double x1, final double y1) {
 		super(cellModifier);
 		this.x0 = x0;
 		this.y0 = y0;
@@ -80,16 +80,16 @@ public class RectangleModifier extends AbstractUniverseModifier {
 	 * @see UniverseModifier#modify(Universe)
 	 */
 	@Override
-	public void modify(Universe universe) {
-		double x02 = x0;
-		double y02 = y0;
-		int x0 = Utils.transformToColumn(universe, x02, y02);
-		int y0 = Utils.transformToRow(universe, x02, y02);
-		double x12 = x1;
-		double y12 = y1;
-		int x1 = Utils.transformToColumn(universe, x12, y12);
-		int y1 = Utils.transformToRow(universe, x12, y12);
-		CellModifier modifier = getCellModifier();
+	public void modify(final Universe universe) {
+		final double x02 = x0;
+		final double y02 = y0;
+		final int x0 = Utils.transformToColumn(universe, x02, y02);
+		final int y0 = Utils.transformToRow(universe, x02, y02);
+		final double x12 = x1;
+		final double y12 = y1;
+		final int x1 = Utils.transformToColumn(universe, x12, y12);
+		final int y1 = Utils.transformToRow(universe, x12, y12);
+		final CellModifier modifier = getCellModifier();
 		for (int i = y0; i <= y1; ++i) {
 			for (int j = x0; j <= x1; ++j) {
 				modifier.modify(universe, i, j);
@@ -103,7 +103,7 @@ public class RectangleModifier extends AbstractUniverseModifier {
 	 * @param x0
 	 *            the x0 to set
 	 */
-	public void setX0(double x) {
+	public void setX0(final double x) {
 		this.x0 = x;
 	}
 
@@ -113,7 +113,7 @@ public class RectangleModifier extends AbstractUniverseModifier {
 	 * @param x1
 	 *            the x1 to set
 	 */
-	public void setX1(double size) {
+	public void setX1(final double size) {
 		this.x1 = size;
 	}
 
@@ -123,7 +123,7 @@ public class RectangleModifier extends AbstractUniverseModifier {
 	 * @param y0
 	 *            the y0 to set
 	 */
-	public void setY0(double y) {
+	public void setY0(final double y) {
 		this.y0 = y;
 	}
 
@@ -133,7 +133,7 @@ public class RectangleModifier extends AbstractUniverseModifier {
 	 * @param y1
 	 *            the y1 to set
 	 */
-	public void setY1(double height) {
+	public void setY1(final double height) {
 		this.y1 = height;
 	}
 }

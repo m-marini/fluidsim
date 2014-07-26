@@ -47,7 +47,7 @@ public class RelationUpdateContext extends AbstractUpdaterContext {
 	 *            the index index
 	 * @return the constant value
 	 */
-	public double getA(int i) {
+	public double getA(final int i) {
 		return getFunction().getA(i, getTimeContext());
 	}
 
@@ -91,7 +91,7 @@ public class RelationUpdateContext extends AbstractUpdaterContext {
 	 * @param function
 	 *            the function to set
 	 */
-	public void setFunction(RelationFunction function) {
+	public void setFunction(final RelationFunction function) {
 		this.function = function;
 	}
 }

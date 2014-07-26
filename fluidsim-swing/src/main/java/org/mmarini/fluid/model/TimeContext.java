@@ -47,7 +47,7 @@ public class TimeContext {
 	 * @param deltaTime
 	 *            the interval in seconds
 	 */
-	public void update(double deltaTime) {
+	public void update(final double deltaTime) {
 		this.deltaTime = deltaTime;
 		time += deltaTime;
 	}

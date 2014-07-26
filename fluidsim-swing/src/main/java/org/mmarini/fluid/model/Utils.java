@@ -30,10 +30,11 @@ public class Utils {
 	 *            the y coordinate
 	 * @return the column index
 	 */
-	public static int transformToColumn(Universe universe, double x, double y) {
-		int gx = transformToX(universe, x, y);
-		int gy = transformToX(universe, x, y);
-		int col = transformToColumn(universe, gx, gy);
+	public static int transformToColumn(final Universe universe,
+			final double x, final double y) {
+		final int gx = transformToX(universe, x, y);
+		final int gy = transformToX(universe, x, y);
+		final int col = transformToColumn(universe, gx, gy);
 		return col;
 	}
 
@@ -48,10 +49,11 @@ public class Utils {
 	 *            the y coordinate
 	 * @return the column index
 	 */
-	public static int transformToColumn(Universe universe, int x, int y) {
+	public static int transformToColumn(final Universe universe, int x,
+			final int y) {
 		if ((y % 2) == 1)
 			--x;
-		int w = universe.getSize().width;
+		final int w = universe.getSize().width;
 		return Math.min(Math.max(x / 2, 0), w - 1);
 	}
 
@@ -66,9 +68,10 @@ public class Utils {
 	 *            the y coordinate
 	 * @return the row index
 	 */
-	public static int transformToRow(Universe universe, double x, double y) {
-		int gx = transformToX(universe, x, y);
-		int gy = transformToY(universe, x, y);
+	public static int transformToRow(final Universe universe, final double x,
+			final double y) {
+		final int gx = transformToX(universe, x, y);
+		final int gy = transformToY(universe, x, y);
 		return transformToRow(universe, gx, gy);
 	}
 
@@ -83,7 +86,8 @@ public class Utils {
 	 *            the y coordinate
 	 * @return the row index
 	 */
-	public static int transformToRow(Universe universe, int x, int y) {
+	public static int transformToRow(final Universe universe, final int x,
+			final int y) {
 		return y;
 	}
 
@@ -96,7 +100,7 @@ public class Utils {
 	 *            the column index
 	 * @return the x coordinate
 	 */
-	public static int transformToX(int i, int j) {
+	public static int transformToX(final int i, final int j) {
 		int x = 2 * j;
 		if ((i % 2) == 1)
 			++x;
@@ -114,10 +118,11 @@ public class Utils {
 	 *            the y coordinate
 	 * @return the x coordinate
 	 */
-	public static int transformToX(Universe universe, double x, double y) {
-		Dimension size = universe.getSize();
-		int w = size.width;
-		int dw = w * 2 - 1;
+	public static int transformToX(final Universe universe, final double x,
+			final double y) {
+		final Dimension size = universe.getSize();
+		final int w = size.width;
+		final int dw = w * 2 - 1;
 		return (int) Math.round(x * dw);
 	}
 
@@ -130,7 +135,7 @@ public class Utils {
 	 *            the column index
 	 * @return the y coordinate
 	 */
-	public static int transformToY(int i, int j) {
+	public static int transformToY(final int i, final int j) {
 		return i;
 	}
 
@@ -145,9 +150,10 @@ public class Utils {
 	 *            the y coordinate
 	 * @return the y coordinate
 	 */
-	public static int transformToY(Universe universe, double x, double y) {
-		Dimension size = universe.getSize();
-		int dh = size.height - 1;
+	public static int transformToY(final Universe universe, final double x,
+			final double y) {
+		final Dimension size = universe.getSize();
+		final int dh = size.height - 1;
 		return (int) Math.round(y * dh);
 	}
 }

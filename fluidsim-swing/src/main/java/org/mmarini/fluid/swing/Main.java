@@ -40,19 +40,20 @@ import org.xml.sax.SAXException;
  */
 public class Main {
 
-	private static final String DEFAULT_MODIFIER_RESOURCE = "/wing.xml"; //$NON-NLS-1$
-	public static final String DISABLED_ICON = "selectedIcon"; //$NON-NLS-1$
-	private static final int INITIAL_WIDTH = 400;
-	private static final int INITIAL_HEIGHT = 300;
-
-	private static Logger log = LoggerFactory.getLogger(Main.class);
-
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		new Main().start();
 	}
+
+	private static final String DEFAULT_MODIFIER_RESOURCE = "/wing.xml"; //$NON-NLS-1$
+	public static final String DISABLED_ICON = "selectedIcon"; //$NON-NLS-1$
+	private static final int INITIAL_WIDTH = 400;
+
+	private static final int INITIAL_HEIGHT = 300;
+
+	private static Logger log = LoggerFactory.getLogger(Main.class);
 
 	private JFrame frame;
 	private JToolBar toolBar;
@@ -87,7 +88,7 @@ public class Main {
 			}
 
 			@Override
-			public double getValue(int i, int j) {
+			public double getValue(final int i, final int j) {
 				return fluidHandler.getFluxValue(i, j);
 			}
 		});
@@ -99,7 +100,7 @@ public class Main {
 			}
 
 			@Override
-			public double getValue(int i, int j) {
+			public double getValue(final int i, final int j) {
 				return fluidHandler.getRelationValue(i, j);
 			}
 		});
@@ -111,7 +112,7 @@ public class Main {
 			}
 
 			@Override
-			public double getValue(int i, int j) {
+			public double getValue(final int i, final int j) {
 				return fluidHandler.getCellValue(i, j);
 			}
 		});
@@ -121,7 +122,7 @@ public class Main {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(final ActionEvent arg0) {
 				createUniverse();
 			}
 		};
@@ -129,7 +130,7 @@ public class Main {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(final ActionEvent arg0) {
 				open();
 			}
 		};
@@ -137,7 +138,7 @@ public class Main {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(final ActionEvent arg0) {
 				System.exit(0);
 			}
 		};
@@ -145,7 +146,7 @@ public class Main {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(final ActionEvent arg0) {
 				startSimualtion();
 			}
 		};
@@ -153,7 +154,7 @@ public class Main {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(final ActionEvent arg0) {
 				stepSimulate();
 			}
 
@@ -162,7 +163,7 @@ public class Main {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(final ActionEvent arg0) {
 				stopSimualtion();
 			}
 
@@ -181,37 +182,11 @@ public class Main {
 
 	/**
 	 * 
-	 */
-	private void open() {
-		if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
-			try {
-				fluidHandler.loadUniverseModifier(fileChooser.getSelectedFile()
-						.toURI().toURL());
-				createUniverse();
-			} catch (Exception e) {
-				log.error(e.getMessage(), e);
-				showError(e);
-			}
-		}
-	}
-
-	/**
-	 * 
-	 * @param e
-	 */
-	private void showError(Exception e) {
-		JOptionPane.showMessageDialog(frame, e.getLocalizedMessage(),
-				Messages.getString("Main.error.title"), //$NON-NLS-1$
-				JOptionPane.ERROR_MESSAGE);
-	}
-
-	/**
-	 * 
 	 * @param key
 	 * @return
 	 */
-	private ImageIcon createIcon(String key) {
-		String value = Messages.getString(key);
+	private ImageIcon createIcon(final String key) {
+		final String value = Messages.getString(key);
 		return !value.startsWith("!") ? new ImageIcon(getClass().getResource(
 				value)) : null;
 	}
@@ -235,7 +210,7 @@ public class Main {
 	 * @return
 	 */
 	private JTabbedPane createTabPane() {
-		JTabbedPane tabPane = new JTabbedPane();
+		final JTabbedPane tabPane = new JTabbedPane();
 		tabPane.addTab(Messages.getString("Main.cellTab.text"), cellPane); //$NON-NLS-1$
 		tabPane.setToolTipTextAt(0, Messages.getString("Main.cellTab.tips")); //$NON-NLS-1$
 		tabPane.addTab(
@@ -251,7 +226,8 @@ public class Main {
 	 * 
 	 */
 	private void createUIBeans() {
-		fileChooser.setFileFilter(new FileNameExtensionFilter(Messages.getString("Main.fileType.text"), //$NON-NLS-1$
+		fileChooser.setFileFilter(new FileNameExtensionFilter(Messages
+				.getString("Main.fileType.text"), //$NON-NLS-1$
 				"xml")); //$NON-NLS-1$
 		rateBar.setFluidHandler(fluidHandler);
 
@@ -263,7 +239,7 @@ public class Main {
 		initMenuBar();
 		initToolBar();
 
-		Container contentPane = frame.getContentPane();
+		final Container contentPane = frame.getContentPane();
 		contentPane.setLayout(new BorderLayout());
 		contentPane.add(toolBar, BorderLayout.NORTH);
 		contentPane.add(createTabPane(), BorderLayout.CENTER);
@@ -276,7 +252,7 @@ public class Main {
 		/*
 		 * Set size and center the frame in the screen
 		 */
-		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		final Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		frame.setSize(INITIAL_WIDTH, INITIAL_HEIGHT);
 		frame.setLocation((screen.width - INITIAL_WIDTH) / 2,
 				(screen.height - INITIAL_HEIGHT) / 2);
@@ -334,6 +310,22 @@ public class Main {
 	}
 
 	/**
+	 * 
+	 */
+	private void open() {
+		if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+			try {
+				fluidHandler.loadUniverseModifier(fileChooser.getSelectedFile()
+						.toURI().toURL());
+				createUniverse();
+			} catch (final Exception e) {
+				log.error(e.getMessage(), e);
+				showError(e);
+			}
+		}
+	}
+
+	/**
 	 * Sets up an action loading the properties of the action.
 	 * 
 	 * @param action
@@ -341,7 +333,7 @@ public class Main {
 	 * @param name
 	 *            the action name used in the localized resource file
 	 */
-	private void setupAction(Action action, String name) {
+	private void setupAction(final Action action, final String name) {
 		action.putValue(Action.NAME,
 				Messages.getString("Main." + name + ".name")); //$NON-NLS-1$ //$NON-NLS-2$
 		action.putValue(Action.ACCELERATOR_KEY,
@@ -353,14 +345,24 @@ public class Main {
 		action.putValue(Action.SHORT_DESCRIPTION,
 				Messages.getString("Main." + name + ".tip")); //$NON-NLS-1$ //$NON-NLS-2$
 
-		ImageIcon ic = createIcon("Main." + name + ".icon"); //$NON-NLS-1$ //$NON-NLS-2$
+		final ImageIcon ic = createIcon("Main." + name + ".icon"); //$NON-NLS-1$ //$NON-NLS-2$
 		if (ic != null) {
 			action.putValue(Action.SMALL_ICON, ic);
 		}
-		ImageIcon icd = createIcon("Main." + name + "." + DISABLED_ICON); //$NON-NLS-1$ //$NON-NLS-2$
+		final ImageIcon icd = createIcon("Main." + name + "." + DISABLED_ICON); //$NON-NLS-1$ //$NON-NLS-2$
 		if (icd != null) {
 			action.putValue(DISABLED_ICON, icd);
 		}
+	}
+
+	/**
+	 * 
+	 * @param e
+	 */
+	private void showError(final Exception e) {
+		JOptionPane.showMessageDialog(frame, e.getLocalizedMessage(),
+				Messages.getString("Main.error.title"), //$NON-NLS-1$
+				JOptionPane.ERROR_MESSAGE);
 	}
 
 	/**
@@ -371,7 +373,7 @@ public class Main {
 			createModelBeans();
 			createUIBeans();
 			frame.setVisible(true);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			log.error(e.getMessage(), e);
 		}
 	}

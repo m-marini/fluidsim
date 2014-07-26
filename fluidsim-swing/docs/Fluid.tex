@@ -1,0 +1,135 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+%\usepackage[italian]{babel}
+\usepackage{graphicx}
+\newtheorem{theorem}{Teorema}
+
+\title{Fluidi}
+\author{Marco Marini}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\begin{abstract}
+\end{abstract}
+
+\part{Fluidi}
+
+\section{Equazioni di Eulero dei fluidi non viscosi}
+
+La simulazione avviene in una superficie bidimensionale (sezione).
+
+Prendiamo una cella elementare di forma qualsiasi.
+Nel caso esemplificativo un quadrato, ma nella simulazione sarà una cella esagonale.
+
+\subsection{Equazione di continuità o bilancio di massa} 
+
+La prima equazione è basata sul principio di continuo e di conservazione della materia
+
+\emph{
+La variazione di massa in una cella deve essere uguale alla somma dei flussi entranti nel blocco.
+}
+ 
+Iniziamo con definire la massa della cella 
+\begin{equation}
+    m_i = \rho_i v
+\end{equation}
+
+dove $ \rho_i $ è la densità del fluido nella cella $ C_i $ e $ v $ il relativo volume, si suppone che le celle abbiano tutte lo stesso volume. 
+
+Adiacente alla cella $ C_i $ troviamo la cella $ C_j $, la superficie di contatto $ S_{ij} $ e il versore $ \vec{N_{ij}} $ normale alla superficie.
+
+Definiamo $ \vec{V_i} $ la velocità di flusso passante per la cella.
+  
+Nell'intervallo di tempo infinitesimale $ dt $ la variazione di massa che entra verso la cella $ C_j $ è dato da  
+\begin{equation}
+	d m_{ij} = -( \vec{V_j} -  \vec{V_i} )\; \vec{N_{ij}} \; S_{ij} \; \rho_i \; dt
+	=-( \vec{V_j} - \vec{V_i}) \; \vec{N_{ij}} \; S_{ij} \; \frac{m_i}{v} \; dt
+\end{equation}
+
+Simmetricamente
+\begin{equation}
+	d m_{ji} = -( \vec{V_i} - \vec{V_j}) \; \vec{N_{ji}} \; S_{ji} \; \frac{m_j}{v} \; dt
+\end{equation}
+essendo $ \vec{N{ji}} = -\vec{N_{ij}} $ e $ S_{ji} = S_{ij} $ 
+\begin{equation}
+	d m_{ji} = -( \vec{V_j} - \vec{V_i}) \; \vec{N_{ij}} \; S_{ij} \; \frac{m_j}{v} \; dt
+\end{equation}
+
+Definiamo
+\begin{equation}
+  K_{ij} = K_{ji} = -\frac{( \vec{V_j} - \vec{V_i}) \; \vec{N_{ij}} \; S_{ij}}{v}
+\end{equation}
+
+Si possono esprime le variazioni di massa come
+\begin{eqnarray}
+  d m_{ij} =   K_{ij} m_i dt
+\\
+  d m_{ji} =   K_{ij} m_j dt
+\end{eqnarray}
+
+In generale nella cella $ i $ avremo che
+\begin{equation}
+     dm_i = -\frac{m_i}{v} \sum_j \left( \vec{V_j} - \vec{V_i}\right) \; \vec{N_{ij}} \; S_{ij} \; dt = m_i \sum_j K_{ij} dt
+\end{equation}
+
+
+\subsection{Equazione di bilancio della quantità di moto}
+
+La seconda equazione è basata sul principio conservazione della quantità di moto
+
+\emph{
+La variazione di quantità di moto in una cella è uguale alla somma delle quantità
+di moto dei flussi entranti nel blocco più le forze agenti sul volume e sulla superficie.
+}
+ 
+Iniziamo con definire
+\begin{equation}
+       \vec{Q_i} = m_i \vec{V_i}
+\end{equation}
+la quantità di moto del fluido nella cella $ i $.
+
+Calcoliamo la portata della quantità di moto entrante nella cella dalla cella adiacente $ j $.
+
+Nell'intervallo di tempo infinitesimale $ dt $ la variazione di quantità di moto che entra verso la cella $ j $ è dato da  
+\begin{eqnarray}
+  \vec{dQ_{ij}} = dm_{ij} \vec{V_i} \; dt
+  \\
+  \vec{dQ_{ij}} = m_i \vec{V_i} K_{ij} \; dt^2  
+\end{eqnarray}
+
+Simmetricamente
+\begin{eqnarray}
+  \vec{dQ_{ji}} = m_j \vec{V_j} K_{ij} \; dt^2  
+\end{eqnarray}
+
+Se ipotiziamo un fluido non viscoso le forze applicate alla superficie $ S_{ij} $ sono perpendicolari alla superficie stessa
+e dovute solo alla differenza di pressione $ P_j - P_i $ tra le due celle. L'impulso applicato alla superficie allora sarà
+\begin{eqnarray}
+  \vec{I_{ij}} = (P_{j} - P_{i} ) S_{ij} \vec{N_{ij}} dt 
+  \\
+  \vec{I_{ji}} = (P_{i} - P_{j} ) S_{ij} \vec{N_{ji}} dt = \vec{I_{ij}}
+\end{eqnarray}
+
+
+Mentre l'impulso causato dal campo gravitazionale $ \vec{g_i} $ sarà
+\begin{equation}
+  \vec{I_i} = \vec{g_i} m_i dt
+\end{equation}
+
+Applicando il principio di conservazione della quantità di moto abbiamo
+\begin{equation}
+   d \vec{Q_i} = \vec{g_i} m_i dt + \sum_j (P_{j} - P_{i} ) S_{ij} \vec{N_{ij}} dt
+   -  \frac{m_i}{v} \vec{V_i} \sum_j \left( \vec{V_j} - \vec{V_i}\right) \; \vec{N_{ij}} \;  \; S_{ij} \; dt^2
+\end{equation}
+
+La pressione nella cella $ i $ è data da
+\begin{equation}
+  P_i = m_i C
+\end{equation}
+dove $ C = \frac{R T}{P_m v} $ con $ P_m $ peso molecolare, $ R $ costante di Avogadro e $ T $ temperatura assoluta del fluido
+\end{document}

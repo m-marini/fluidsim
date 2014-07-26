@@ -46,7 +46,7 @@ public class DoubleBufferedDouble {
 	 * @param nextValue
 	 *            the nextValue to set
 	 */
-	public void setNextValue(double next) {
+	public void setNextValue(final double next) {
 		this.nextValue = next;
 	}
 

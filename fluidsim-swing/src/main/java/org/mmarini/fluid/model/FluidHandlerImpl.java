@@ -41,11 +41,11 @@ public class FluidHandlerImpl implements FluidHandler {
 	private static final double SINGLE_STEP_INTERVAL = 0.1;
 
 	private Universe universe;
-	private UniverseBuilderImpl builder;
-	private Simulator simulator;
-	private UniverseFunction cellFunction;
-	private UniverseFunction relationFunction;
-	private UniverseFunction fluxFunction;
+	private final UniverseBuilderImpl builder;
+	private final Simulator simulator;
+	private final UniverseFunction cellFunction;
+	private final UniverseFunction relationFunction;
+	private final UniverseFunction fluxFunction;
 
 	/**
 	 * 
@@ -71,7 +71,7 @@ public class FluidHandlerImpl implements FluidHandler {
 	 * @see FluidHandler#getCellValue(int, int)
 	 */
 	@Override
-	public double getCellValue(int i, int j) {
+	public double getCellValue(final int i, final int j) {
 		return cellFunction.getValue(universe, i, j);
 	}
 
@@ -79,7 +79,7 @@ public class FluidHandlerImpl implements FluidHandler {
 	 * @see FluidHandler#getFluxValue(int, int)
 	 */
 	@Override
-	public double getFluxValue(int i, int j) {
+	public double getFluxValue(final int i, final int j) {
 		return fluxFunction.getValue(universe, i, j);
 	}
 
@@ -87,7 +87,7 @@ public class FluidHandlerImpl implements FluidHandler {
 	 * @see FluidHandler#getRelationValue(int, int)
 	 */
 	@Override
-	public double getRelationValue(int i, int j) {
+	public double getRelationValue(final int i, final int j) {
 		return relationFunction.getValue(universe, i, j);
 	}
 
@@ -115,9 +115,9 @@ public class FluidHandlerImpl implements FluidHandler {
 	 * @throws ParserConfigurationException
 	 */
 	@Override
-	public void loadUniverseModifier(URL url)
+	public void loadUniverseModifier(final URL url)
 			throws ParserConfigurationException, SAXException, IOException {
-		UniverseModifier universeModifier = new FluidParser().parse(url);
+		final UniverseModifier universeModifier = new FluidParser().parse(url);
 		builder.setUniverseModifier(universeModifier);
 		createNew();
 	}

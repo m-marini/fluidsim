@@ -15,7 +15,7 @@ package org.mmarini.fluid.model;
  * @version $Id: ConstantFunction.java,v 1.3 2007/08/18 08:29:54 marco Exp $
  */
 public class ConstantFunction implements CoefficientFunction {
-	private double value;
+	private final double value;
 
 	/**
 	 * @param value
@@ -27,7 +27,7 @@ public class ConstantFunction implements CoefficientFunction {
 	/**
 	 * @param value
 	 */
-	public ConstantFunction(double value) {
+	public ConstantFunction(final double value) {
 		this.value = value;
 	}
 
@@ -35,7 +35,7 @@ public class ConstantFunction implements CoefficientFunction {
 	 * @see org.mmarini.fluid.model.CoefficientFunction#getA(org.mmarini.fluid.model.TimeContext)
 	 */
 	@Override
-	public double getA(TimeContext timeContext) {
+	public double getA(final TimeContext timeContext) {
 		return 0;
 	}
 
@@ -43,7 +43,7 @@ public class ConstantFunction implements CoefficientFunction {
 	 * @see org.mmarini.fluid.model.CoefficientFunction#getB(org.mmarini.fluid.model.TimeContext)
 	 */
 	@Override
-	public double getB(TimeContext timeContext) {
+	public double getB(final TimeContext timeContext) {
 		return 0;
 	}
 
@@ -51,7 +51,7 @@ public class ConstantFunction implements CoefficientFunction {
 	 * @see org.mmarini.fluid.model.CoefficientFunction#getC(org.mmarini.fluid.model.TimeContext)
 	 */
 	@Override
-	public double getC(TimeContext timeContext) {
+	public double getC(final TimeContext timeContext) {
 		return getValue();
 	}
 

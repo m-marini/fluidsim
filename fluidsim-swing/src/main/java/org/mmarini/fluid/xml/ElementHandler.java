@@ -17,7 +17,7 @@ public class ElementHandler {
 	 * @param text
 	 * @throws SAXException
 	 */
-	public void endElement(String text) throws SAXException {
+	public void endElement(final String text) throws SAXException {
 	}
 
 	/**
@@ -25,6 +25,6 @@ public class ElementHandler {
 	 * @param attrs
 	 * @throws SAXException
 	 */
-	public void startElement(Attributes attrs) throws SAXException {
+	public void startElement(final Attributes attrs) throws SAXException {
 	}
 }

@@ -34,7 +34,7 @@ public class IsomorphCellFunction implements CellFunction, FluidConstants {
 	/**
 	 * @param function
 	 */
-	public IsomorphCellFunction(CoefficientFunction function) {
+	public IsomorphCellFunction(final CoefficientFunction function) {
 		this.function = function;
 	}
 
@@ -42,8 +42,8 @@ public class IsomorphCellFunction implements CellFunction, FluidConstants {
 	 * @see CellFunction#getA(int, TimeContext)
 	 */
 	@Override
-	public double getA(int direction, TimeContext timeContext) {
-		double v = function.getA(timeContext);
+	public double getA(final int direction, final TimeContext timeContext) {
+		final double v = function.getA(timeContext);
 		if (direction < RELATION_DIRECTIONS)
 			return v;
 		return -v;
@@ -53,7 +53,7 @@ public class IsomorphCellFunction implements CellFunction, FluidConstants {
 	 * @see CellFunction#getB(TimeContext)
 	 */
 	@Override
-	public double getB(TimeContext timeContext) {
+	public double getB(final TimeContext timeContext) {
 		return function.getB(timeContext);
 	}
 
@@ -61,7 +61,7 @@ public class IsomorphCellFunction implements CellFunction, FluidConstants {
 	 * @see CellFunction#getC(TimeContext)
 	 */
 	@Override
-	public double getC(TimeContext timeContext) {
+	public double getC(final TimeContext timeContext) {
 		return function.getC(timeContext);
 	}
 
@@ -78,7 +78,7 @@ public class IsomorphCellFunction implements CellFunction, FluidConstants {
 	 * @param function
 	 *            the function to set
 	 */
-	public void setFunction(CoefficientFunction cellFunction) {
+	public void setFunction(final CoefficientFunction cellFunction) {
 		this.function = cellFunction;
 	}
 

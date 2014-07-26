@@ -36,11 +36,11 @@ public class FluidParser {
 	 * @throws ParserConfigurationException
 	 * @throws IOException
 	 */
-	public UniverseModifier parse(URL url) throws ParserConfigurationException,
-			SAXException, IOException {
-		FluidSaxHandler h = new FluidSaxHandler();
+	public UniverseModifier parse(final URL url)
+			throws ParserConfigurationException, SAXException, IOException {
+		final FluidSaxHandler h = new FluidSaxHandler();
 
-		SAXParserFactory f = SAXParserFactory.newInstance();
+		final SAXParserFactory f = SAXParserFactory.newInstance();
 		f.setNamespaceAware(true);
 		f.setSchema(SchemaFactory.newInstance(
 				XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(
