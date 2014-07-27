@@ -17,6 +17,14 @@ import java.awt.Graphics;
  * Depending on the graphical size of the cell it draws a rectangular shape for
  * small cells and an exagonal shape for the other ones.
  * 
+ * <pre>
+ *   - 3 -
+ * 4       2
+ * |   +   |
+ * 5       1
+ *   - 0 -
+ * </pre>
+ * 
  * @author US00852
  * @version $Id: CellShape.java,v 1.3 2007/08/18 08:29:55 marco Exp $
  * 

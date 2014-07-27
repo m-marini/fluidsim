@@ -64,6 +64,15 @@ public class Vector2d {
 	}
 
 	/**
+	 * 
+	 * @return
+	 */
+	public Vector2d getVersor() {
+		final double l = getLength();
+		return new Vector2d(x / l, y / l);
+	}
+
+	/**
 	 * @return the x
 	 */
 	public double getX() {

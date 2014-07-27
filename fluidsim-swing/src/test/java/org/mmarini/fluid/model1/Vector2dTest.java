@@ -2,6 +2,7 @@ package org.mmarini.fluid.model1;
 
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasToString;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertFalse;
@@ -104,5 +105,14 @@ public class Vector2dTest {
 	@Theory
 	public void testToString(final double x, final double y) {
 		assertThat(new Vector2d(x, y), hasToString("(" + x + ", " + y + ")"));
+	}
+
+	@Theory
+	public void testVersor(final double x, final double y) {
+		assumeThat(x * x + y * y, greaterThan(1e-6));
+		assertThat(
+				new Vector2d(x, y).getVersor(),
+				isVector(x / Math.sqrt(x * x + y * y),
+						y / Math.sqrt(x * x + y * y)));
 	}
 }

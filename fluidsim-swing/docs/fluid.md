@@ -22,6 +22,7 @@ La simulazione avviene in una suerfice bidimensionale (sezione).
 Prendiamo una cella elementare di forma qualsiasi.
 Nel caso esemplificativo un quadrato, ma nella simulazione sarà una cella esagonale.
 
+
     +-------+
     |       |
     | C(i)  |
