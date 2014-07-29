@@ -5,8 +5,10 @@ package org.mmarini.fluid.model1;
 
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -74,8 +76,10 @@ public class SpaceBuilder {
 	 * 
 	 * @return
 	 */
-	public TimeFunctor[] create() {
-		return pairMap.values().toArray(new TimeFunctor[0]);
+	public Simulation createSimulation() {
+		final List<TimeFunctor> l = new ArrayList<TimeFunctor>(cellMap.values());
+		l.addAll(pairMap.values());
+		return new Simulation(cells, l.toArray(new TimeFunctor[0]));
 	}
 
 	/**

@@ -1,6 +1,8 @@
 package org.mmarini.fluid.model1;
 
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.arrayWithSize;
+import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
@@ -21,6 +23,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(Theories.class)
 public class SpaceBuilderTest {
+
 	private static SpaceBuilder create() {
 		final double r = 10e-3;
 		final double w = r * (2 * 3 + 1);
@@ -48,8 +51,29 @@ public class SpaceBuilderTest {
 		return b;
 	}
 
+	private static final double EPSILON = 1e-6;
+
 	@DataPoints
 	public static int[] indexes = { -1, 0, 1 };
+
+	@Test
+	public void testCreate() {
+		final SpaceBuilder b0 = create().setFluid(
+				new Fluid(FluidConstants.AMBIENT_TEMPERATURE,
+						FluidConstants.AIR_MOLECULAR_MASS));
+		assertThat(b0, notNullValue());
+
+		final Simulation s = b0.createSimulation();
+		assertThat(s, notNullValue());
+
+		final Map<Point, Cell> c = s.getCells();
+		assertThat(c, notNullValue());
+		assertThat(c.size(), equalTo(16));
+
+		final TimeFunctor[] f = s.getFunctors();
+		assertThat(f, notNullValue());
+		assertThat(f, arrayWithSize(16 + 33));
+	}
 
 	@Test
 	public void testFluid() {
@@ -127,5 +151,39 @@ public class SpaceBuilderTest {
 	@Test
 	public void testNew() {
 		assertThat(create(), notNullValue());
+	}
+
+	@Test
+	public void testSimulation() {
+		final double r = 10e-3;
+		final double w = r * (2 + 1);
+		final double h = 0;
+		// final double h = r * 2 / Math.sqrt(3) * 3 / 2;
+
+		final SpaceTopology t = new SpaceTopology(r);
+		final double m = FluidConstants.AMBIENT_AIR_MASS * t.getArea();
+		final Simulation s = SpaceBuilder
+				.newBuilder(new Rectangle2D.Double(0, 0, w, h), t, m)
+				.setFluid(
+						new Fluid(FluidConstants.AMBIENT_TEMPERATURE,
+								FluidConstants.AIR_MOLECULAR_MASS))
+				.createSimulation().apply(1e-3).apply(1e-3);
+		assertThat(s, notNullValue());
+
+		final Map<Point, Cell> c = s.getCells();
+		assertThat(c, notNullValue());
+		assertThat(c.size(), equalTo(2));
+
+		assertThat(s, hasProperty("functors", arrayWithSize(2 + 1)));
+
+		final double m0 = t.getArea() * FluidConstants.AMBIENT_AIR_MASS;
+		assertThat(
+				c,
+				hasEntry(equalTo(new Point(0, 0)),
+						hasProperty("mass", closeTo(m0, EPSILON))));
+		assertThat(
+				c,
+				hasEntry(equalTo(new Point(0, 0)),
+						hasProperty("momentum", isVector(0, 0))));
 	}
 }
