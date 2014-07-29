@@ -8,4 +8,5 @@ public interface FluidConstants {
 	public static final double STANDARD_PRESSURE = 101325;
 	public static final double AMBIENT_AIR_MASS = STANDARD_PRESSURE
 			* AIR_MOLECULAR_MASS * 1e-3 / R / AMBIENT_TEMPERATURE;
+	public static final Vector2d STANDARD_GRAVITY = new Vector2d(0, -9.81);
 }

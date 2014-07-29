@@ -26,7 +26,6 @@ public class SpaceBuilder {
 	 */
 	public static final SpaceBuilder newBuilder(final Rectangle2D space,
 			final SpaceTopology topology, final double mass) {
-		final Map<IdPair, TimeFunctor> m = new HashMap<IdPair, TimeFunctor>();
 
 		final double w = space.getWidth();
 		final double h = space.getHeight();
@@ -41,14 +40,17 @@ public class SpaceBuilder {
 			for (int j = 0; j < nc; ++j)
 				c.put(new Point(j, i), new Cell(mass, Vector2d.ZERO));
 
-		return new SpaceBuilder(space, topology, null, c, m);
+		return new SpaceBuilder(space, topology, null, c,
+				Collections.<Point, TimeFunctor> emptyMap(),
+				Collections.<IdPair, TimeFunctor> emptyMap());
 	}
 
 	private final Rectangle2D space;
 	private final Fluid fluid;
 	private final SpaceTopology topology;
 	private final Map<Point, Cell> cells;
-	private final Map<IdPair, TimeFunctor> map;
+	private final Map<IdPair, TimeFunctor> pairMap;
+	private final Map<Point, TimeFunctor> cellMap;
 
 	/**
 	 * @param spaceDef
@@ -58,12 +60,14 @@ public class SpaceBuilder {
 	 */
 	private SpaceBuilder(final Rectangle2D space, final SpaceTopology topology,
 			final Fluid fluid, final Map<Point, Cell> cells,
-			final Map<IdPair, TimeFunctor> map) {
+			final Map<Point, TimeFunctor> cellMap,
+			final Map<IdPair, TimeFunctor> pairMap) {
 		this.space = space;
 		this.topology = topology;
 		this.fluid = fluid;
 		this.cells = cells;
-		this.map = map;
+		this.pairMap = pairMap;
+		this.cellMap = cellMap;
 	}
 
 	/**
@@ -71,7 +75,14 @@ public class SpaceBuilder {
 	 * @return
 	 */
 	public TimeFunctor[] create() {
-		return map.values().toArray(new TimeFunctor[0]);
+		return pairMap.values().toArray(new TimeFunctor[0]);
+	}
+
+	/**
+	 * @return the cellMap
+	 */
+	public Map<Point, TimeFunctor> getCellMap() {
+		return Collections.unmodifiableMap(cellMap);
 	}
 
 	/**
@@ -84,31 +95,8 @@ public class SpaceBuilder {
 	/**
 	 * @return the map
 	 */
-	public Map<IdPair, TimeFunctor> getMap() {
-		return Collections.unmodifiableMap(map);
-	}
-
-	/**
-	 * 
-	 * @param k
-	 * @param f
-	 * @return
-	 */
-	public SpaceBuilder put(final IdPair k, final TimeFunctor f) {
-		final Map<IdPair, TimeFunctor> m = new HashMap<IdPair, TimeFunctor>(map);
-		m.put(k, f);
-		return new SpaceBuilder(space, topology, fluid, cells, m);
-	}
-
-	/**
-	 * 
-	 * @param k
-	 * @return
-	 */
-	public SpaceBuilder remove(final IdPair k) {
-		final Map<IdPair, TimeFunctor> m = new HashMap<IdPair, TimeFunctor>(map);
-		m.remove(k);
-		return new SpaceBuilder(space, topology, fluid, cells, m);
+	public Map<IdPair, TimeFunctor> getPairMap() {
+		return Collections.unmodifiableMap(pairMap);
 	}
 
 	/**
@@ -118,25 +106,63 @@ public class SpaceBuilder {
 	 */
 	public SpaceBuilder setFluid(final Fluid fluid2) {
 		final double kt = topology.getEdge() / topology.getArea();
-		final Map<IdPair, TimeFunctor> m = new HashMap<IdPair, TimeFunctor>();
+		final Map<IdPair, TimeFunctor> pm = new HashMap<IdPair, TimeFunctor>();
+		final Map<Point, TimeFunctor> cm = new HashMap<Point, TimeFunctor>();
+
+		// C = R T / (pm v) S(i,j)
+		final double c1 = FluidConstants.R * fluid2.getMolecularMass()
+				/ fluid2.getMolecularMass() / topology.getArea()
+				* topology.getEdge();
+
 		for (final Entry<Point, Cell> e : cells.entrySet()) {
 			final Cell ci = e.getValue();
 			for (final IdPair i : IdPair.createAdjacents(e.getKey())) {
 				final Cell cj = cells.get(i.getId1());
+
+				cm.put(i.getId0(), new TimeFunctor() {
+
+					@Override
+					public void apply(final double dt) {
+						// dQ(i) = g(i) m(i) dt
+						ci.addMomentum(FluidConstants.STANDARD_GRAVITY.mul(ci
+								.getMass() * dt));
+					}
+				});
 				if (cj != null) {
-					final Vector2d normal = i.getVector(topology).getVersor();
-					m.put(i, new TimeFunctor() {
+					final Vector2d n = i.getVector(topology).getVersor();
+					pm.put(i, new TimeFunctor() {
 
 						@Override
 						public void apply(final double dt) {
+							/*
+							 * k(i,j) = -(V(j) - V(i) ) N(i,j) S(i,j) / v
+							 */
 							final double kij = -cj.getVelocity()
-									.sub(ci.getVelocity()).mul(normal)
+									.sub(ci.getVelocity()).mul(n)
 									* kt;
+
+							final double mi = ci.getMass();
+							final double mj = cj.getMass();
+
+							// dm(i,j) = k(i,j) m(i) dt
+							ci.addMass(kij * mi * dt);
+							// dm(j,i) = k(i,j) m(j) dt
+							cj.addMass(kij * mj * dt);
+
+							// F(i,j) = F(j,i) = ( m(j) - m(i) ) C N(i,j)
+							final Vector2d fij = n.mul((mj - mi) * c1);
+
+							// dQ(i,j) = Q(i) k(i,j) dt^2 + F(i,j) dt
+							ci.addMomentum(ci.getMomentum().mul(kij * dt * dt)
+									.add(fij.mul(dt)));
+							// dQ(j,i) = Q(j) k(i,j) dt^2 + F(i,j) dt
+							cj.addMomentum(cj.getMomentum().mul(kij * dt * dt)
+									.add(fij.mul(dt)));
 						}
 					});
 				}
 			}
 		}
-		return new SpaceBuilder(space, topology, fluid2, cells, m);
+		return new SpaceBuilder(space, topology, fluid2, cells, cm, pm);
 	}
 }
