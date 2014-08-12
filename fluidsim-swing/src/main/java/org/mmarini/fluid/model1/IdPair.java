@@ -17,13 +17,8 @@ public class IdPair {
 	 * @return
 	 */
 	public static IdPair[] createAdjacents(final Point p) {
-		return p.y % 2 == 0 ? new IdPair[] {
-				new IdPair(p, new Point(p.x, p.y + 1)),
-				new IdPair(p, new Point(p.x + 1, p.y)),
-				new IdPair(p, new Point(p.x, p.y - 1)) } : new IdPair[] {
-				new IdPair(p, new Point(p.x + 1, p.y + 1)),
-				new IdPair(p, new Point(p.x + 1, p.y)),
-				new IdPair(p, new Point(p.x + 1, p.y - 1)) };
+		return new IdPair[] { new IdPair(p, new Point(p.x, p.y + 1)),
+				new IdPair(p, new Point(p.x + 1, p.y)) };
 	}
 
 	private final Point id0;

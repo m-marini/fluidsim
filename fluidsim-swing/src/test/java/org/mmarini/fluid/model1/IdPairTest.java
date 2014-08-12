@@ -7,7 +7,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeThat;
-import static org.junit.Assume.assumeTrue;
 import static org.mmarini.fluid.model1.Matchers.isVector;
 
 import java.awt.Point;
@@ -26,30 +25,6 @@ public class IdPairTest {
 	public void testEqual(final int i0, final int j0, final int i1, final int j1) {
 		assertTrue(new IdPair(new Point(i0, j0), new Point(j1, j0))
 				.equals(new IdPair(new Point(i0, j0), new Point(j1, j0))));
-	}
-
-	@Theory
-	public void testEvenAdjacents(final int x, final int y) {
-		assumeTrue((y % 2) == 0);
-		assertThat(
-				IdPair.createAdjacents(new Point(x, y)),
-				arrayContainingInAnyOrder(new IdPair(x, y, x, y + 1),
-						new IdPair(x, y, x + 1, y), new IdPair(x, y, x, y - 1)));
-	}
-
-	@Theory
-	public void testEvenVector(final int x, final int y) {
-		assumeTrue((y % 2) == 0);
-		final double radius = 1f;
-		assertThat(
-				new IdPair(x, y, x, y - 1).getVector(new SpaceTopology(radius)),
-				isVector(radius, -radius * Math.sqrt(3)));
-		assertThat(
-				new IdPair(x, y, x + 1, y).getVector(new SpaceTopology(radius)),
-				isVector(2 * radius, 0));
-		assertThat(
-				new IdPair(x, y, x, y + 1).getVector(new SpaceTopology(radius)),
-				isVector(radius, radius * Math.sqrt(3)));
 	}
 
 	@Theory
@@ -87,25 +62,21 @@ public class IdPairTest {
 	}
 
 	@Theory
-	public void testOddAdjacents(final int x, final int y) {
-		assumeTrue((y % 2) == 1);
+	public void testAdjacents(final int x, final int y) {
 		assertThat(
 				IdPair.createAdjacents(new Point(x, y)),
-				arrayContainingInAnyOrder(new IdPair(x, y, x + 1, y + 1),
-						new IdPair(x, y, x + 1, y), new IdPair(x, y, x + 1,
-								y - 1)));
+				arrayContainingInAnyOrder(new IdPair(x, y, x + 1, y),
+						new IdPair(x, y, x, y + 1)));
 	}
 
 	@Theory
-	public void testOddVector(final int x, final int y) {
-		assumeTrue((y % 2) == 1);
-		final double radius = 1f;
-		assertThat(new IdPair(x, y, x + 1, y - 1).getVector(new SpaceTopology(
-				radius)), isVector(radius, -radius * Math.sqrt(3)));
+	public void testVector(final int x, final int y) {
+		final double length = 1f;
 		assertThat(
-				new IdPair(x, y, x + 1, y).getVector(new SpaceTopology(radius)),
-				isVector(2 * radius, 0));
-		assertThat(new IdPair(x, y, x + 1, y + 1).getVector(new SpaceTopology(
-				radius)), isVector(radius, radius * Math.sqrt(3)));
+				new IdPair(x, y, x + 1, y).getVector(new SpaceTopology(length)),
+				isVector(length, 0));
+		assertThat(
+				new IdPair(x, y, x, y + 1).getVector(new SpaceTopology(length)),
+				isVector(0, length));
 	}
 }

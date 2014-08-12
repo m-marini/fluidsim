@@ -10,19 +10,15 @@ import java.awt.Point;
  *
  */
 public class SpaceTopology {
-	private static final double K_AREA = Math.sqrt(3) * 3;
-	private static final double K_EDGE = 2 / Math.sqrt(3);
-	private final double radius;
-	private final double edge;
+	private final double length;
 	private final double area;
 
 	/**
-	 * @param radius
+	 * @param length
 	 */
-	public SpaceTopology(final double radius) {
-		this.radius = radius;
-		edge = radius * K_EDGE;
-		area = radius * radius * K_AREA;
+	public SpaceTopology(final double length) {
+		this.length = length;
+		area = length * length;
 	}
 
 	/**
@@ -34,18 +30,10 @@ public class SpaceTopology {
 	}
 
 	/**
-	 * 
-	 * @return
+	 * @return the length
 	 */
-	public double getEdge() {
-		return edge;
-	}
-
-	/**
-	 * @return the radius
-	 */
-	public double getRadius() {
-		return radius;
+	public double getLength() {
+		return length;
 	}
 
 	/**
@@ -54,8 +42,7 @@ public class SpaceTopology {
 	 * @return
 	 */
 	public Vector2d getVector(final Point p) {
-		return p.y % 2 == 0 ? new Vector2d(p.x * 2 * radius, p.y * edge * 1.5)
-				: new Vector2d((p.x * 2 + 1) * radius, p.y * edge * 1.5);
+		return new Vector2d(p.x * length, p.y * length);
 	}
 
 	/**
@@ -64,7 +51,7 @@ public class SpaceTopology {
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		builder.append("SpaceTopology [radius=").append(radius).append("]");
+		builder.append("SpaceTopology [radius=").append(length).append("]");
 		return builder.toString();
 	}
 }

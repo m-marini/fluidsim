@@ -31,11 +31,10 @@ public class SpaceBuilder {
 
 		final double w = space.getWidth();
 		final double h = space.getHeight();
-		final double r = topology.getRadius();
-		final double e = topology.getEdge();
+		final double l = topology.getLength();
 
-		final int nr = (int) Math.ceil(h * 2 / e / 3 + 1);
-		final int nc = (int) Math.ceil(0.5 * (w / r + 1));
+		final int nr = (int) Math.ceil(h / l + 1);
+		final int nc = (int) Math.ceil(w / l + 1);
 		final Map<Point, Cell> c = new HashMap<Point, Cell>();
 
 		for (int i = 0; i < nr; ++i)
@@ -109,14 +108,14 @@ public class SpaceBuilder {
 	 * @return
 	 */
 	public SpaceBuilder setFluid(final Fluid fluid2) {
-		final double kt = topology.getEdge() / topology.getArea();
+		final double kt = topology.getLength() / topology.getArea();
 		final Map<IdPair, TimeFunctor> pm = new HashMap<IdPair, TimeFunctor>();
 		final Map<Point, TimeFunctor> cm = new HashMap<Point, TimeFunctor>();
 
 		// C = R T / (pm v) S(i,j)
 		final double c1 = FluidConstants.R * fluid2.getMolecularMass()
 				/ fluid2.getMolecularMass() / topology.getArea()
-				* topology.getEdge();
+				* topology.getLength();
 
 		for (final Entry<Point, Cell> e : cells.entrySet()) {
 			final Cell ci = e.getValue();

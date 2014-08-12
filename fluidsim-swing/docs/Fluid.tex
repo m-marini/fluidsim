@@ -1,8 +1,8 @@
 \documentclass[a4paper,11pt]{article}
-\usepackage[T1]{fontenc}
+%\usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
-%\usepackage[italian]{babel}
+\usepackage[italian]{babel}
 \usepackage{graphicx}
 \newtheorem{theorem}{Teorema}
 
@@ -19,117 +19,278 @@
 
 \part{Fluidi}
 
-\section{Equazioni di Eulero dei fluidi non viscosi}
-
-La simulazione avviene in una superficie bidimensionale (sezione).
-
-Prendiamo una cella elementare di forma qualsiasi.
-Nel caso esemplificativo un quadrato, ma nella simulazione sarà una cella esagonale.
-
-\subsection{Equazione di continuità o bilancio di massa} 
-
-La prima equazione è basata sul principio di continuo e di conservazione della materia
-
-\emph{
-La variazione di massa in una cella deve essere uguale alla somma dei flussi entranti nel blocco.
-}
- 
-Iniziamo con definire la massa della cella 
-\begin{equation}
-    m_i = \rho_i v
-\end{equation}
-
-dove $ \rho_i $ è la densità del fluido nella cella $ C_i $ e $ v $ il relativo volume, si suppone che le celle abbiano tutte lo stesso volume. 
-
-Adiacente alla cella $ C_i $ troviamo la cella $ C_j $, la superficie di contatto $ S_{ij} $ e il versore $ \vec{N_{ij}} $ normale alla superficie.
-
-Definiamo $ \vec{V_i} $ la velocità di flusso passante per la cella.
-  
-Nell'intervallo di tempo infinitesimale $ dt $ la variazione di massa che entra verso la cella $ C_j $ è dato da  
-\begin{equation}
-	d m_{ij} = -( \vec{V_j} -  \vec{V_i} )\; \vec{N_{ij}} \; S_{ij} \; \rho_i \; dt
-	=-( \vec{V_j} - \vec{V_i}) \; \vec{N_{ij}} \; S_{ij} \; \frac{m_i}{v} \; dt
-\end{equation}
-
-Simmetricamente
-\begin{equation}
-	d m_{ji} = -( \vec{V_i} - \vec{V_j}) \; \vec{N_{ji}} \; S_{ji} \; \frac{m_j}{v} \; dt
-\end{equation}
-essendo $ \vec{N{ji}} = -\vec{N_{ij}} $ e $ S_{ji} = S_{ij} $ 
-\begin{equation}
-	d m_{ji} = -( \vec{V_j} - \vec{V_i}) \; \vec{N_{ij}} \; S_{ij} \; \frac{m_j}{v} \; dt
-\end{equation}
-
-Definiamo
-\begin{equation}
-  K_{ij} = K_{ji} = -\frac{( \vec{V_j} - \vec{V_i}) \; \vec{N_{ij}} \; S_{ij}}{v}
-\end{equation}
-
-Si possono esprime le variazioni di massa come
-\begin{eqnarray}
-  d m_{ij} =   K_{ij} m_i dt
-\\
-  d m_{ji} =   K_{ij} m_j dt
-\end{eqnarray}
-
-In generale nella cella $ i $ avremo che
-\begin{equation}
-     dm_i = -\frac{m_i}{v} \sum_j \left( \vec{V_j} - \vec{V_i}\right) \; \vec{N_{ij}} \; S_{ij} \; dt = m_i \sum_j K_{ij} dt
-\end{equation}
+\section{Approssimazione del gradiente in $ \Re^2 $}
+%==========================================================
 
 
-\subsection{Equazione di bilancio della quantità di moto}
+Sia $ F(\mathbf{r}) $ una funzione scalare nello spazio.
 
-La seconda equazione è basata sul principio conservazione della quantità di moto
+Il gradiente di $ F $ è una funzione vettoriale definita come 
+\[
+  \nabla F(\mathbf{r}) =
+    	\frac{\partial F(\mathbf{r})}{\partial x} \mathbf{e}_x +
+    	\frac{\partial F(\mathbf{r})}{\partial y} \mathbf{e}_y   	
+\]
 
-\emph{
-La variazione di quantità di moto in una cella è uguale alla somma delle quantità
-di moto dei flussi entranti nel blocco più le forze agenti sul volume e sulla superficie.
-}
- 
-Iniziamo con definire
-\begin{equation}
-       \vec{Q_i} = m_i \vec{V_i}
-\end{equation}
-la quantità di moto del fluido nella cella $ i $.
-
-Calcoliamo la portata della quantità di moto entrante nella cella dalla cella adiacente $ j $.
-
-Nell'intervallo di tempo infinitesimale $ dt $ la variazione di quantità di moto che entra verso la cella $ j $ è dato da  
-\begin{eqnarray}
-  \vec{dQ_{ij}} = dm_{ij} \vec{V_i} \; dt
+Supponiamo che il continuo sia rappresentato da un reticolo quadrato semplice dove 
+\[ 
+\begin{array}{c}
+  \mathbf{r}(i,j) = i \Delta x \mathbf{e}_x + j \Delta y \mathbf{e}_y
   \\
-  \vec{dQ_{ij}} = m_i \vec{V_i} K_{ij} \; dt^2  
-\end{eqnarray}
+    F(\mathbf{r}) = F(i,j) = F(\mathbf{r}(i,j))
+ \end{array}
+\]
+allora sarà
+\begin{equation}
+  \nabla F(i,j) =
+    \frac{F(i+1,j)-F(i-1,j)}{2 \Delta x} \mathbf{e}_x +
+    \frac{F(i,j+1)-F(i,j-1)}{2 \Delta y} \mathbf{e}_y
+\end{equation}
 
-Simmetricamente
-\begin{eqnarray}
-  \vec{dQ_{ji}} = m_j \vec{V_j} K_{ij} \; dt^2  
-\end{eqnarray}
 
-Se ipotiziamo un fluido non viscoso le forze applicate alla superficie $ S_{ij} $ sono perpendicolari alla superficie stessa
-e dovute solo alla differenza di pressione $ P_j - P_i $ tra le due celle. L'impulso applicato alla superficie allora sarà
-\begin{eqnarray}
-  \vec{I_{ij}} = (P_{j} - P_{i} ) S_{ij} \vec{N_{ij}} dt 
+\section{I Approssimazione della divergenza in $ \Re^2 $}
+%==========================================================
+
+Sia $ \mathbf{F}(\mathbf{r}) $ una funzione vettoriale nello spazio.
+
+La divergenza di $ \mathbf{F} $ è una funzione scalare definita come 
+\[
+  \nabla \cdot \mathbf{F}(\mathbf{r}) =
+	\frac{\partial F_x(\mathbf{r})}{\partial x} +
+	\frac{\partial F_y(\mathbf{r})}{\partial y}
+\]
+
+Supponiamo che il continuo sia rappresentato da un reticolo quadrato semplice dove 
+\[
+\begin{array}{c}
+  \mathbf{r}(i,j) = i \Delta x \mathbf{e}_x + j \Delta y \mathbf{e}_y
   \\
-  \vec{I_{ji}} = (P_{i} - P_{j} ) S_{ij} \vec{N_{ji}} dt = \vec{I_{ij}}
-\end{eqnarray}
-
-
-Mentre l'impulso causato dal campo gravitazionale $ \vec{g_i} $ sarà
+  \mathbf{F}(\mathbf{r}) = \mathbf{F}(i,j) = \mathbf{F}(\mathbf{r}(i,j))
+\end{array} 
+\]
+allora sarà
 \begin{equation}
-  \vec{I_i} = \vec{g_i} m_i dt
+\label{eq:aprdiv}
+  \nabla \cdot \mathbf{F}(i,j) =
+    \frac{F_x(i+1,j)-F_x(i-1,j)}{2 \Delta x} +
+    \frac{F_y(i,j+1)-F_y(i,j-1)}{2 \Delta y}
 \end{equation}
 
-Applicando il principio di conservazione della quantità di moto abbiamo
+
+\section{II Approssimazione della divergenza in $ \Re^2 $}
+%==========================================================
+
+Sia $ \mathbf{F}(\mathbf{r}) $ una funzione vettoriale nello spazio.
+
+La divergenza di $ \mathbf{F} $ è una funzione scalare definita come 
+\[
+  \nabla \cdot \mathbf{F}(\mathbf{r})
+   = \lim_{V\rightarrow p} \int \int_{S(V)} \frac{\mathbf{F} \cdot \mathbf{n}}{|V|} dS
+   = \lim_{V\rightarrow p} \int \int_{S(V)}
+    \frac{F_x n_x + F_y n_y}{|V|} dS
+\]
+
+Supponiamo che il continuo sia rappresentato da un reticolo dove 
+le celle adiacenti siano date da $ n $ raggi vettori $ \mathbf{s}_i $
+la cui superficie di contatto sia $ S_i $.
+Se volume di ogni cella è $ V $ la divergenza allora sarà
 \begin{equation}
-   d \vec{Q_i} = \vec{g_i} m_i dt + \sum_j (P_{j} - P_{i} ) S_{ij} \vec{N_{ij}} dt
-   -  \frac{m_i}{v} \vec{V_i} \sum_j \left( \vec{V_j} - \vec{V_i}\right) \; \vec{N_{ij}} \;  \; S_{ij} \; dt^2
+  \label{eq:iiaprdiv}
+  \nabla \cdot \mathbf{F}(\mathbf{r})
+   = \sum_i \frac{\mathbf{F}(\mathbf{r}+\mathbf{s}_i) \cdot \mathbf{n}_i}{V} S_i
+   = \sum_i \frac{F_x(\mathbf{r}+\mathbf{s}_i) n_{xi}+F_y(\mathbf{r}+\mathbf{s}_i) n_{yi}}{V} S_i
 \end{equation}
 
-La pressione nella cella $ i $ è data da
+Nel caso del reticolo quadrato semplice abbiamo che
+\[
+\begin{array}{lll}
+  \mathbf{s}_1=(\Delta x,0) = \mathbf{s}_x & \mathbf{n}_1=(1,0) & S_1 = 2 \Delta y
+  \\
+  \mathbf{s}_2=(0, \Delta y) = \mathbf{s}_y & \mathbf{n}_2=(0,1) & S_2 = 2 \Delta x
+  \\ 
+  \mathbf{s}_3=-\mathbf{s}_x & \mathbf{n}_3=-\mathbf{n}_1 & S_3 = S_1
+  \\
+  \mathbf{s}_4=-\mathbf{s}_y & \mathbf{n}_4=\mathbf{n}_2 & S_4 = S_2
+  \\
+  V = 4 \Delta x \Delta y
+\end{array}
+\]
 \begin{equation}
-  P_i = m_i C
+  \nabla \cdot \mathbf{F}(\mathbf{r}) =
+    \frac{F_x(\mathbf{r} + \mathbf{s}_x) - F_x(\mathbf{r} - \mathbf{s}_x)}{2 \Delta x}+
+    \frac{F_y(\mathbf{r} + \mathbf{s}_y) - F_y(\mathbf{r} - \mathbf{s}_y)}{2 \Delta y}
 \end{equation}
-dove $ C = \frac{R T}{P_m v} $ con $ P_m $ peso molecolare, $ R $ costante di Avogadro e $ T $ temperatura assoluta del fluido
+che corrisponde con la (\ref{eq:aprdiv})
+
+
+
+\section{Approssimazione della divergenza tensoriale in $ \Re^2 $}
+%==========================================================
+
+Sia $ \mathbf{T}(\mathbf{r}) $ una funzione tensoriale dello spazio.
+\[
+	\mathbf{T}(\mathbf{r}) = 
+	\left|
+	\begin{array}{ll}
+	T_{xx}(\mathbf{r}), & T_{xy}(\mathbf{r})
+	\\
+	T_{yx}(\mathbf{r}), & T_{yy}(\mathbf{r})
+	\end{array}
+	\right|
+\]
+
+La divergenza di $ \mathbf{T} $ è una funzione vettoriale definita come 
+\[
+  \nabla \cdot \mathbf{T}(\mathbf{r})
+    = \frac{ \partial T_{ij}(\mathbf{r})}{\partial x_i} \mathbf{e}_j
+  	= \left( \frac{ \partial T_{xx}(\mathbf{r})}{\partial x} 
+  	+ \frac{ \partial T_{yx}(\mathbf{r})}{\partial y} 
+  	\right) \mathbf{e}_x
+  	+ \left( \frac{ \partial T_{xy}(\mathbf{r})}{\partial x} 
+  	+ \frac{ \partial T_{yy}(\mathbf{r})}{\partial y} 
+  	\right) \mathbf{e}_y
+\]
+
+Nel caso del reticolo quadrato semplice si ha
+\[
+\begin{array}{r}
+  \nabla \cdot \mathbf{T}(\mathbf{r})
+    = 
+    	\left[
+    \frac{T_{xx}(\mathbf{r}+\mathbf{s}_x)-T_{xx}((\mathbf{r}-\mathbf{s}_x)}{2 \Delta x}
++    \frac{T_{yx}(\mathbf{r}+\mathbf{s}_y)-T_{yx}((\mathbf{r}-\mathbf{s}_y)}{2 \Delta y}
+    \right] \mathbf{e}_x
+    \\
+    +
+    	\left[
+    \frac{T_{xy}(\mathbf{r}+\mathbf{s}_x)-T_{xy}((\mathbf{r}-\mathbf{s}_x)}{2 \Delta x}
++    \frac{T_{yy}(\mathbf{r}+\mathbf{s}_y)-T_{yy}((\mathbf{r}-\mathbf{s}_y)}{2 \Delta y}
+    \right] \mathbf{e}_y
+\end{array}
+\]
+
+
+\section{Approssimazione delle equazioni di Eulero}
+%==========================================================
+
+Definamo in ogni punto dello spazio due quantità.
+\begin{itemize}
+  \item
+   $ \rho $ la densità di fluido in un punto
+   \item
+   $ \mathbf{Q} $ la quantità di moto del fluido in un punto
+\end{itemize}
+
+Partiamo dall'equazione di conservazione della massa
+\[
+  \frac{\partial \rho}{\partial t} = - \nabla \cdot (\rho \mathbf{u}) =
+  - \nabla \cdot \mathbf{Q}
+\]
+
+Per la (\ref{eq:iiaprdiv}) abbiamo
+\[
+\begin{array}{r}
+  \nabla \cdot \mathbf{Q} =
+    \sum_i \frac{\mathbf{Q} (\mathbf{r}+\mathbf{s}_i) \cdot \mathbf{n}_i}{V} S_i
+  \\
+  \frac{\partial \rho}{\partial t} = - \sum_i \frac{\mathbf{Q} (\mathbf{r}+\mathbf{s}_i) \cdot \mathbf{n}_i}{V} S_i
+\end{array}
+\]
+da cui
+\[
+  \Delta \rho = \frac{\partial \rho}{\partial t} \Delta t = 
+  - \Delta t \sum_i \frac{\mathbf{Q} (\mathbf{r}+\mathbf{s}_i) \cdot \mathbf{n}_i}{V} S_i
+\]
+
+Per il reticolo quadrato abbiamo
+\begin{equation}
+	\label{eq:deltarho}
+  \Delta \rho
+  = - \Delta t 
+  \left(
+   \frac{Q_x(\mathbf{r}+\mathbf{s}_x) - Q_x(\mathbf{r}-\mathbf{s}_x)}{2 \Delta x} +
+   \frac{Q_y(\mathbf{r}+\mathbf{s}_y) - Q_y(\mathbf{r}-\mathbf{s}_y)}{2 \Delta y}
+   \right)
+\end{equation}
+
+Prendiamo ora l'equazione di conservazione della quantità di moto
+\[
+  \frac{\partial \rho \mathbf{u}}{\partial t} = \nabla \cdot \left( \rho \mathbf{u} \otimes \mathbf{u} \right) - \nabla K \rho + \rho \mathbf{g} 
+\]
+dove
+\[
+  \mathbf{u} \otimes \mathbf{u} = \left|
+  \begin{array}{rrr}
+    u_x u_x, & u_x u_y
+    \\
+    u_y u_x, & u_y u_y
+  \end{array}
+  \right|
+\]
+\[
+  K = \frac{1000 R T}{P_m}
+\]
+
+$ \mathbf{g} $ è il campo gravitazionale nel punto $ \mathbf{r} $.
+
+Calcoliamo $ \rho \mathbf{u} \otimes \mathbf{u} $
+\[
+	\rho \mathbf{u} \otimes \mathbf{u} = \frac{\mathbf{Q} \otimes \mathbf{Q}}{\rho}
+\]
+\[
+  \frac{\partial \mathbf{Q}}{\partial t} =
+    \nabla \cdot \left( \frac{\mathbf{Q} \otimes \mathbf{Q}}{\rho} \right) - \nabla K \rho + \rho \mathbf{g} 
+\]
+da cui
+\[
+  \Delta \mathbf{Q} = \frac{\partial \mathbf{Q}}{\partial t} \Delta t =
+    \Delta t \left[ \nabla \cdot \left( \frac{\mathbf{Q} \otimes \mathbf{Q}}{\rho} \right) - \nabla K \rho + \rho \mathbf{g} \right]
+\]
+
+Espandiamo ora
+\[
+\begin{array}{r}
+	\nabla \cdot \left( \frac{\mathbf{Q} \otimes \mathbf{Q}}{\rho} \right)
+	= \left[
+	\frac{\partial}{\partial x} \left( \frac{q_x q_x}{\rho} \right)
+	+ \frac{\partial}{\partial y} \left( \frac{q_y q_x}{\rho} \right)
+	\right] \mathbf{e}_x
+	\\
+	+ \left[
+	\frac{\partial}{\partial x} \left( \frac{q_x q_y}{\rho} \right)
+	+ \frac{\partial}{\partial y} \left( \frac{q_y q_y}{\rho} \right)
+	\right] \mathbf{e}_y
+\end{array}
+\]
+
+nel reticolo quadrato diventa
+\[
+\begin{array}{r}
+	\nabla \cdot \left( \frac{\mathbf{Q} \otimes \mathbf{Q}}{\rho} \right)
+	= \left[
+	\frac{(q_x(\mathbf{r}+\mathbf{s}_x))^2}{2 \rho(\mathbf{r}+\mathbf{s}_x) \Delta x}
+	-\frac{(q_x(\mathbf{r}-\mathbf{s}_x))^2}{2 \rho(\mathbf{r}-\mathbf{s}_x) \Delta x}
+	+ \frac{q_y(\mathbf{r}+\mathbf{s}_y) q_x(\mathbf{r}+\mathbf{s}_y)}{2 \rho(\mathbf{r}+\mathbf{s}_y) \Delta y}
+	- \frac{q_y(\mathbf{r}-\mathbf{s}_y) q_x(\mathbf{r}-\mathbf{s}_y)}{2 \rho(\mathbf{r}-\mathbf{s}_y) \Delta y}
+	\right] \mathbf{e}_x
+	\\
+	+ \left[
+	\frac{q_x(\mathbf{r}+\mathbf{s}_x) q_y(\mathbf{r}+\mathbf{s}_x)}{2 \rho(\mathbf{r}+\mathbf{s}_x) \Delta x}
+	-\frac{q_x(\mathbf{r}-\mathbf{s}_x) q_y(\mathbf{r}-\mathbf{s}_x)}{2 \rho(\mathbf{r}-\mathbf{s}_x) \Delta x}
+	+ \frac{(q_y(\mathbf{r}+\mathbf{s}_y))^2}{2 \rho(\mathbf{r}+\mathbf{s}_y) \Delta y}
+	- \frac{(q_y(\mathbf{r}-\mathbf{s}_y))^2}{2 \rho(\mathbf{r}-\mathbf{s}_y) \Delta y}
+	\right] \mathbf{e}_y
+\end{array}
+\]
+
+Calcoliamo ora la componente $ \nabla K \rho $ nel caso del reticolo quadrato
+\[
+	\nabla K \rho
+	= K \left[
+	\frac{\rho (\mathbf{r}+\mathbf{s}_x) - \rho (\mathbf{r}-\mathbf{s}_x)}{2 \Delta x} \mathbf{e}_x
+	+ \frac{\rho (\mathbf{r}+\mathbf{s}_y) - \rho (\mathbf{r}-\mathbf{s}_y)}{2 \Delta y} \mathbf{e}_y
+	\right]
+\]
+
+
 \end{document}

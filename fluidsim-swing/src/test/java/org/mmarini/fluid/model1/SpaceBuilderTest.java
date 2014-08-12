@@ -26,8 +26,8 @@ public class SpaceBuilderTest {
 
 	private static SpaceBuilder create() {
 		final double r = 10e-3;
-		final double w = r * (2 * 3 + 1);
-		final double h = r * 2 / Math.sqrt(3) * 3 / 2 * 3;
+		final double w = r;
+		final double h = r;
 
 		final SpaceTopology t = new SpaceTopology(r);
 		final double m = FluidConstants.AMBIENT_AIR_MASS * t.getArea();
@@ -41,7 +41,7 @@ public class SpaceBuilderTest {
 
 		final Map<Point, Cell> cells = b.getCells();
 		assertThat(cells, notNullValue());
-		assertThat(cells.size(), equalTo(4 * 4));
+		assertThat(cells.size(), equalTo(4));
 		assertThat(
 				cells,
 				hasEntry(
@@ -68,11 +68,11 @@ public class SpaceBuilderTest {
 
 		final Map<Point, Cell> c = s.getCells();
 		assertThat(c, notNullValue());
-		assertThat(c.size(), equalTo(16));
+		assertThat(c.size(), equalTo(4));
 
 		final TimeFunctor[] f = s.getFunctors();
 		assertThat(f, notNullValue());
-		assertThat(f, arrayWithSize(16 + 33));
+		assertThat(f, arrayWithSize(8));
 	}
 
 	@Test
@@ -84,68 +84,23 @@ public class SpaceBuilderTest {
 
 		final Map<Point, TimeFunctor> cm = b0.getCellMap();
 		assertThat(cm, notNullValue());
-		assertThat(cm.size(), equalTo(16));
+		assertThat(cm.size(), equalTo(4));
 
 		assertThat(cm, hasKey(new Point(0, 0)));
 		assertThat(cm, hasKey(new Point(0, 1)));
-		assertThat(cm, hasKey(new Point(0, 2)));
-		assertThat(cm, hasKey(new Point(0, 3)));
 
 		assertThat(cm, hasKey(new Point(1, 0)));
 		assertThat(cm, hasKey(new Point(1, 1)));
-		assertThat(cm, hasKey(new Point(1, 2)));
-		assertThat(cm, hasKey(new Point(1, 3)));
-
-		assertThat(cm, hasKey(new Point(2, 0)));
-		assertThat(cm, hasKey(new Point(2, 1)));
-		assertThat(cm, hasKey(new Point(2, 2)));
-		assertThat(cm, hasKey(new Point(2, 3)));
-
-		assertThat(cm, hasKey(new Point(3, 0)));
-		assertThat(cm, hasKey(new Point(3, 1)));
-		assertThat(cm, hasKey(new Point(3, 2)));
-		assertThat(cm, hasKey(new Point(3, 3)));
 
 		final Map<IdPair, TimeFunctor> pm = b0.getPairMap();
 		assertThat(pm, notNullValue());
-		assertThat(pm.size(), equalTo(33));
+		assertThat(pm.size(), equalTo(4));
 
 		assertThat(pm, hasKey(new IdPair(0, 0, 0, 1)));
 		assertThat(pm, hasKey(new IdPair(0, 0, 1, 0)));
-		assertThat(pm, hasKey(new IdPair(1, 0, 1, 1)));
-		assertThat(pm, hasKey(new IdPair(1, 0, 2, 0)));
-		assertThat(pm, hasKey(new IdPair(2, 0, 2, 1)));
-		assertThat(pm, hasKey(new IdPair(2, 0, 3, 0)));
-		assertThat(pm, hasKey(new IdPair(3, 0, 3, 1)));
-
-		assertThat(pm, hasKey(new IdPair(0, 1, 1, 0)));
+		
 		assertThat(pm, hasKey(new IdPair(0, 1, 1, 1)));
-		assertThat(pm, hasKey(new IdPair(0, 1, 1, 2)));
-		assertThat(pm, hasKey(new IdPair(1, 1, 2, 0)));
-		assertThat(pm, hasKey(new IdPair(1, 1, 2, 1)));
-		assertThat(pm, hasKey(new IdPair(1, 1, 2, 2)));
-		assertThat(pm, hasKey(new IdPair(2, 1, 3, 0)));
-		assertThat(pm, hasKey(new IdPair(2, 1, 3, 1)));
-		assertThat(pm, hasKey(new IdPair(2, 1, 3, 2)));
-
-		assertThat(pm, hasKey(new IdPair(0, 2, 0, 1)));
-		assertThat(pm, hasKey(new IdPair(0, 2, 1, 2)));
-		assertThat(pm, hasKey(new IdPair(0, 2, 0, 3)));
-		assertThat(pm, hasKey(new IdPair(1, 2, 1, 1)));
-		assertThat(pm, hasKey(new IdPair(1, 2, 2, 2)));
-		assertThat(pm, hasKey(new IdPair(1, 2, 1, 3)));
-		assertThat(pm, hasKey(new IdPair(2, 2, 2, 1)));
-		assertThat(pm, hasKey(new IdPair(2, 2, 3, 2)));
-		assertThat(pm, hasKey(new IdPair(2, 2, 2, 3)));
-		assertThat(pm, hasKey(new IdPair(3, 2, 3, 1)));
-		assertThat(pm, hasKey(new IdPair(3, 2, 3, 3)));
-
-		assertThat(pm, hasKey(new IdPair(0, 3, 1, 2)));
-		assertThat(pm, hasKey(new IdPair(0, 3, 1, 3)));
-		assertThat(pm, hasKey(new IdPair(1, 3, 2, 2)));
-		assertThat(pm, hasKey(new IdPair(1, 3, 2, 3)));
-		assertThat(pm, hasKey(new IdPair(2, 3, 3, 2)));
-		assertThat(pm, hasKey(new IdPair(2, 3, 3, 3)));
+		assertThat(pm, hasKey(new IdPair(1, 0, 1, 1)));
 	}
 
 	@Test
@@ -156,7 +111,7 @@ public class SpaceBuilderTest {
 	@Test
 	public void testSimulation() {
 		final double r = 10e-3;
-		final double w = r * (2 + 1);
+		final double w = r;
 		final double h = 0;
 		// final double h = r * 2 / Math.sqrt(3) * 3 / 2;
 
