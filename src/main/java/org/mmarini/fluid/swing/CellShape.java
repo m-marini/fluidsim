@@ -16,8 +16,8 @@ import java.awt.Graphics;
  * <p>
  * Depending on the graphical size of the cell it draws a rectangular shape for
  * small cells and an exagonal shape for the other ones.
+ * </p>
  *
- * @author US00852
  * @version $Id: CellShape.java,v 1.3 2007/08/18 08:29:55 marco Exp $
  *
  */
@@ -57,7 +57,14 @@ public class CellShape {
 	 */
 	private static final int HEIGHT = 2 * RADIUS;
 
+	private static final CellShape instance = new CellShape();
+
+	public static CellShape getInstance() {
+		return instance;
+	}
+
 	private final int[][] template;
+
 	private final int[][] points;
 
 	/**
@@ -66,7 +73,7 @@ public class CellShape {
 	 * Calculates the positions of point of the exagonal shape.
 	 * </p>
 	 */
-	public CellShape() {
+	protected CellShape() {
 		template = new int[2][EDGES_COUNT];
 		points = new int[2][EDGES_COUNT];
 

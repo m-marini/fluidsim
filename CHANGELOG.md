@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- Issue #1: Reenginering project
+- Issue #4: Reactive
+
 ## [1.3.0] - 2013-10-13
 
 ### Added
