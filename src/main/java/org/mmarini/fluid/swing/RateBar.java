@@ -13,7 +13,6 @@ import static org.mmarini.fluid.swing.Messages.format;
 
 import javax.swing.JProgressBar;
 
-import org.mmarini.fluid.model.FluidHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,9 +34,6 @@ public class RateBar extends JProgressBar {
 
 	private static final long serialVersionUID = 1L;
 
-	private FluidHandler fluidHandler;
-	private long refreshTimeout;
-	private long refreshPeriod;
 	private double maxValue;
 	private double minValue;
 
@@ -47,34 +43,20 @@ public class RateBar extends JProgressBar {
 	public RateBar() {
 		maxValue = 2;
 		minValue = 1;
-		refreshPeriod = 1000;
-
 		setMaximum(200);
 		setStringPainted(true);
 	}
 
 	/**
-	 * Refreshes the bar.
-	 */
-	public void refresh() {
-		final long time = System.currentTimeMillis();
-		if (time >= refreshTimeout) {
-			refreshBar();
-			refreshTimeout = time + refreshPeriod;
-		}
-	}
-
-	/**
 	 * Refresh and repaint the bar.
 	 */
-	private void refreshBar() {
-		final double v = fluidHandler.getSimulationRate();
-		if (v > maxValue || v < minValue) {
-			scaleBar(v);
+	public void onRate(final double rate) {
+		if (rate > maxValue || rate < minValue) {
+			scaleBar(rate);
 		}
-		log.debug("Simulation Speed = " + v + " step/sec"); //$NON-NLS-1$ //$NON-NLS-2$
-		final int bar = (int) Math.round(getMaximum() * v / maxValue);
-		setString(format("RateBar.stepPerSec.message", v >= 1 ? v : 1 / v));
+		log.debug("Simulation Speed = {} step/sec", rate); //$NON-NLS-1$
+		final int bar = (int) Math.round(getMaximum() * rate / maxValue);
+		setString(format("RateBar.stepPerSec.message", rate >= 1 ? rate : 1 / rate));
 		setValue(bar);
 	}
 
@@ -101,25 +83,5 @@ public class RateBar extends JProgressBar {
 		maxValue = max;
 		log.debug("Min = " + min); //$NON-NLS-1$
 		log.debug("Max = " + max); //$NON-NLS-1$
-	}
-
-	/**
-	 * Sets the fluid handler.
-	 *
-	 * @param fluidHandler the fluidHandler to set
-	 */
-	public void setFluidHandler(final FluidHandler fluidHandler) {
-		this.fluidHandler = fluidHandler;
-	}
-
-	/**
-	 * Sets the refresh period.
-	 * <p>
-	 * The property determines how often the rate bar will be repoainted.
-	 *
-	 * @param refreshPeriod the refreshPeriod to set in msec.
-	 */
-	public void setRefreshPeriod(final long refreshPeriod) {
-		this.refreshPeriod = refreshPeriod;
 	}
 }

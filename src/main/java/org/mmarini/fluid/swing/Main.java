@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -28,8 +29,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.mmarini.fluid.model.FluidHandler;
-import org.mmarini.fluid.model.FluidHandlerImpl;
+import org.mmarini.fluid.model.CellValueFunction;
+import org.mmarini.fluid.model.FluidSimulator;
+import org.mmarini.fluid.model.FluidSimulatorImpl;
+import org.mmarini.fluid.model.FluxValueFunction;
+import org.mmarini.fluid.model.RelationValueFunction;
+import org.mmarini.fluid.model.Universe;
+import org.mmarini.fluid.model.UniverseFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -44,8 +50,28 @@ public class Main {
 	public static final String DISABLED_ICON = "selectedIcon"; //$NON-NLS-1$
 	private static final int INITIAL_WIDTH = 400;
 	private static final int INITIAL_HEIGHT = 300;
+	private static final double FLUX_OFFSET = 0.;
+	private static final double FLUX_SCALE = 600e-3;
+	private static final double SPEED_SCALE = 2000.;
+	private static final double SPEED_OFFSET = 0.;
+	private static final double CELL_OFFSET = 0.45;
+	private static final double CELL_SCALE = 10.;
+	private static final long RATE_INTERVAL = 300;
+	private static final TimeUnit RATE_INTERVAL_UNIT = TimeUnit.MILLISECONDS;
+
+	private static final UniverseFunction FluxFunc = new FluxValueFunction(FLUX_SCALE, FLUX_OFFSET);
+	private static final UniverseFunction CellFunc = new CellValueFunction(CELL_SCALE, CELL_OFFSET);
+	private static final UniverseFunction ReletionFunc = new RelationValueFunction(SPEED_SCALE, SPEED_OFFSET);
 
 	private static Logger log = LoggerFactory.getLogger(Main.class);
+
+	static double cellValue(final Universe universe, final int[] indexes) {
+		return CellFunc.getValue(universe, indexes[0], indexes[1]);
+	}
+
+	static double fluxValue(final Universe universe, final int[] indexes) {
+		return FluxFunc.getValue(universe, indexes[0], indexes[1]);
+	}
 
 	/**
 	 * @param args
@@ -54,22 +80,29 @@ public class Main {
 		new Main().start();
 	}
 
-	private JFrame frame;
-	private JToolBar toolBar;
-	private JMenuBar menuBar;
-	private GraphPane cellPane;
-	private GraphPane relationPane;
-	private GraphPane fluxPane;
-	private RateBar rateBar;
-	private Action newAction;
-	private Action openAction;
-	private Action exitAction;
-	private Action runAction;
-	private Action stepAction;
-	private Action stopAction;
-	private JFileChooser fileChooser;
-	private Runnable ticker;
-	private FluidHandler fluidHandler;
+	static double relationValue(final Universe universe, final int[] indexes) {
+		return ReletionFunc.getValue(universe, indexes[0], indexes[1]);
+	}
+
+	private final JFrame frame;
+	private final JToolBar toolBar;
+	private final JMenuBar menuBar;
+	private final GraphPane cellPane;
+	private final GraphPane relationPane;
+	private final GraphPane fluxPane;
+	private final RateBar rateBar;
+	private final Action newAction;
+	private final Action openAction;
+	private final Action exitAction;
+	private final Action runAction;
+	private final Action stepAction;
+	private final Action stopAction;
+
+	private final JFileChooser fileChooser;
+
+//	private final FluidHandler fluidHandler;
+
+	private final FluidSimulator fluidSimulator;
 
 	/**
 	 *
@@ -79,42 +112,10 @@ public class Main {
 		menuBar = new JMenuBar();
 		rateBar = new RateBar();
 		fileChooser = new JFileChooser();
-		fluxPane = new GraphPane(new GraphFunction() {
+		fluxPane = new GraphPane(Main::fluxValue);
+		relationPane = new GraphPane(Main::relationValue);
+		cellPane = new GraphPane(Main::cellValue);
 
-			@Override
-			public Dimension getSize() {
-				return fluidHandler.getSize();
-			}
-
-			@Override
-			public double getValue(final int i, final int j) {
-				return fluidHandler.getFluxValue(i, j);
-			}
-		});
-		relationPane = new GraphPane(new GraphFunction() {
-
-			@Override
-			public Dimension getSize() {
-				return fluidHandler.getSize();
-			}
-
-			@Override
-			public double getValue(final int i, final int j) {
-				return fluidHandler.getRelationValue(i, j);
-			}
-		});
-		cellPane = new GraphPane(new GraphFunction() {
-
-			@Override
-			public Dimension getSize() {
-				return fluidHandler.getSize();
-			}
-
-			@Override
-			public double getValue(final int i, final int j) {
-				return fluidHandler.getCellValue(i, j);
-			}
-		});
 		frame = new JFrame();
 
 		newAction = new AbstractAction() {
@@ -167,16 +168,12 @@ public class Main {
 			}
 
 		};
+		fluidSimulator = new FluidSimulatorImpl();
 
-		ticker = new Runnable() {
-
-			@Override
-			public void run() {
-				tick();
-			}
-
-		};
-		fluidHandler = new FluidHandlerImpl();
+		fluidSimulator.getRateFlow().sample(RATE_INTERVAL, RATE_INTERVAL_UNIT).subscribe(rateBar::onRate);
+		fluidSimulator.getUniverseFlow().subscribe(fluxPane::onUniverse);
+		fluidSimulator.getUniverseFlow().subscribe(cellPane::onUniverse);
+		fluidSimulator.getUniverseFlow().subscribe(relationPane::onUniverse);
 	}
 
 	/**
@@ -197,7 +194,7 @@ public class Main {
 	 * @throws ParserConfigurationException
 	 */
 	private void createModelBeans() throws ParserConfigurationException, SAXException, IOException {
-		fluidHandler.loadUniverseModifier(getClass().getResource(DEFAULT_MODIFIER_RESOURCE));
+		fluidSimulator.loadUniverseModifier(getClass().getResource(DEFAULT_MODIFIER_RESOURCE));
 	}
 
 	/**
@@ -222,7 +219,6 @@ public class Main {
 	private void createUIBeans() {
 		fileChooser.setFileFilter(new FileNameExtensionFilter(Messages.getString("Main.fileType.text"), //$NON-NLS-1$
 				"xml")); //$NON-NLS-1$
-		rateBar.setFluidHandler(fluidHandler);
 
 		fluxPane.init();
 		relationPane.init();
@@ -255,7 +251,7 @@ public class Main {
 	 */
 	private void createUniverse() {
 		log.debug("createUniverse"); //$NON-NLS-1$
-		fluidHandler.createNew();
+		fluidSimulator.createNew();
 	}
 
 	/**
@@ -307,7 +303,7 @@ public class Main {
 	private void open() {
 		if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
 			try {
-				fluidHandler.loadUniverseModifier(fileChooser.getSelectedFile().toURI().toURL());
+				fluidSimulator.loadUniverseModifier(fileChooser.getSelectedFile().toURI().toURL());
 				createUniverse();
 			} catch (final Exception e) {
 				log.error(e.getMessage(), e);
@@ -370,18 +366,15 @@ public class Main {
 		runAction.setEnabled(false);
 		stepAction.setEnabled(false);
 		stopAction.setEnabled(true);
-		fluidHandler.startSimulation();
-		SwingUtilities.invokeLater(ticker);
+		fluidSimulator.single();
+		SwingUtilities.invokeLater(this::tick);
 	}
 
 	/**
 	 * Perform a single simulation step.
 	 */
 	private void stepSimulate() {
-		fluidHandler.singleStepSimulation();
-		cellPane.repaint();
-		relationPane.repaint();
-		fluxPane.repaint();
+		fluidSimulator.single();
 	}
 
 	/**
@@ -389,22 +382,16 @@ public class Main {
 	 */
 	private void stopSimualtion() {
 		log.debug("stopping simulation ..."); //$NON-NLS-1$
+		fluidSimulator.stop();
 		runAction.setEnabled(true);
 		stepAction.setEnabled(true);
 		stopAction.setEnabled(false);
 	}
 
-	/**
-	 * Perform a simulation step during the real time simulation.
-	 */
 	private void tick() {
-		if (!runAction.isEnabled()) {
-			fluidHandler.simulate();
-			cellPane.repaint();
-			relationPane.repaint();
-			fluxPane.repaint();
-			rateBar.refresh();
-			SwingUtilities.invokeLater(ticker);
+		if (stopAction.isEnabled()) {
+			fluidSimulator.single();
+			SwingUtilities.invokeLater(this::tick);
 		}
 	}
 }
