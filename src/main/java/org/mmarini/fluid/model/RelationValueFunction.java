@@ -15,7 +15,7 @@ package org.mmarini.fluid.model;
  * <p>
  * The speed is modulo of the relation vector outbound the cell.
  * </p>
- * 
+ *
  * @author marco.marini@mmarini.org
  * @version $Id: RelationValueFunction.java,v 1.1.2.1 2007/08/16 08:07:29 marco
  *          Exp $
@@ -26,7 +26,7 @@ public class RelationValueFunction implements UniverseFunction {
 	private double offset;
 
 	/**
-	 * 
+	 *
 	 */
 	public RelationValueFunction() {
 	}
@@ -35,14 +35,14 @@ public class RelationValueFunction implements UniverseFunction {
 	 * @param scale
 	 * @param offset
 	 */
-	public RelationValueFunction(double scale, double offset) {
+	public RelationValueFunction(final double scale, final double offset) {
 		this.scale = scale;
 		this.offset = offset;
 	}
 
 	/**
 	 * Returns the offset of the function.
-	 * 
+	 *
 	 * @return the offset
 	 */
 	public double getOffset() {
@@ -51,7 +51,7 @@ public class RelationValueFunction implements UniverseFunction {
 
 	/**
 	 * Returns the scale of the function.
-	 * 
+	 *
 	 * @return the scale
 	 */
 	public double getScale() {
@@ -63,51 +63,45 @@ public class RelationValueFunction implements UniverseFunction {
 	 *      int, int)
 	 */
 	@Override
-	public double getValue(Universe universe, int i, int j) {
-		double v0 = getValue(universe, FluidConstants.RIGHT, i, j)
+	public double getValue(final Universe universe, final int i, final int j) {
+		final double v0 = getValue(universe, FluidConstants.RIGHT, i, j)
 				- getValue(universe, FluidConstants.LEFT, i, j);
-		double v1 = getValue(universe, FluidConstants.UP_RIGHT, i, j)
+		final double v1 = getValue(universe, FluidConstants.UP_RIGHT, i, j)
 				- getValue(universe, FluidConstants.DOWN_LEFT, i, j);
-		double v2 = getValue(universe, FluidConstants.UP_LEFT, i, j)
+		final double v2 = getValue(universe, FluidConstants.UP_LEFT, i, j)
 				- getValue(universe, FluidConstants.DOWN_RIGHT, i, j);
 		return (v0 + v1 + v2 + getOffset()) * getScale();
 	}
 
 	/**
 	 * Calculates the value of relation in a given direction.
-	 * 
-	 * @param universe
-	 *            the universe
-	 * @param direction
-	 *            the direction
-	 * @param i
-	 *            the row index
-	 * @param j
-	 *            the column index
+	 *
+	 * @param universe  the universe
+	 * @param direction the direction
+	 * @param i         the row index
+	 * @param j         the column index
 	 * @return the value
 	 */
-	private double getValue(Universe universe, int direction, int i, int j) {
-		DoubleBufferedDouble rel = universe.getRelation(direction, i, j);
+	private double getValue(final Universe universe, final int direction, final int i, final int j) {
+		final DoubleBufferedDouble rel = universe.getRelation(direction, i, j);
 		return rel != null ? rel.getValue() : 0;
 	}
 
 	/**
 	 * Sets the offset of the function.
-	 * 
-	 * @param offset
-	 *            the offset to set
+	 *
+	 * @param offset the offset to set
 	 */
-	public void setOffset(double offset) {
+	public void setOffset(final double offset) {
 		this.offset = offset;
 	}
 
 	/**
 	 * Sets the scale of the function.
-	 * 
-	 * @param scale
-	 *            the scale to set
+	 *
+	 * @param scale the scale to set
 	 */
-	public void setScale(double scale) {
+	public void setScale(final double scale) {
 		this.scale = scale;
 	}
 }

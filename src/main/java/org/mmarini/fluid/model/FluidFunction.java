@@ -33,16 +33,16 @@ package org.mmarini.fluid.model;
  * The constant kv determines the viscosity of material. A 0 value is a material
  * without viscosity.
  * </p>
- * 
+ *
  * @author marco.marini@mmarini.org
  * @version $Id: FluidFunction.java,v 1.5 2007/08/18 08:29:54 marco Exp $
- * 
+ *
  */
 public class FluidFunction extends ElasticFunction {
 	private double viscosity;
 
 	/**
-	 * 
+	 *
 	 */
 	public FluidFunction() {
 	}
@@ -51,7 +51,7 @@ public class FluidFunction extends ElasticFunction {
 	 * @param speed
 	 * @param viscosity
 	 */
-	public FluidFunction(double speed, double viscosity) {
+	public FluidFunction(final double speed, final double viscosity) {
 		super(speed);
 		this.viscosity = viscosity;
 	}
@@ -60,13 +60,13 @@ public class FluidFunction extends ElasticFunction {
 	 * @see CoefficientFunction#getB(TimeContext)
 	 */
 	@Override
-	public double getB(TimeContext timeContext) {
+	public double getB(final TimeContext timeContext) {
 		return 1 - getViscosity() * timeContext.getDeltaTime();
 	}
 
 	/**
 	 * Returns the viscosity constant.
-	 * 
+	 *
 	 * @return the viscosity
 	 */
 	public double getViscosity() {
@@ -75,11 +75,10 @@ public class FluidFunction extends ElasticFunction {
 
 	/**
 	 * Sets the viscosity constant.
-	 * 
-	 * @param viscosity
-	 *            the viscosity to set
+	 *
+	 * @param viscosity the viscosity to set
 	 */
-	public void setViscosity(double fluidity) {
+	public void setViscosity(final double fluidity) {
 		this.viscosity = fluidity;
 	}
 }

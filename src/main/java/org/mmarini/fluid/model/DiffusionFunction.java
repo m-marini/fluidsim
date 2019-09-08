@@ -18,7 +18,7 @@ public class DiffusionFunction implements CoefficientFunction {
 	private double diffusion;
 
 	/**
-	 * 
+	 *
 	 */
 	public DiffusionFunction() {
 	}
@@ -26,7 +26,7 @@ public class DiffusionFunction implements CoefficientFunction {
 	/**
 	 * @param diffusion
 	 */
-	public DiffusionFunction(double diffusion) {
+	public DiffusionFunction(final double diffusion) {
 		this.diffusion = diffusion;
 	}
 
@@ -34,7 +34,7 @@ public class DiffusionFunction implements CoefficientFunction {
 	 * @see org.mmarini.fluid.model.CoefficientFunction#getA(org.mmarini.fluid.model.TimeContext)
 	 */
 	@Override
-	public double getA(TimeContext timeContext) {
+	public double getA(final TimeContext timeContext) {
 		return diffusion;
 	}
 
@@ -42,7 +42,7 @@ public class DiffusionFunction implements CoefficientFunction {
 	 * @see org.mmarini.fluid.model.CoefficientFunction#getB(org.mmarini.fluid.model.TimeContext)
 	 */
 	@Override
-	public double getB(TimeContext timeContext) {
+	public double getB(final TimeContext timeContext) {
 		return 0;
 	}
 
@@ -50,7 +50,7 @@ public class DiffusionFunction implements CoefficientFunction {
 	 * @see org.mmarini.fluid.model.CoefficientFunction#getC(org.mmarini.fluid.model.TimeContext)
 	 */
 	@Override
-	public double getC(TimeContext timeContext) {
+	public double getC(final TimeContext timeContext) {
 		return 0;
 	}
 
@@ -62,10 +62,9 @@ public class DiffusionFunction implements CoefficientFunction {
 	}
 
 	/**
-	 * @param diffusion
-	 *            the diffusion to set
+	 * @param diffusion the diffusion to set
 	 */
-	public void setDiffusion(double diffusion) {
+	public void setDiffusion(final double diffusion) {
 		this.diffusion = diffusion;
 	}
 

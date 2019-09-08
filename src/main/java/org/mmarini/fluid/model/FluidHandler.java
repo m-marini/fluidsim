@@ -22,10 +22,10 @@ import org.xml.sax.SAXException;
  * <p>
  * The FluidHandler declares the method of the simulation use cases.
  * </p>
- * 
+ *
  * @author marco.marini@mmarini.org
  * @version $Id: FluidHandler.java,v 1.4 2007/08/18 08:29:54 marco Exp $
- * 
+ *
  */
 public interface FluidHandler {
 
@@ -36,53 +36,47 @@ public interface FluidHandler {
 
 	/**
 	 * Returns the cell value.
-	 * 
-	 * @param i
-	 *            the row index
-	 * @param j
-	 *            the colum index
+	 *
+	 * @param i the row index
+	 * @param j the colum index
 	 * @return the value
 	 */
 	public abstract double getCellValue(int i, int j);
 
 	/**
 	 * Returns the flux of a cell
-	 * 
-	 * @param i
-	 *            the row index
-	 * @param j
-	 *            the column index
+	 *
+	 * @param i the row index
+	 * @param j the column index
 	 * @return the flux value
 	 */
 	public abstract double getFluxValue(int i, int j);
 
 	/**
 	 * Returns the relation value.
-	 * 
-	 * @param i
-	 *            the row index
-	 * @param j
-	 *            the column index
+	 *
+	 * @param i the row index
+	 * @param j the column index
 	 * @return the value
 	 */
 	public abstract double getRelationValue(int i, int j);
 
 	/**
 	 * Returns the simulation rate
-	 * 
+	 *
 	 * @return the simulation rate in steps/sec
 	 */
 	public abstract double getSimulationRate();
 
 	/**
 	 * Returns the size of universe.
-	 * 
+	 *
 	 * @return the size
 	 */
 	public abstract Dimension getSize();
 
 	/**
-	 * 
+	 *
 	 * @param resource
 	 * @throws IOException
 	 * @throws SAXException

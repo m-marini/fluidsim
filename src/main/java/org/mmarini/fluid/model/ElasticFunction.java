@@ -31,16 +31,16 @@ package org.mmarini.fluid.model;
  * <p>
  * The constant k determines how high is the acceleration.
  * </p>
- * 
+ *
  * @author US00852
  * @version $Id: ElasticFunction.java,v 1.3 2007/08/18 08:29:54 marco Exp $
- * 
+ *
  */
 public class ElasticFunction implements CoefficientFunction {
 	private double speed;
 
 	/**
-	 * 
+	 *
 	 */
 	public ElasticFunction() {
 		super();
@@ -49,7 +49,7 @@ public class ElasticFunction implements CoefficientFunction {
 	/**
 	 * @param speed
 	 */
-	public ElasticFunction(double speed) {
+	public ElasticFunction(final double speed) {
 		this.speed = speed;
 	}
 
@@ -57,7 +57,7 @@ public class ElasticFunction implements CoefficientFunction {
 	 * @see CoefficientFunction#getA(TimeContext)
 	 */
 	@Override
-	public double getA(TimeContext timeContext) {
+	public double getA(final TimeContext timeContext) {
 		return speed * timeContext.getDeltaTime();
 	}
 
@@ -65,7 +65,7 @@ public class ElasticFunction implements CoefficientFunction {
 	 * @see CoefficientFunction#getB(TimeContext)
 	 */
 	@Override
-	public double getB(TimeContext timeContext) {
+	public double getB(final TimeContext timeContext) {
 		return 1;
 	}
 
@@ -73,13 +73,13 @@ public class ElasticFunction implements CoefficientFunction {
 	 * @see CoefficientFunction#getC(TimeContext)
 	 */
 	@Override
-	public double getC(TimeContext timeContext) {
+	public double getC(final TimeContext timeContext) {
 		return 0;
 	}
 
 	/**
 	 * Returns the speed.
-	 * 
+	 *
 	 * @return the speed
 	 */
 	public double getSpeed() {
@@ -88,11 +88,10 @@ public class ElasticFunction implements CoefficientFunction {
 
 	/**
 	 * Sets the speed.
-	 * 
-	 * @param speed
-	 *            the speed to set
+	 *
+	 * @param speed the speed to set
 	 */
-	public void setSpeed(double speed) {
+	public void setSpeed(final double speed) {
 		this.speed = speed;
 	}
 }

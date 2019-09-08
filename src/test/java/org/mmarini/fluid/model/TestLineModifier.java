@@ -23,13 +23,13 @@ import org.junit.Test;
 /**
  * @author marco.marini@mmarini.org
  * @version $Id: LineModifierTestVert.java,v 1.1 2007/08/18 08:28:29 marco Exp $
- * 
+ *
  */
 public class TestLineModifier {
 	private LineModifier lineModifier = new LineModifier();
 
 	/**
-	 * 
+	 *
 	 */
 	public TestLineModifier() {
 	}
@@ -50,10 +50,10 @@ public class TestLineModifier {
 	 */
 	@Test
 	public void testModify() {
-		UniverseMock universeMock = new UniverseMock();
+		final UniverseMock universeMock = new UniverseMock();
 		universeMock.setSize(new Dimension(10, 10));
 
-		CellModifierMock cellModifierMock = new CellModifierMock();
+		final CellModifierMock cellModifierMock = new CellModifierMock();
 
 		lineModifier.setCellModifier(cellModifierMock);
 		lineModifier.setX0(1);
@@ -62,12 +62,7 @@ public class TestLineModifier {
 		lineModifier.setY1(0.5);
 		lineModifier.modify(universeMock);
 		assertThat(lineModifier, notNullValue());
-		assertThat(
-				cellModifierMock,
-				hasProperty(
-						"points",
-						containsInAnyOrder(new Point(0, 9), new Point(1, 8),
-								new Point(2, 9), new Point(3, 8), new Point(4,
-										8), new Point(5, 7))));
+		assertThat(cellModifierMock, hasProperty("points", containsInAnyOrder(new Point(0, 9), new Point(1, 8),
+				new Point(2, 9), new Point(3, 8), new Point(4, 8), new Point(5, 7))));
 	}
 }

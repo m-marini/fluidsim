@@ -15,7 +15,7 @@ package org.mmarini.fluid.model;
  * <p>
  * It has a CellModifier that will be applied to the modifier cells.
  * </p>
- * 
+ *
  * @author marco.marini@mmarini.org
  * @version $Id: AbstractUniverseModifier.java,v 1.3 2007/08/18 08:29:54 marco
  *          Exp $
@@ -24,7 +24,7 @@ public abstract class AbstractUniverseModifier implements UniverseModifier {
 	private CellModifier cellModifier;
 
 	/**
-	 * 
+	 *
 	 */
 	protected AbstractUniverseModifier() {
 	}
@@ -32,13 +32,13 @@ public abstract class AbstractUniverseModifier implements UniverseModifier {
 	/**
 	 * @param cellModifier
 	 */
-	protected AbstractUniverseModifier(CellModifier cellModifier) {
+	protected AbstractUniverseModifier(final CellModifier cellModifier) {
 		this.cellModifier = cellModifier;
 	}
 
 	/**
 	 * Returns the cell modifier.
-	 * 
+	 *
 	 * @return the cellModifier
 	 */
 	public CellModifier getCellModifier() {
@@ -47,11 +47,10 @@ public abstract class AbstractUniverseModifier implements UniverseModifier {
 
 	/**
 	 * Sets the cell modifier.
-	 * 
-	 * @param modifier
-	 *            the cellModifier to set
+	 *
+	 * @param modifier the cellModifier to set
 	 */
-	public void setCellModifier(CellModifier modifier) {
+	public void setCellModifier(final CellModifier modifier) {
 		this.cellModifier = modifier;
 	}
 }

@@ -16,13 +16,13 @@ import java.util.List;
 /**
  * @author marco.marini@mmarini.org
  * @version $Id: CellModifierMock.java,v 1.1 2007/08/18 08:28:29 marco Exp $
- * 
+ *
  */
 public class CellModifierMock implements CellModifier {
-	private List<Point> points;
+	private final List<Point> points;
 
 	/**
-	 * 
+	 *
 	 */
 	public CellModifierMock() {
 		points = new ArrayList<Point>();
@@ -40,7 +40,7 @@ public class CellModifierMock implements CellModifier {
 	 *      int, int)
 	 */
 	@Override
-	public void modify(Universe universe, int i, int j) {
+	public void modify(final Universe universe, final int i, final int j) {
 		points.add(new Point(i, j));
 	}
 

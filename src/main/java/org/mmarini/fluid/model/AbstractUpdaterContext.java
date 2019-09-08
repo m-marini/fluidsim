@@ -14,7 +14,7 @@ package org.mmarini.fluid.model;
  * <p>
  * It mantains the time context, the subject and the adjacent values.
  * </p>
- * 
+ *
  * @author marco
  * @version $Id: AbstractUpdaterContext.java,v 1.3 2007/08/18 08:29:54 marco Exp
  *          $
@@ -28,7 +28,7 @@ public abstract class AbstractUpdaterContext {
 
 	/**
 	 * Returns the adjacent values.
-	 * 
+	 *
 	 * @return the adjacent values
 	 */
 	public DoubleBufferedDouble[] getAdjacents() {
@@ -37,7 +37,7 @@ public abstract class AbstractUpdaterContext {
 
 	/**
 	 * Returns the subject.
-	 * 
+	 *
 	 * @return the subject
 	 */
 	public DoubleBufferedDouble getSubject() {
@@ -46,7 +46,7 @@ public abstract class AbstractUpdaterContext {
 
 	/**
 	 * Returns the time context.
-	 * 
+	 *
 	 * @return the timeContext
 	 */
 	public TimeContext getTimeContext() {
@@ -55,31 +55,28 @@ public abstract class AbstractUpdaterContext {
 
 	/**
 	 * Sets the adjacent values
-	 * 
-	 * @param adjacents
-	 *            the adjacents to set
+	 *
+	 * @param adjacents the adjacents to set
 	 */
-	public void setAdjacents(DoubleBufferedDouble[] relative) {
+	public void setAdjacents(final DoubleBufferedDouble[] relative) {
 		this.adjacents = relative;
 	}
 
 	/**
 	 * Sets the subject.
-	 * 
-	 * @param subject
-	 *            the subject to set
+	 *
+	 * @param subject the subject to set
 	 */
-	public void setSubject(DoubleBufferedDouble subject) {
+	public void setSubject(final DoubleBufferedDouble subject) {
 		this.subject = subject;
 	}
 
 	/**
 	 * Sets the time context.
-	 * 
-	 * @param timeContext
-	 *            the timeContext to set
+	 *
+	 * @param timeContext the timeContext to set
 	 */
-	public void setTimeContext(TimeContext timeContext) {
+	public void setTimeContext(final TimeContext timeContext) {
 		this.timeContext = timeContext;
 	}
 }

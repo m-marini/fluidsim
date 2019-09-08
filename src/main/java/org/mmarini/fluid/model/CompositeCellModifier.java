@@ -19,14 +19,14 @@ import java.util.List;
  * <p>
  * It mantains a list of cell modifiers and applies them in the list order.
  * </p>
- * 
+ *
  * @author marco.marini@mmarini.org
  * @version $Id: CompositeCellModifier.java,v 1.3 2007/08/18 08:29:54 marco Exp
  *          $
- * 
+ *
  */
 public class CompositeCellModifier implements CellModifier {
-	private List<CellModifier> list;
+	private final List<CellModifier> list;
 
 	/**
 	 *
@@ -36,27 +36,27 @@ public class CompositeCellModifier implements CellModifier {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param modifiers
 	 */
-	public CompositeCellModifier(CellModifier... modifiers) {
+	public CompositeCellModifier(final CellModifier... modifiers) {
 		this();
-		for (CellModifier m : modifiers) {
+		for (final CellModifier m : modifiers) {
 			list.add(m);
 		}
 	}
 
 	/**
-	 * 
+	 *
 	 * @param list
 	 */
-	public CompositeCellModifier(Collection<CellModifier> list) {
+	public CompositeCellModifier(final Collection<CellModifier> list) {
 		this.list = new ArrayList<CellModifier>(list);
 	}
 
 	/**
 	 * Returns the list of modifiers
-	 * 
+	 *
 	 * @return the list
 	 */
 	public List<CellModifier> getList() {
@@ -67,8 +67,8 @@ public class CompositeCellModifier implements CellModifier {
 	 * Modifies the cell applibg all the modifier in the list.
 	 */
 	@Override
-	public void modify(Universe universe, int i, int j) {
-		for (Iterator<CellModifier> iter = getList().iterator(); iter.hasNext();) {
+	public void modify(final Universe universe, final int i, final int j) {
+		for (final Iterator<CellModifier> iter = getList().iterator(); iter.hasNext();) {
 			iter.next().modify(universe, i, j);
 		}
 	}

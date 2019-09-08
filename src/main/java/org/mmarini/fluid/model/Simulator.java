@@ -20,7 +20,7 @@ package org.mmarini.fluid.model;
  * <p>
  * The single step simulation runs a single step with a fix interval.
  * </p>
- * 
+ *
  * @author marco.marini@mmarini.org
  * @version $Id: Simulator.java,v 1.4 2007/08/18 08:29:54 marco Exp $
  */
@@ -35,7 +35,7 @@ public class Simulator {
 	private long lastElapsed;
 
 	/**
-	 * 
+	 *
 	 */
 	public Simulator() {
 	}
@@ -45,8 +45,7 @@ public class Simulator {
 	 * @param simulationRate
 	 * @param minElapsed
 	 */
-	public Simulator(double singleStepTime, double simulationRate,
-			long minElapsed) {
+	public Simulator(final double singleStepTime, final double simulationRate, final long minElapsed) {
 		this.singleStepInterval = singleStepTime;
 		this.simulationRate = simulationRate;
 		this.minInterval = minElapsed;
@@ -54,7 +53,7 @@ public class Simulator {
 
 	/**
 	 * Returns the last simulation step count.
-	 * 
+	 *
 	 * @return the lastCount
 	 */
 	public int getLastCount() {
@@ -63,7 +62,7 @@ public class Simulator {
 
 	/**
 	 * Returns the last simulation interval.
-	 * 
+	 *
 	 * @return the lastElapsed in msec.
 	 */
 	public long getLastElapsed() {
@@ -71,24 +70,22 @@ public class Simulator {
 	}
 
 	/**
-	 * @param minElapsed
-	 *            the minElapsed to set
+	 * @param minElapsed the minElapsed to set
 	 */
-	public void setMinInterval(long minElapsed) {
+	public void setMinInterval(final long minElapsed) {
 		this.minInterval = minElapsed;
 	}
 
 	/**
 	 * Sets the simulation rate.
 	 * <p>
-	 * A 1 value means a real time simulation, a grater value means an
-	 * accelerated simulation.
+	 * A 1 value means a real time simulation, a grater value means an accelerated
+	 * simulation.
 	 * </p>
-	 * 
-	 * @param simulationRate
-	 *            the simulationRate to set
+	 *
+	 * @param simulationRate the simulationRate to set
 	 */
-	public void setSimulationRate(double simulationRate) {
+	public void setSimulationRate(final double simulationRate) {
 		this.simulationRate = simulationRate;
 	}
 
@@ -97,32 +94,31 @@ public class Simulator {
 	 * <p>
 	 * The value is used in the single step simulation.
 	 * </p>
-	 * 
-	 * @param singleStepTime
-	 *            the singleStepTime to set in seconds
+	 *
+	 * @param singleStepTime the singleStepTime to set in seconds
 	 */
-	public void setSingleStepInterval(double singleStepTime) {
+	public void setSingleStepInterval(final double singleStepTime) {
 		this.singleStepInterval = singleStepTime;
 	}
 
 	/**
 	 * Performs a real time simulation cycle.
-	 * 
-	 * @param universe
-	 *            the universe to simulate
+	 *
+	 * @param universe the universe to simulate
 	 */
-	public void simulate(Universe universe) {
-		long lastTime = this.lastTime;
+	public void simulate(final Universe universe) {
+		final long lastTime = this.lastTime;
 		long lastStepTime = lastTime;
 		int stepCount = 0;
 		long elapsed = 0;
 		for (;;) {
-			long time = System.currentTimeMillis();
+			final long time = System.currentTimeMillis();
 			elapsed = time - lastTime;
-			if (elapsed > minInterval && stepCount > 1)
+			if (elapsed > minInterval && stepCount > 1) {
 				break;
-			long stepElaps = time - lastStepTime;
-			double dt = simulationRate * stepElaps / 1000;
+			}
+			final long stepElaps = time - lastStepTime;
+			final double dt = simulationRate * stepElaps / 1000;
 			simulate(universe, dt);
 			++stepCount;
 			lastStepTime = time;
@@ -134,22 +130,20 @@ public class Simulator {
 
 	/**
 	 * Performs a simulation step.
-	 * 
-	 * @param universe
-	 *            the universe to simulate
-	 * 
+	 *
+	 * @param universe the universe to simulate
+	 *
 	 */
-	private void simulate(Universe universe, double time) {
+	private void simulate(final Universe universe, final double time) {
 		universe.simulate(time);
 	}
 
 	/**
 	 * Performs a single step simulation
-	 * 
-	 * @param universe
-	 *            the universe to simulate
+	 *
+	 * @param universe the universe to simulate
 	 */
-	public void singleStepSimulation(Universe universe) {
+	public void singleStepSimulation(final Universe universe) {
 		simulate(universe, singleStepInterval);
 	}
 

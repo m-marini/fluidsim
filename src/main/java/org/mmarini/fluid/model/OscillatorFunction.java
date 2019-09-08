@@ -18,7 +18,7 @@ package org.mmarini.fluid.model;
  * <li>C = k * sin(&omega;t) / 2 + 1 / 2</li>
  * </ul>
  * </p>
- * 
+ *
  * @author marco.marini@mmarini.org
  * @version $Id: OscillatorFunction.java,v 1.3 2007/08/18 08:29:54 marco Exp $
  */
@@ -30,7 +30,7 @@ public class OscillatorFunction implements CoefficientFunction {
 	private double value;
 
 	/**
-	 * 
+	 *
 	 */
 	public OscillatorFunction() {
 	}
@@ -39,7 +39,7 @@ public class OscillatorFunction implements CoefficientFunction {
 	 * @param value
 	 * @param period
 	 */
-	public OscillatorFunction(double value, double period) {
+	public OscillatorFunction(final double value, final double period) {
 		this.value = value;
 		this.period = period;
 	}
@@ -48,7 +48,7 @@ public class OscillatorFunction implements CoefficientFunction {
 	 * @see CoefficientFunction#getA(TimeContext)
 	 */
 	@Override
-	public double getA(TimeContext timeContext) {
+	public double getA(final TimeContext timeContext) {
 		return 0;
 	}
 
@@ -56,7 +56,7 @@ public class OscillatorFunction implements CoefficientFunction {
 	 * @see CoefficientFunction#getB(TimeContext)
 	 */
 	@Override
-	public double getB(TimeContext timeContext) {
+	public double getB(final TimeContext timeContext) {
 		return 0;
 	}
 
@@ -64,14 +64,13 @@ public class OscillatorFunction implements CoefficientFunction {
 	 * @see CoefficientFunction#getC(TimeContext)
 	 */
 	@Override
-	public double getC(TimeContext timeContext) {
-		return value * Math.sin(PI2 * timeContext.getTime() / period) * 0.5
-				+ 0.5;
+	public double getC(final TimeContext timeContext) {
+		return value * Math.sin(PI2 * timeContext.getTime() / period) * 0.5 + 0.5;
 	}
 
 	/**
 	 * Returns the period of function
-	 * 
+	 *
 	 * @return the period in seconds
 	 */
 	public double getPeriod() {
@@ -80,7 +79,7 @@ public class OscillatorFunction implements CoefficientFunction {
 
 	/**
 	 * Returns the value of function.
-	 * 
+	 *
 	 * @return the value
 	 */
 	public double getValue() {
@@ -89,21 +88,19 @@ public class OscillatorFunction implements CoefficientFunction {
 
 	/**
 	 * Sets the period of function.
-	 * 
-	 * @param period
-	 *            the period to set in seconds
+	 *
+	 * @param period the period to set in seconds
 	 */
-	public void setPeriod(double period) {
+	public void setPeriod(final double period) {
 		this.period = period;
 	}
 
 	/**
 	 * Sets the value of function.
-	 * 
-	 * @param value
-	 *            the value to set
+	 *
+	 * @param value the value to set
 	 */
-	public void setValue(double value) {
+	public void setValue(final double value) {
 		this.value = value;
 	}
 }

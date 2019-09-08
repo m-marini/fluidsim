@@ -20,7 +20,7 @@ package org.mmarini.fluid.model;
  * <p>
  * It uses a delegation function to calculate the coefficents.
  * </p>
- * 
+ *
  * @author marco.marini@mmarini.org
  * @version $Id: RelationUpdateContext.java,v 1.2.2.2 2007/08/14 20:31:30 marco
  *          Exp $
@@ -37,18 +37,17 @@ public class CellUpdateContext extends AbstractUpdaterContext {
 
 	/**
 	 * Returns the A coefficent for a given direction.
-	 * 
-	 * @param direction
-	 *            the direction
+	 *
+	 * @param direction the direction
 	 * @return the value
 	 */
-	public double getA(int direction) {
+	public double getA(final int direction) {
 		return function.getA(direction, getTimeContext());
 	}
 
 	/**
 	 * Returns the B coefficent
-	 * 
+	 *
 	 * @return the value
 	 */
 	public double getB() {
@@ -57,7 +56,7 @@ public class CellUpdateContext extends AbstractUpdaterContext {
 
 	/**
 	 * Returns the C coefficient
-	 * 
+	 *
 	 * @return the value
 	 */
 	public double getC() {
@@ -66,7 +65,7 @@ public class CellUpdateContext extends AbstractUpdaterContext {
 
 	/**
 	 * Return the delegation function
-	 * 
+	 *
 	 * @return the function
 	 */
 	public CellFunction getFunction() {
@@ -75,11 +74,10 @@ public class CellUpdateContext extends AbstractUpdaterContext {
 
 	/**
 	 * Sets the delegation function
-	 * 
-	 * @param function
-	 *            the function to set
+	 *
+	 * @param function the function to set
 	 */
-	public void setFunction(CellFunction function) {
+	public void setFunction(final CellFunction function) {
 		this.function = function;
 	}
 }

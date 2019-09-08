@@ -12,10 +12,10 @@ package org.mmarini.fluid.model;
 /**
  * This cell modifier sets constant values to the cell value and the relation
  * values.
- * 
+ *
  * @author marco.marini@mmarini.org
  * @version $Id: ValueCellModifier.java,v 1.3 2007/08/18 08:29:55 marco Exp $
- * 
+ *
  */
 public class ValueCellModifier implements CellModifier {
 	private double cellValue;
@@ -24,7 +24,7 @@ public class ValueCellModifier implements CellModifier {
 	private double upLeftRelation;
 
 	/**
-	 * 
+	 *
 	 */
 	public ValueCellModifier() {
 	}
@@ -35,8 +35,8 @@ public class ValueCellModifier implements CellModifier {
 	 * @param upRightRelation
 	 * @param upLeftRelation
 	 */
-	public ValueCellModifier(double cellValue, double rightRelation,
-			double upRightRelation, double upLeftRelation) {
+	public ValueCellModifier(final double cellValue, final double rightRelation, final double upRightRelation,
+			final double upLeftRelation) {
 		this.cellValue = cellValue;
 		this.rightRelation = rightRelation;
 		this.upRightRelation = upRightRelation;
@@ -51,14 +51,14 @@ public class ValueCellModifier implements CellModifier {
 	}
 
 	/**
-	 * Modifies the cell setting contant values to the cell value and the
-	 * relations values.
-	 * 
+	 * Modifies the cell setting contant values to the cell value and the relations
+	 * values.
+	 *
 	 * @see org.mmarini.fluid.model.CellModifier#modify(org.mmarini.fluid.model.Universe,
 	 *      int, int)
 	 */
 	@Override
-	public void modify(Universe universe, int i, int j) {
+	public void modify(final Universe universe, final int i, final int j) {
 		DoubleBufferedDouble function = universe.getCell(i, j);
 		function.setNextValue(cellValue);
 		function.swap();

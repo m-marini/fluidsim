@@ -17,7 +17,7 @@ package org.mmarini.fluid.model;
  * <p>
  * &rho;(t+&Delta;t)=&Sigma; &gamma;(i) * A(i,t) + &rho;(t) * B(t) + C(t)
  * </p>
- * 
+ *
  * @author marco.marini@mmarini.org
  * @version $Id: RelationUpdateContext.java,v 1.3 2007/08/18 08:29:54 marco Exp
  *          $
@@ -42,22 +42,21 @@ public class RelationUpdateContext extends AbstractUpdaterContext {
 	 * <li>1 for the adjacent cell)</li>
 	 * </ul>
 	 * </p>
-	 * 
-	 * @param i
-	 *            the index index
+	 *
+	 * @param i the index index
 	 * @return the constant value
 	 */
-	public double getA(int i) {
+	public double getA(final int i) {
 		return getFunction().getA(i, getTimeContext());
 	}
 
 	/**
 	 * Returns the C constant.
 	 * <p>
-	 * The B constant is the constant term in the relation function relative to
-	 * the previous relation value.
+	 * The B constant is the constant term in the relation function relative to the
+	 * previous relation value.
 	 * </p>
-	 * 
+	 *
 	 * @return the constant value
 	 */
 	public double getB() {
@@ -69,7 +68,7 @@ public class RelationUpdateContext extends AbstractUpdaterContext {
 	 * <p>
 	 * The C constant is the constant term in the relation function.
 	 * </p>
-	 * 
+	 *
 	 * @return the constant value
 	 */
 	public double getC() {
@@ -78,7 +77,7 @@ public class RelationUpdateContext extends AbstractUpdaterContext {
 
 	/**
 	 * Returns the delegated function.
-	 * 
+	 *
 	 * @return the function
 	 */
 	public RelationFunction getFunction() {
@@ -87,11 +86,10 @@ public class RelationUpdateContext extends AbstractUpdaterContext {
 
 	/**
 	 * Sets the delegate function.
-	 * 
-	 * @param function
-	 *            the function to set
+	 *
+	 * @param function the function to set
 	 */
-	public void setFunction(RelationFunction function) {
+	public void setFunction(final RelationFunction function) {
 		this.function = function;
 	}
 }

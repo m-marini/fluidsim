@@ -42,107 +42,90 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 public class FluidParserTest {
-	private static Matcher<Object> has2Points(double x0, double y0, double x1,
-			double y1) {
-		return allOf(hasProperty("x0", equalTo(x0)),
-				hasProperty("y0", equalTo(y0)), hasProperty("x1", equalTo(x1)),
+	private static Matcher<Object> has2Points(final double x0, final double y0, final double x1, final double y1) {
+		return allOf(hasProperty("x0", equalTo(x0)), hasProperty("y0", equalTo(y0)), hasProperty("x1", equalTo(x1)),
 				hasProperty("y1", equalTo(y1)));
 	}
 
-	private static Matcher<? super UniverseModifier> hasCellFunction(
-			Matcher<Object> matcher) {
+	private static Matcher<? super UniverseModifier> hasCellFunction(final Matcher<Object> matcher) {
 		return hasFunctionModifier(hasProperty("cellFunction", matcher));
 	}
 
-	private static Matcher<? super UniverseModifier> hasF1(
-			Matcher<Object> matcher) {
+	private static Matcher<? super UniverseModifier> hasF1(final Matcher<Object> matcher) {
 		return hasRect1(hasProperty("cellModifier", matcher));
 	}
 
-	private static Matcher<? super UniverseModifier> hasF1Group(
-			Matcher<Object> matcher) {
+	private static Matcher<? super UniverseModifier> hasF1Group(final Matcher<Object> matcher) {
 		return hasF1(hasProperty("list", hasItemAt(1, 2, matcher)));
 	}
 
-	private static Matcher<? super UniverseModifier> hasFunction1(
-			Matcher<Object> matcher) {
+	private static Matcher<? super UniverseModifier> hasFunction1(final Matcher<Object> matcher) {
 		return hasCellFunction(hasProperty("function", matcher));
 	}
 
-	private static Matcher<? super UniverseModifier> hasFunction2(
-			Matcher<Object> matcher) {
+	private static Matcher<? super UniverseModifier> hasFunction2(final Matcher<Object> matcher) {
 		return hasRelationFunction(hasProperty("function", matcher));
 	}
 
-	private static Matcher<? super UniverseModifier> hasFunctionModifier(
-			Matcher<Object> matcher) {
+	private static Matcher<? super UniverseModifier> hasFunctionModifier(final Matcher<Object> matcher) {
 		return hasF1(hasListWithItemAt(0, 2, matcher));
 	}
 
-	private static Matcher<? super UniverseModifier> hasFunctionN(int index,
-			Matcher<Object> matcher) {
+	private static Matcher<? super UniverseModifier> hasFunctionN(final int index, final Matcher<Object> matcher) {
 		return hasRelationFunctionN(index, hasProperty("function", matcher));
 	}
 
-	private static Matcher<? super UniverseModifier> hasGroup1(
-			Matcher<Object> matcher) {
+	private static Matcher<? super UniverseModifier> hasGroup1(final Matcher<Object> matcher) {
 		return hasListWithItemAt(1, 2, matcher);
 	}
 
-	private static <E> Matcher<Iterable<? extends E>> hasItemAt(int idx,
-			int size, Matcher<? super E> matcher) {
-		List<Matcher<? super E>> list = new ArrayList<Matcher<? super E>>();
+	private static <E> Matcher<Iterable<? extends E>> hasItemAt(final int idx, final int size,
+			final Matcher<? super E> matcher) {
+		final List<Matcher<? super E>> list = new ArrayList<Matcher<? super E>>();
 		for (int i = 0; i < size; ++i) {
-			if (i == idx)
+			if (i == idx) {
 				list.add(matcher);
-			else
+			} else {
 				list.add(anything());
+			}
 		}
 		return contains(list);
 	}
 
-	private static Matcher<? super UniverseModifier> hasLine(
-			Matcher<Object> matcher) {
+	private static Matcher<? super UniverseModifier> hasLine(final Matcher<Object> matcher) {
 		return hasGroup1(hasListWithItemAt(1, 2, matcher));
 	}
 
-	private static Matcher<Object> hasListWithItemAt(int index, int size,
-			Matcher<Object> matcher) {
+	private static Matcher<Object> hasListWithItemAt(final int index, final int size, final Matcher<Object> matcher) {
 		return hasProperty("list", hasItemAt(index, size, matcher));
 	}
 
-	private static Matcher<? super UniverseModifier> hasPoint(
-			Matcher<Object> matcher) {
+	private static Matcher<? super UniverseModifier> hasPoint(final Matcher<Object> matcher) {
 		return hasGroup1(hasListWithItemAt(0, 2, matcher));
 	}
 
-	private static Matcher<? super UniverseModifier> hasRect1(
-			Matcher<Object> other) {
+	private static Matcher<? super UniverseModifier> hasRect1(final Matcher<Object> other) {
 		return hasListWithItemAt(0, 2, other);
 	}
 
-	private static Matcher<? super UniverseModifier> hasRelationCellModifier(
-			Matcher<Object> matcher) {
+	private static Matcher<? super UniverseModifier> hasRelationCellModifier(final Matcher<Object> matcher) {
 		return hasPoint(hasProperty("cellModifier", matcher));
 	}
 
-	private static Matcher<? super UniverseModifier> hasRelationFunction(
-			Matcher<Object> matcher) {
+	private static Matcher<? super UniverseModifier> hasRelationFunction(final Matcher<Object> matcher) {
 		return hasFunctionModifier(hasProperty("relationFunction", matcher));
 	}
 
-	private static Matcher<? super UniverseModifier> hasRelationFunctionN(
-			int index, Matcher<Object> matcher) {
+	private static Matcher<? super UniverseModifier> hasRelationFunctionN(final int index,
+			final Matcher<Object> matcher) {
 		return hasRelationCellModifier(hasListWithItemAt(index, 6, matcher));
 	}
 
-	private static Matcher<? super UniverseModifier> hasValueCellModifier3(
-			Matcher<Object> matcher) {
+	private static Matcher<? super UniverseModifier> hasValueCellModifier3(final Matcher<Object> matcher) {
 		return hasF1Group(hasListWithItemAt(0, 2, matcher));
 	}
 
-	private static Matcher<? super UniverseModifier> hasValueCellModifier4(
-			Matcher<Object> matcher) {
+	private static Matcher<? super UniverseModifier> hasValueCellModifier4(final Matcher<Object> matcher) {
 		return hasF1Group(hasListWithItemAt(1, 2, matcher));
 	}
 
@@ -150,10 +133,9 @@ public class FluidParserTest {
 	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
-	public void testParse() throws MalformedURLException,
-			ParserConfigurationException, SAXException, IOException {
-		FluidParser p = new FluidParser();
-		UniverseModifier m = p.parse(getClass().getResource("/fluid-test.xml"));
+	public void testParse() throws MalformedURLException, ParserConfigurationException, SAXException, IOException {
+		final FluidParser p = new FluidParser();
+		final UniverseModifier m = p.parse(getClass().getResource("/fluid-test.xml"));
 
 		assertThat(m, notNullValue());
 		assertThat(m, instanceOf(CompositeModifier.class));
@@ -170,23 +152,18 @@ public class FluidParserTest {
 		assertThat(m, hasFunction1(instanceOf(ConstantFunction.class)));
 		assertThat(m, hasFunction1(hasProperty("value", equalTo(1.))));
 
-		assertThat(m,
-				hasRelationFunction(instanceOf(DefaultRelationFunction.class)));
+		assertThat(m, hasRelationFunction(instanceOf(DefaultRelationFunction.class)));
 
 		assertThat(m, hasFunction2(instanceOf(ConstantFunction.class)));
 		assertThat(m, hasFunction2(hasProperty("value", equalTo(2.))));
 
 		assertThat(m, hasF1Group(instanceOf(CompositeCellModifier.class)));
 
-		assertThat(m,
-				hasValueCellModifier3(instanceOf(ValueCellModifier.class)));
-		assertThat(m,
-				hasValueCellModifier3(hasProperty("cellValue", equalTo(3.))));
+		assertThat(m, hasValueCellModifier3(instanceOf(ValueCellModifier.class)));
+		assertThat(m, hasValueCellModifier3(hasProperty("cellValue", equalTo(3.))));
 
-		assertThat(m,
-				hasValueCellModifier4(instanceOf(ValueCellModifier.class)));
-		assertThat(m,
-				hasValueCellModifier4(hasProperty("cellValue", equalTo(4.))));
+		assertThat(m, hasValueCellModifier4(instanceOf(ValueCellModifier.class)));
+		assertThat(m, hasValueCellModifier4(hasProperty("cellValue", equalTo(4.))));
 
 		assertThat(m, hasGroup1(instanceOf(CompositeModifier.class)));
 
@@ -194,53 +171,34 @@ public class FluidParserTest {
 		assertThat(m, hasPoint(hasProperty("x", equalTo(24.))));
 		assertThat(m, hasPoint(hasProperty("y", equalTo(25.))));
 
-		assertThat(m,
-				hasRelationCellModifier(instanceOf(RelationCellModifier.class)));
+		assertThat(m, hasRelationCellModifier(instanceOf(RelationCellModifier.class)));
 
-		assertThat(
-				m,
-				hasRelationFunctionN(0,
-						instanceOf(DefaultRelationFunction.class)));
+		assertThat(m, hasRelationFunctionN(0, instanceOf(DefaultRelationFunction.class)));
 
 		assertThat(m, hasFunctionN(0, instanceOf(ConservativeFunction.class)));
 
-		assertThat(
-				m,
-				hasRelationFunctionN(1,
-						instanceOf(DefaultRelationFunction.class)));
+		assertThat(m, hasRelationFunctionN(1, instanceOf(DefaultRelationFunction.class)));
 
 		assertThat(m, hasFunctionN(1, instanceOf(ConstantFunction.class)));
 		assertThat(m, hasFunctionN(1, hasProperty("value", equalTo(0.))));
 
-		assertThat(
-				m,
-				hasRelationFunctionN(2,
-						instanceOf(DefaultRelationFunction.class)));
+		assertThat(m, hasRelationFunctionN(2, instanceOf(DefaultRelationFunction.class)));
 
 		assertThat(m, hasFunctionN(2, instanceOf(DiffusionFunction.class)));
 		assertThat(m, hasFunctionN(2, hasProperty("diffusion", equalTo(5.))));
 
-		assertThat(
-				m,
-				hasRelationFunctionN(3,
-						instanceOf(DefaultRelationFunction.class)));
+		assertThat(m, hasRelationFunctionN(3, instanceOf(DefaultRelationFunction.class)));
 
 		assertThat(m, hasFunctionN(3, instanceOf(ElasticFunction.class)));
 		assertThat(m, hasFunctionN(3, hasProperty("speed", equalTo(6.))));
 
-		assertThat(
-				m,
-				hasRelationFunctionN(4,
-						instanceOf(DefaultRelationFunction.class)));
+		assertThat(m, hasRelationFunctionN(4, instanceOf(DefaultRelationFunction.class)));
 
 		assertThat(m, hasFunctionN(4, instanceOf(FluidFunction.class)));
 		assertThat(m, hasFunctionN(4, hasProperty("speed", equalTo(7.))));
 		assertThat(m, hasFunctionN(4, hasProperty("viscosity", equalTo(8.))));
 
-		assertThat(
-				m,
-				hasRelationFunctionN(5,
-						instanceOf(DefaultRelationFunction.class)));
+		assertThat(m, hasRelationFunctionN(5, instanceOf(DefaultRelationFunction.class)));
 
 		assertThat(m, hasFunctionN(5, instanceOf(OscillatorFunction.class)));
 		assertThat(m, hasFunctionN(5, hasProperty("value", equalTo(9.))));
@@ -253,11 +211,10 @@ public class FluidParserTest {
 	}
 
 	@Test
-	public void testParseBad() throws MalformedURLException,
-			ParserConfigurationException, SAXException, IOException {
+	public void testParseBad() throws MalformedURLException, ParserConfigurationException, SAXException, IOException {
 		thrown.expect(SAXParseException.class);
 		thrown.expectMessage(containsString("bad value"));
-		FluidParser p = new FluidParser();
+		final FluidParser p = new FluidParser();
 		p.parse(getClass().getResource("/fluid-test-bad.xml"));
 	}
 

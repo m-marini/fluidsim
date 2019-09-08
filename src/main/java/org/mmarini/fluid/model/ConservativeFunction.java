@@ -24,34 +24,34 @@ package org.mmarini.fluid.model;
  * <li>c = 0</li>
  * </ul>
  * </p>
- * 
+ *
  * @author US00852
  * @version $Id: ConservativeFunction.java,v 1.3 2007/08/18 08:29:54 marco Exp $
- * 
+ *
  */
 public class ConservativeFunction implements CoefficientFunction {
 
 	/**
-         * 
-         */
+	     *
+	     */
 	@Override
-	public double getA(TimeContext timeContext) {
+	public double getA(final TimeContext timeContext) {
 		return timeContext.getDeltaTime();
 	}
 
 	/**
-         * 
-         */
+	     *
+	     */
 	@Override
-	public double getB(TimeContext timeContext) {
+	public double getB(final TimeContext timeContext) {
 		return 1;
 	}
 
 	/**
-         * 
-         */
+	     *
+	     */
 	@Override
-	public double getC(TimeContext timeContext) {
+	public double getC(final TimeContext timeContext) {
 		return 0;
 	}
 }

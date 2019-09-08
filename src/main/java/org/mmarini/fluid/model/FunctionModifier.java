@@ -16,17 +16,17 @@ package org.mmarini.fluid.model;
  * <p>
  * It is used to set the material of the universe.
  * </p>
- * 
+ *
  * @author marco.marini@mmarini.org
  * @version $Id: FunctionModifier.java,v 1.3 2007/08/18 08:29:54 marco Exp $
- * 
+ *
  */
 public class FunctionModifier implements CellModifier {
 	private CellFunction cellFunction;
 	private RelationFunction relationFunction;
 
 	/**
-	 * 
+	 *
 	 */
 	public FunctionModifier() {
 	}
@@ -35,15 +35,14 @@ public class FunctionModifier implements CellModifier {
 	 * @param cellFunction
 	 * @param relationFunction
 	 */
-	public FunctionModifier(CellFunction cellFunction,
-			RelationFunction relationFunction) {
+	public FunctionModifier(final CellFunction cellFunction, final RelationFunction relationFunction) {
 		this.cellFunction = cellFunction;
 		this.relationFunction = relationFunction;
 	}
 
 	/**
 	 * Returns the cell function.
-	 * 
+	 *
 	 * @return the cellFunction
 	 */
 	public CellFunction getCellFunction() {
@@ -52,7 +51,7 @@ public class FunctionModifier implements CellModifier {
 
 	/**
 	 * Returns the relation function
-	 * 
+	 *
 	 * @return the relationFunction
 	 */
 	public RelationFunction getRelationFunction() {
@@ -64,30 +63,30 @@ public class FunctionModifier implements CellModifier {
 	 *      int, int)
 	 */
 	@Override
-	public void modify(Universe universe, int i, int j) {
-		if (cellFunction != null)
+	public void modify(final Universe universe, final int i, final int j) {
+		if (cellFunction != null) {
 			universe.setCellFunction(i, j, cellFunction);
-		if (relationFunction != null)
+		}
+		if (relationFunction != null) {
 			universe.setRelationFunction(i, j, relationFunction);
+		}
 	}
 
 	/**
 	 * Sets the cell function.
-	 * 
-	 * @param cellFunction
-	 *            the cellFunction to set or null if not present
+	 *
+	 * @param cellFunction the cellFunction to set or null if not present
 	 */
-	public void setCellFunction(CellFunction function) {
+	public void setCellFunction(final CellFunction function) {
 		this.cellFunction = function;
 	}
 
 	/**
 	 * Sets the relation function.
-	 * 
-	 * @param relationFunction
-	 *            the relationFunction to set or null if not present
+	 *
+	 * @param relationFunction the relationFunction to set or null if not present
 	 */
-	public void setRelationFunction(RelationFunction relationFunction) {
+	public void setRelationFunction(final RelationFunction relationFunction) {
 		this.relationFunction = relationFunction;
 	}
 }

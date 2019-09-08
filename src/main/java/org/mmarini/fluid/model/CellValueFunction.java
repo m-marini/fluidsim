@@ -15,10 +15,10 @@ package org.mmarini.fluid.model;
  * <p>
  * It is used to draw the graphic of the cells.
  * </p>
- * 
+ *
  * @author marco.marini@mmarini.org
  * @version $Id: CellValueFunction.java,v 1.3 2007/08/18 08:29:54 marco Exp $
- * 
+ *
  */
 public class CellValueFunction implements UniverseFunction {
 	private double scale;
@@ -26,7 +26,7 @@ public class CellValueFunction implements UniverseFunction {
 	private double offset;
 
 	/**
-	 * 
+	 *
 	 */
 	public CellValueFunction() {
 	}
@@ -35,14 +35,14 @@ public class CellValueFunction implements UniverseFunction {
 	 * @param scale
 	 * @param offset
 	 */
-	public CellValueFunction(double scale, double offset) {
+	public CellValueFunction(final double scale, final double offset) {
 		this.scale = scale;
 		this.offset = offset;
 	}
 
 	/**
 	 * Returns the offset of function.
-	 * 
+	 *
 	 * @return the offset
 	 */
 	public double getOffset() {
@@ -51,7 +51,7 @@ public class CellValueFunction implements UniverseFunction {
 
 	/**
 	 * Returns the scale of function.
-	 * 
+	 *
 	 * @return the scale
 	 */
 	public double getScale() {
@@ -63,27 +63,25 @@ public class CellValueFunction implements UniverseFunction {
 	 *      int, int)
 	 */
 	@Override
-	public double getValue(Universe universe, int i, int j) {
+	public double getValue(final Universe universe, final int i, final int j) {
 		return (universe.getCell(i, j).getValue() - getOffset()) * getScale();
 	}
 
 	/**
 	 * Sets the offset of function.
-	 * 
-	 * @param offset
-	 *            the offset to set
+	 *
+	 * @param offset the offset to set
 	 */
-	public void setOffset(double offset) {
+	public void setOffset(final double offset) {
 		this.offset = offset;
 	}
 
 	/**
 	 * Sets the scale of function.
-	 * 
-	 * @param scale
-	 *            the scale to set
+	 *
+	 * @param scale the scale to set
 	 */
-	public void setScale(double scale) {
+	public void setScale(final double scale) {
 		this.scale = scale;
 	}
 
@@ -92,9 +90,8 @@ public class CellValueFunction implements UniverseFunction {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("CellValueFunction [scale=").append(scale)
-				.append(", offset=").append(offset).append("]");
+		final StringBuilder builder = new StringBuilder();
+		builder.append("CellValueFunction [scale=").append(scale).append(", offset=").append(offset).append("]");
 		return builder.toString();
 	}
 

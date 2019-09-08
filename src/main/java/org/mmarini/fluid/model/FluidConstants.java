@@ -11,10 +11,10 @@ package org.mmarini.fluid.model;
 
 /**
  * The interface declares the constants of simulation.
- * 
+ *
  * @author marco.marini@mmarini.org
  * @version $Id: FluidConstants.java,v 1.3 2007/08/18 08:29:54 marco Exp $
- * 
+ *
  */
 public interface FluidConstants {
 	/**

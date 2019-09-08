@@ -26,37 +26,33 @@ package org.mmarini.fluid.model;
  * <p>
  * The interface declares the three coefficents A, B, C.
  * </p>
- * 
+ *
  * @author marco.marini@mmarini.org
  * @version $Id: CellFunction.java,v 1.4 2007/08/18 08:29:54 marco Exp $
- * 
+ *
  */
 public interface CellFunction {
 	/**
 	 * Returns the A coefficent.
-	 * 
-	 * @param direction
-	 *            the direction
-	 * @param timeContext
-	 *            the time context
+	 *
+	 * @param direction   the direction
+	 * @param timeContext the time context
 	 * @return the value
 	 */
 	public abstract double getA(int direction, TimeContext timeContext);
 
 	/**
 	 * Returns the B coefficent.
-	 * 
-	 * @param timeContext
-	 *            the time context
+	 *
+	 * @param timeContext the time context
 	 * @return the value
 	 */
 	public abstract double getB(TimeContext timeContext);
 
 	/**
 	 * Returns the C coefficent.
-	 * 
-	 * @param timeContext
-	 *            the time context
+	 *
+	 * @param timeContext the time context
 	 * @return the value
 	 */
 	public abstract double getC(TimeContext timeContext);

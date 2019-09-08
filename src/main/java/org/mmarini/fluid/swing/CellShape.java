@@ -16,10 +16,10 @@ import java.awt.Graphics;
  * <p>
  * Depending on the graphical size of the cell it draws a rectangular shape for
  * small cells and an exagonal shape for the other ones.
- * 
+ *
  * @author US00852
  * @version $Id: CellShape.java,v 1.3 2007/08/18 08:29:55 marco Exp $
- * 
+ *
  */
 public class CellShape {
 	/**
@@ -40,8 +40,7 @@ public class CellShape {
 	/**
 	 * The x offset of the template shape
 	 */
-	private static final int XOFFSET = (int) Math.round(RADIUS
-			* Math.cos(Math.PI / 6));
+	private static final int XOFFSET = (int) Math.round(RADIUS * Math.cos(Math.PI / 6));
 
 	/**
 	 * The y offset of the template shape
@@ -51,16 +50,15 @@ public class CellShape {
 	/**
 	 * The width of the template shape
 	 */
-	private static final int WITDH = (int) Math.round(2 * RADIUS
-			* Math.cos(Math.PI / 6));
+	private static final int WITDH = (int) Math.round(2 * RADIUS * Math.cos(Math.PI / 6));
 
 	/**
 	 * The heigh of the template shape
 	 */
 	private static final int HEIGHT = 2 * RADIUS;
 
-	private int[][] template;
-	private int[][] points;
+	private final int[][] template;
+	private final int[][] points;
 
 	/**
 	 * Creates the Shape.
@@ -73,7 +71,7 @@ public class CellShape {
 		points = new int[2][EDGES_COUNT];
 
 		for (int i = 0; i < EDGES_COUNT; ++i) {
-			double a = Math.PI * 2 * i / EDGES_COUNT;
+			final double a = Math.PI * 2 * i / EDGES_COUNT;
 			template[0][i] = (int) Math.round(Math.sin(a) * RADIUS + XOFFSET);
 			template[1][i] = (int) Math.round(Math.cos(a) * RADIUS + YOFFSET);
 		}
@@ -81,28 +79,23 @@ public class CellShape {
 
 	/**
 	 * Draws the shape
-	 * 
-	 * @param gr
-	 *            the graphics context
-	 * @param x
-	 *            the x position (left)
-	 * @param y
-	 *            the y position (bottom)
-	 * @param w
-	 *            the width of the cell
-	 * @param h
-	 *            the heigh of the cell
+	 *
+	 * @param gr the graphics context
+	 * @param x  the x position (left)
+	 * @param y  the y position (bottom)
+	 * @param w  the width of the cell
+	 * @param h  the heigh of the cell
 	 */
-	public void draw(Graphics gr, int x, int y, int w, int h) {
+	public void draw(final Graphics gr, final int x, final int y, final int w, final int h) {
 		if (w <= MIN_SIZE || h <= MIN_SIZE) {
 			gr.fillRect(x, y, w, h);
 		} else {
-			int[] ptsx = points[0];
-			int[] ptsy = points[1];
-			int[] templx = template[0];
-			int[] temply = template[1];
-			int w1 = (w - 1);
-			int h1 = (h - 1);
+			final int[] ptsx = points[0];
+			final int[] ptsy = points[1];
+			final int[] templx = template[0];
+			final int[] temply = template[1];
+			final int w1 = (w - 1);
+			final int h1 = (h - 1);
 			for (int i = 0; i < EDGES_COUNT; ++i) {
 				ptsx[i] = x + roundDiv(templx[i] * w1, WITDH);
 				ptsy[i] = y + roundDiv(temply[i] * h1, HEIGHT);
@@ -113,14 +106,12 @@ public class CellShape {
 
 	/**
 	 * Calculats the integer nearer to the value n / d.
-	 * 
-	 * @param n
-	 *            the numerator
-	 * @param d
-	 *            the denominator
+	 *
+	 * @param n the numerator
+	 * @param d the denominator
 	 * @return the value
 	 */
-	private int roundDiv(int n, int d) {
+	private int roundDiv(final int n, final int d) {
 		return (n + n + d) / (2 * d);
 	}
 

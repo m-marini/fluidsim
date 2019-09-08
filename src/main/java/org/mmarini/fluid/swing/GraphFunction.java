@@ -23,7 +23,7 @@ import java.awt.Dimension;
  * <dd>to get the value of an item</dd>
  * </dl>
  * </p>
- * 
+ *
  * @author US00852
  * @version $Id: AbstractGraphFunction.java,v 1.3 2007/08/18 08:29:55 marco Exp
  *          $
@@ -32,7 +32,7 @@ public interface GraphFunction {
 
 	/**
 	 * Returns the size of data.
-	 * 
+	 *
 	 * @return the size
 	 */
 	public abstract Dimension getSize();
@@ -42,11 +42,9 @@ public interface GraphFunction {
 	 * <p>
 	 * The returned values should be in 0 ... 1 range.
 	 * </p>
-	 * 
-	 * @param i
-	 *            index of row
-	 * @param j
-	 *            index of column
+	 *
+	 * @param i index of row
+	 * @param j index of column
 	 * @return the value
 	 */
 	public abstract double getValue(int i, int j);

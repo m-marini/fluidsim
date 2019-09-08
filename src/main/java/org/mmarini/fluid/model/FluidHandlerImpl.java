@@ -24,10 +24,10 @@ import org.xml.sax.SAXException;
  * It handles the interaction between the simulation client and the simulator
  * engine.
  * </p>
- * 
+ *
  * @author marco.marini@mmarini.org
  * @version $Id: FluidHandlerImpl.java,v 1.4 2007/08/18 08:29:54 marco Exp $
- * 
+ *
  */
 public class FluidHandlerImpl implements FluidHandler {
 	private static final double FLUX_OFFSET = 0.;
@@ -41,18 +41,17 @@ public class FluidHandlerImpl implements FluidHandler {
 	private static final double SINGLE_STEP_INTERVAL = 0.1;
 
 	private Universe universe;
-	private UniverseBuilderImpl builder;
-	private Simulator simulator;
-	private UniverseFunction cellFunction;
-	private UniverseFunction relationFunction;
-	private UniverseFunction fluxFunction;
+	private final UniverseBuilderImpl builder;
+	private final Simulator simulator;
+	private final UniverseFunction cellFunction;
+	private final UniverseFunction relationFunction;
+	private final UniverseFunction fluxFunction;
 
 	/**
-	 * 
+	 *
 	 */
 	public FluidHandlerImpl() {
-		simulator = new Simulator(SINGLE_STEP_INTERVAL, SIMULATION_RATE,
-				MIN_INTERVAL);
+		simulator = new Simulator(SINGLE_STEP_INTERVAL, SIMULATION_RATE, MIN_INTERVAL);
 		cellFunction = new CellValueFunction(CELL_SCALE, CELL_OFFSET);
 		relationFunction = new RelationValueFunction(SPEED_SCALE, SPEED_OFFSET);
 		fluxFunction = new FluxValueFunction(FLUX_SCALE, FLUX_OFFSET);
@@ -71,7 +70,7 @@ public class FluidHandlerImpl implements FluidHandler {
 	 * @see FluidHandler#getCellValue(int, int)
 	 */
 	@Override
-	public double getCellValue(int i, int j) {
+	public double getCellValue(final int i, final int j) {
 		return cellFunction.getValue(universe, i, j);
 	}
 
@@ -79,7 +78,7 @@ public class FluidHandlerImpl implements FluidHandler {
 	 * @see FluidHandler#getFluxValue(int, int)
 	 */
 	@Override
-	public double getFluxValue(int i, int j) {
+	public double getFluxValue(final int i, final int j) {
 		return fluxFunction.getValue(universe, i, j);
 	}
 
@@ -87,7 +86,7 @@ public class FluidHandlerImpl implements FluidHandler {
 	 * @see FluidHandler#getRelationValue(int, int)
 	 */
 	@Override
-	public double getRelationValue(int i, int j) {
+	public double getRelationValue(final int i, final int j) {
 		return relationFunction.getValue(universe, i, j);
 	}
 
@@ -108,16 +107,15 @@ public class FluidHandlerImpl implements FluidHandler {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param url
 	 * @throws IOException
 	 * @throws SAXException
 	 * @throws ParserConfigurationException
 	 */
 	@Override
-	public void loadUniverseModifier(URL url)
-			throws ParserConfigurationException, SAXException, IOException {
-		UniverseModifier universeModifier = new FluidParser().parse(url);
+	public void loadUniverseModifier(final URL url) throws ParserConfigurationException, SAXException, IOException {
+		final UniverseModifier universeModifier = new FluidParser().parse(url);
 		builder.setUniverseModifier(universeModifier);
 		createNew();
 	}
