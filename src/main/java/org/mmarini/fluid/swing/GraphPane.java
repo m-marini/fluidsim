@@ -12,13 +12,12 @@ package org.mmarini.fluid.swing;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.util.function.ToDoubleBiFunction;
+import java.util.function.Function;
 
 import javax.swing.JPanel;
 
-import org.mmarini.fluid.model.Universe;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mmarini.fluid.model.v2.Universe;
+import org.nd4j.linalg.api.ndarray.INDArray;
 
 /**
  * The GraphPane shows the graphic of different universe functions.
@@ -38,19 +37,22 @@ public class GraphPane extends JPanel {
 	private static final float HUE_SCALE = 0.8f;
 	private static final int MAX = 1;
 	private static final long serialVersionUID = 1L;
-	private static Logger log = LoggerFactory.getLogger(GraphPane.class);
+//	private static Logger log = LoggerFactory.getLogger(GraphPane.class);
 	private Universe universe;
 
-	private final ToDoubleBiFunction<Universe, int[]> valuesFunc;
+	private final Function<Universe, INDArray> valuesFunc;
+	private final CellShape cellShape;
 
 	/**
 	 *
 	 * @param shapeFunc
 	 * @param valuesFunc
 	 */
-	public GraphPane(final ToDoubleBiFunction<Universe, int[]> valuesFunc) {
+	public GraphPane(final Function<Universe, INDArray> valuesFunc) {
 		super();
+		setDoubleBuffered(true);
 		this.valuesFunc = valuesFunc;
+		cellShape = RectangularCellShape.getInstance();
 	}
 
 	/**
@@ -78,14 +80,6 @@ public class GraphPane extends JPanel {
 		return new Color(Color.HSBtoRGB(h, s, b));
 	}
 
-	/**
-	 * Initializes the component.
-	 */
-	public void init() {
-		setDoubleBuffered(true);
-		log.debug("init");
-	}
-
 	public void onUniverse(final Universe universe) {
 		this.universe = universe;
 		repaint();
@@ -103,7 +97,7 @@ public class GraphPane extends JPanel {
 		gr.fillRect(0, 0, size.width, size.height);
 		final Universe u = universe;
 		if (u != null) {
-			paintStructure(gr, u);
+			paintRectStructure(gr, u);
 		}
 	}
 
@@ -113,9 +107,10 @@ public class GraphPane extends JPanel {
 	 * @param gr the graphics context
 	 * @param u  the universe
 	 */
-	private void paintStructure(final Graphics gr, final Universe u) {
-		final CellShape cellShape = CellShape.getInstance();
-		final Dimension uSize = u.getSize();
+	private void paintIsoStructure(final Graphics gr, final Universe u) {
+		final INDArray values = valuesFunc.apply(u);
+		final long[] shape = values.shape();
+		final Dimension uSize = new Dimension((int) shape[0], (int) shape[1]);
 		final Dimension gSize = getSize();
 		final int uh = uSize.height;
 		final int uw = uSize.width;
@@ -129,11 +124,9 @@ public class GraphPane extends JPanel {
 		final int ch = ceilDiv(4 * nh, dh); // Cell height
 		final int[] indexes = new int[2];
 		for (int i = 0; i < uh; i += 2) {
-			indexes[0] = i;
 			final int y = gh - ch - ceilDiv(i * nh2, dh);
 			for (int j = 0; j < uw; ++j) {
-				indexes[1] = j;
-				final double v = valuesFunc.applyAsDouble(u, indexes);
+				final double v = values.getDouble(i, j);
 				final Color col = getColor(v);
 				gr.setColor(col);
 				int x = j * 2 * gw;
@@ -146,11 +139,40 @@ public class GraphPane extends JPanel {
 			final int y = gh - ch - ceilDiv(i * nh2, dh);
 			for (int j = 0; j < uw; ++j) {
 				indexes[1] = j;
-				final double v = valuesFunc.applyAsDouble(u, indexes);
+				final double v = values.getDouble(i, j);
 				final Color col = getColor(v);
 				gr.setColor(col);
 				int x = (j * 2 + 1) * gw;
 				x = ceilDiv(x, kw);
+				cellShape.draw(gr, x, y, cw, ch);
+			}
+		}
+	}
+
+	/**
+	 * Paints the structure.
+	 *
+	 * @param gr the graphics context
+	 * @param u  the universe
+	 */
+	private void paintRectStructure(final Graphics gr, final Universe u) {
+		final INDArray values = valuesFunc.apply(u);
+		final long[] shape = values.shape();
+		final Dimension uSize = new Dimension((int) shape[0], (int) shape[1]);
+		final Dimension gSize = getSize();
+		final int uh = uSize.height;
+		final int uw = uSize.width;
+		final int gw = gSize.width - 1;
+		final int gh = gSize.height - 1;
+		for (int i = 0; i < uh; i++) {
+			final int y = i * gh / uh;
+			final int ch = (i + 1) * gh / uh - y;
+			for (int j = 0; j < uw; ++j) {
+				final double v = values.getDouble(i, j);
+				final Color col = getColor(v);
+				gr.setColor(col);
+				final int x = j * gw / uw;
+				final int cw = (j + 1) * gw / uw - x;
 				cellShape.draw(gr, x, y, cw, ch);
 			}
 		}

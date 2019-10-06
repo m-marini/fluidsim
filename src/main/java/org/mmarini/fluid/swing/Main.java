@@ -25,17 +25,14 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.mmarini.fluid.model.CellValueFunction;
-import org.mmarini.fluid.model.FluidSimulator;
-import org.mmarini.fluid.model.FluidSimulatorImpl;
-import org.mmarini.fluid.model.FluxValueFunction;
-import org.mmarini.fluid.model.RelationValueFunction;
-import org.mmarini.fluid.model.Universe;
-import org.mmarini.fluid.model.UniverseFunction;
+import org.mmarini.fluid.model.v2.Constants;
+import org.mmarini.fluid.model.v2.FluidSimulator;
+import org.mmarini.fluid.model.v2.Universe;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.ops.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -44,33 +41,30 @@ import org.xml.sax.SAXException;
  * @author us00852
  *
  */
-public class Main {
+public class Main implements Constants {
 
 	private static final String DEFAULT_MODIFIER_RESOURCE = "/wing.xml"; //$NON-NLS-1$
 	public static final String DISABLED_ICON = "selectedIcon"; //$NON-NLS-1$
 	private static final int INITIAL_WIDTH = 400;
 	private static final int INITIAL_HEIGHT = 300;
-	private static final double FLUX_OFFSET = 0.;
-	private static final double FLUX_SCALE = 600e-3;
-	private static final double SPEED_SCALE = 2000.;
-	private static final double SPEED_OFFSET = 0.;
-	private static final double CELL_OFFSET = 0.45;
-	private static final double CELL_SCALE = 10.;
+	private static final double DENSITY_OFFSET = ISA_DENSITY / 2;
+	private static final double DENSITY_SCALE = ISA_DENSITY;
+	private static final double SPEED_OFFSET = 0;
+	private static final double SPEED_SCALE = SPEED * 2;
 	private static final long RATE_INTERVAL = 300;
 	private static final TimeUnit RATE_INTERVAL_UNIT = TimeUnit.MILLISECONDS;
+	private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
-	private static final UniverseFunction FluxFunc = new FluxValueFunction(FLUX_SCALE, FLUX_OFFSET);
-	private static final UniverseFunction CellFunc = new CellValueFunction(CELL_SCALE, CELL_OFFSET);
-	private static final UniverseFunction ReletionFunc = new RelationValueFunction(SPEED_SCALE, SPEED_OFFSET);
-
-	private static Logger log = LoggerFactory.getLogger(Main.class);
-
-	static double cellValue(final Universe universe, final int[] indexes) {
-		return CellFunc.getValue(universe, indexes[0], indexes[1]);
-	}
-
-	static double fluxValue(final Universe universe, final int[] indexes) {
-		return FluxFunc.getValue(universe, indexes[0], indexes[1]);
+	/**
+	 * Return the relative density values in the range 0 ... 1 from the universe
+	 *
+	 * @param u the universe
+	 * @return the relative density
+	 */
+	private static INDArray densityValues(final Universe u) {
+		final INDArray density = u.getDensity();
+		final INDArray values = density.sub(DENSITY_OFFSET).muli(1 / DENSITY_SCALE);
+		return values;
 	}
 
 	/**
@@ -80,16 +74,23 @@ public class Main {
 		new Main().start();
 	}
 
-	static double relationValue(final Universe universe, final int[] indexes) {
-		return ReletionFunc.getValue(universe, indexes[0], indexes[1]);
+	/**
+	 * Return the relative speed values in the range 0 ... 1 from the universe
+	 *
+	 * @param u the universe
+	 * @return the relative speed
+	 */
+	private static INDArray speedValues(final Universe u) {
+		final INDArray speed = u.getSpeed();
+		final INDArray values = Transforms.sqrt(speed.mul(speed)).subi(SPEED_OFFSET).muli(1 / SPEED_SCALE);
+		return values;
 	}
 
 	private final JFrame frame;
 	private final JToolBar toolBar;
 	private final JMenuBar menuBar;
-	private final GraphPane cellPane;
-	private final GraphPane relationPane;
-	private final GraphPane fluxPane;
+	private final GraphPane densityPane;
+	private final GraphPane speedPane;
 	private final RateBar rateBar;
 	private final Action newAction;
 	private final Action openAction;
@@ -99,9 +100,6 @@ public class Main {
 	private final Action stopAction;
 
 	private final JFileChooser fileChooser;
-
-//	private final FluidHandler fluidHandler;
-
 	private final FluidSimulator fluidSimulator;
 
 	/**
@@ -112,9 +110,8 @@ public class Main {
 		menuBar = new JMenuBar();
 		rateBar = new RateBar();
 		fileChooser = new JFileChooser();
-		fluxPane = new GraphPane(Main::fluxValue);
-		relationPane = new GraphPane(Main::relationValue);
-		cellPane = new GraphPane(Main::cellValue);
+		densityPane = new GraphPane(Main::densityValues);
+		speedPane = new GraphPane(Main::speedValues);
 
 		frame = new JFrame();
 
@@ -168,12 +165,11 @@ public class Main {
 			}
 
 		};
-		fluidSimulator = new FluidSimulatorImpl();
 
+		fluidSimulator = new FluidSimulator();
 		fluidSimulator.getRateFlow().sample(RATE_INTERVAL, RATE_INTERVAL_UNIT).subscribe(rateBar::onRate);
-		fluidSimulator.getUniverseFlow().subscribe(fluxPane::onUniverse);
-		fluidSimulator.getUniverseFlow().subscribe(cellPane::onUniverse);
-		fluidSimulator.getUniverseFlow().subscribe(relationPane::onUniverse);
+		fluidSimulator.getUniverseFlow().subscribe(speedPane::onUniverse);
+		fluidSimulator.getUniverseFlow().subscribe(densityPane::onUniverse);
 	}
 
 	/**
@@ -194,7 +190,7 @@ public class Main {
 	 * @throws ParserConfigurationException
 	 */
 	private void createModelBeans() throws ParserConfigurationException, SAXException, IOException {
-		fluidSimulator.loadUniverseModifier(getClass().getResource(DEFAULT_MODIFIER_RESOURCE));
+		fluidSimulator.loadFromUrl(getClass().getResource(DEFAULT_MODIFIER_RESOURCE));
 	}
 
 	/**
@@ -204,12 +200,10 @@ public class Main {
 	 */
 	private JTabbedPane createTabPane() {
 		final JTabbedPane tabPane = new JTabbedPane();
-		tabPane.addTab(Messages.getString("Main.cellTab.text"), cellPane); //$NON-NLS-1$
+		tabPane.addTab(Messages.getString("Main.cellTab.text"), densityPane); //$NON-NLS-1$
 		tabPane.setToolTipTextAt(0, Messages.getString("Main.cellTab.tips")); //$NON-NLS-1$
-		tabPane.addTab(Messages.getString("Main.relationTab.text"), relationPane); //$NON-NLS-1$
-		tabPane.setToolTipTextAt(1, Messages.getString("Main.relationlTab.tips")); //$NON-NLS-1$
-		tabPane.addTab(Messages.getString("Main.fluxTab.text"), fluxPane); //$NON-NLS-1$
-		tabPane.setToolTipTextAt(2, Messages.getString("Main.cellTab.tips")); //$NON-NLS-1$
+		tabPane.addTab(Messages.getString("Main.fluxTab.text"), speedPane); //$NON-NLS-1$
+		tabPane.setToolTipTextAt(1, Messages.getString("Main.cellTab.tips")); //$NON-NLS-1$
 		return tabPane;
 	}
 
@@ -219,10 +213,6 @@ public class Main {
 	private void createUIBeans() {
 		fileChooser.setFileFilter(new FileNameExtensionFilter(Messages.getString("Main.fileType.text"), //$NON-NLS-1$
 				"xml")); //$NON-NLS-1$
-
-		fluxPane.init();
-		relationPane.init();
-		cellPane.init();
 
 		initAction();
 		initMenuBar();
@@ -250,7 +240,7 @@ public class Main {
 	 * Creates the universe.
 	 */
 	private void createUniverse() {
-		log.debug("createUniverse"); //$NON-NLS-1$
+		logger.debug("createUniverse"); //$NON-NLS-1$
 		fluidSimulator.createNew();
 	}
 
@@ -303,10 +293,10 @@ public class Main {
 	private void open() {
 		if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
 			try {
-				fluidSimulator.loadUniverseModifier(fileChooser.getSelectedFile().toURI().toURL());
+				fluidSimulator.loadFromUrl(fileChooser.getSelectedFile().toURI().toURL());
 				createUniverse();
 			} catch (final Exception e) {
-				log.error(e.getMessage(), e);
+				logger.error(e.getMessage(), e);
 				showError(e);
 			}
 		}
@@ -354,7 +344,7 @@ public class Main {
 			createUIBeans();
 			frame.setVisible(true);
 		} catch (final Exception e) {
-			log.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
 	}
 
@@ -362,12 +352,11 @@ public class Main {
 	 * Starts the real time simulation.
 	 */
 	private void startSimualtion() {
-		log.debug("starting simulation ..."); //$NON-NLS-1$
+		logger.debug("starting simulation ..."); //$NON-NLS-1$
 		runAction.setEnabled(false);
 		stepAction.setEnabled(false);
 		stopAction.setEnabled(true);
-		fluidSimulator.single();
-		SwingUtilities.invokeLater(this::tick);
+		fluidSimulator.start();
 	}
 
 	/**
@@ -381,17 +370,10 @@ public class Main {
 	 * Stops the real time simulation.
 	 */
 	private void stopSimualtion() {
-		log.debug("stopping simulation ..."); //$NON-NLS-1$
+		logger.debug("stopping simulation ..."); //$NON-NLS-1$
 		fluidSimulator.stop();
 		runAction.setEnabled(true);
 		stepAction.setEnabled(true);
 		stopAction.setEnabled(false);
-	}
-
-	private void tick() {
-		if (stopAction.isEnabled()) {
-			fluidSimulator.single();
-			SwingUtilities.invokeLater(this::tick);
-		}
 	}
 }

@@ -27,14 +27,16 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-package org.mmarini.fluid.model1;
+package org.mmarini.fluid.model.v2;
 
+import org.nd4j.linalg.api.buffer.DataType;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
-public class UniverseBuilder {
+public class UniverseBuilder implements Constants {
 
-	private static final int[] DEFAULT_SHAPE = new int[] { 80, 80 };
+	private static final long[] DEFAULT_SHAPE = new long[] { 80, 80 };
+	private static final double LENGTH = 0.01;
 
 	/**
 	 * Create universe builder with default parameters
@@ -43,14 +45,16 @@ public class UniverseBuilder {
 		return new UniverseBuilder(DEFAULT_SHAPE);
 	}
 
-	private final int[] shape;
+	private final long[] shape;
 
 	/**
 	 * Create a universe builder with given parameters
 	 *
-	 * @param size universe size
+	 * @param massCostraint
+	 *
+	 * @param siz           universe size
 	 */
-	public UniverseBuilder(final int[] shape) {
+	public UniverseBuilder(final long[] shape) {
 		this.shape = shape;
 	}
 
@@ -58,15 +62,24 @@ public class UniverseBuilder {
 	 * Returns the universe built from parameters
 	 */
 	public Universe build() {
-		final INDArray cells = Nd4j.zeros(shape);
-		final INDArray relations = Nd4j.zeros(shape);
-		return new UniverseImpl(shape, cells, relations);
+		final INDArray density = Nd4j.randn(DataType.DOUBLE, shape).mul(ISA_DENSITY / 100).add(ISA_DENSITY);
+//		density.putScalar(new int[] { 40, 40, 0 }, 4);
+		final INDArray speed = Nd4j.zeros(DataType.DOUBLE, new long[] { shape[0], shape[1], 2 });
+		for (int i = 0; i < shape[0]; i++) {
+			for (int j = 0; j < shape[1]; j++) {
+				speed.putScalar(new long[] { i, j, 0 }, SPEED);
+			}
+		}
+		final INDArray temperature = Nd4j.ones(DataType.DOUBLE, shape).mul(ISA_TEMPERATURE);
+		final INDArray massCostraints = Nd4j.zeros(DataType.DOUBLE, shape);
+		return new UniverseImpl(LENGTH, density, speed, temperature, ISA_SPECIFIC_HEAT_CAPACITY, ISA_MOLECULAR_MASS_,
+				massCostraints);
 	}
 
 	/**
 	 * Returns the universe builder for a give shape
 	 */
-	public UniverseBuilder setShape(final int[] shape) {
+	public UniverseBuilder setShape(final long[] shape) {
 		return new UniverseBuilder(shape);
 	}
 }

@@ -26,7 +26,6 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-
 package org.mmarini.fluid.swing;
 
 import java.awt.Graphics;
@@ -41,7 +40,22 @@ import java.awt.Graphics;
  * @version $Id: CellShape.java,v 1.3 2007/08/18 08:29:55 marco Exp $
  *
  */
-public interface CellShape {
+public class RectangularCellShape implements CellShape {
+	private static final RectangularCellShape instance = new RectangularCellShape();
+
+	public static RectangularCellShape getInstance() {
+		return instance;
+	}
+
+	/**
+	 * Creates the Shape.
+	 * <p>
+	 * Calculates the positions of point of the regtangular shape.
+	 * </p>
+	 */
+	protected RectangularCellShape() {
+	}
+
 	/**
 	 * Draws the shape
 	 *
@@ -51,5 +65,8 @@ public interface CellShape {
 	 * @param w  the width of the cell
 	 * @param h  the heigh of the cell
 	 */
-	public void draw(final Graphics gr, final int x, final int y, final int w, final int h);
+	@Override
+	public void draw(final Graphics gr, final int x, final int y, final int w, final int h) {
+		gr.fillRect(x, y, w, h);
+	}
 }

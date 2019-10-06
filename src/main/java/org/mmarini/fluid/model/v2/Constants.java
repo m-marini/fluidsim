@@ -27,62 +27,21 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-package org.mmarini.fluid.model1;
-
-import org.nd4j.linalg.api.ndarray.INDArray;
+package org.mmarini.fluid.model.v2;
 
 /**
  * @author mmarini
+ *
  */
-public class UniverseImpl implements Universe {
+public interface Constants {
 
-	private final int[] shape;
-	private final INDArray cells;
-	private final INDArray relations;
-
-	/**
-	 * Creates the universe
-	 *
-	 * @param size
-	 * @param cells
-	 * @param relations
-	 */
-	public UniverseImpl(final int[] shape, final INDArray cells, final INDArray relations) {
-		super();
-		this.shape = shape;
-		this.cells = cells;
-		this.relations = relations;
-	}
-
-	/**
-	 * @see org.mmarini.fluid.model1.Universe#getCells()
-	 */
-	@Override
-	public INDArray getCells() {
-		return cells;
-	}
-
-	/**
-	 * @see org.mmarini.fluid.model1.Universe#getRelations()
-	 */
-	@Override
-	public INDArray getRelations() {
-		return relations;
-	}
-
-	/**
-	 * @see org.mmarini.fluid.model1.Universe#getSize()
-	 */
-	@Override
-	public int[] getShape() {
-		return shape;
-	}
-
-	/**
-	 * @see org.mmarini.fluid.model1.Universe#simulate(double)
-	 */
-	@Override
-	public Universe simulate(final double time) {
-		throw new Error("Not implemented");
-	}
+	public static final double SIZE = 10e-3; // m
+	public static final double VOLUME = SIZE * SIZE * SIZE; // m^3
+	public static final double R = 8.31446; // J / (Kg mol)
+	public static final double ISA_TEMPERATURE = 288.15; // 15 Celsius
+	public static final double ISA_PRESSURE = 101325; // Pa
+	public static final double ISA_MOLECULAR_MASS_ = 28.96e-3; // Kg/mol
+	public static final double ISA_DENSITY = ISA_MOLECULAR_MASS_ * ISA_PRESSURE / R / ISA_TEMPERATURE; // Kg
+	public static final double SPEED = 10; // m/s
+	public static final double ISA_SPECIFIC_HEAT_CAPACITY = 1004.3; // J/(Kg K)
 }

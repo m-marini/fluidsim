@@ -27,8 +27,69 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-package org.mmarini.fluid.model1;
+package org.mmarini.fluid.model.v2;
 
-public class FluidSimulator {
+import org.nd4j.linalg.api.ndarray.INDArray;
 
+/**
+ * The rappresentatin of the fluid environment
+ *
+ * @author mmarini
+ *
+ */
+public interface Universe {
+
+	/**
+	 *
+	 * @return
+	 */
+	public double getCellArea();
+
+	/**
+	 *
+	 * @return
+	 */
+	public double getCellVolume();
+
+	/**
+	 * Returns the cell values
+	 */
+	public INDArray getDensity();
+
+	/**
+	 *
+	 * @return
+	 */
+	public INDArray getMassContraints();
+
+	/**
+	 *
+	 * @return
+	 */
+	public double getMolecularMass();
+
+	/**
+	 *
+	 * @return
+	 */
+	public double getSpecificHeatCapacity();
+
+	/**
+	 *
+	 * @return
+	 */
+	public INDArray getSpeed();
+
+	/**
+	 *
+	 * @return
+	 */
+	public INDArray getTemperature();
+
+	/**
+	 *
+	 * @param dt
+	 * @return
+	 */
+	public Universe step(double dt);
 }
