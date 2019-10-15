@@ -16,6 +16,18 @@ Prendiamo in considerazione un modello approssimato costituito da un reticolo bi
 +---+---+---+
 ```
 
+Prendiamo come riferimento dello spazio gli assi
+
+```text
+             x
+   +--------->
+   |
+   |
+   |
+   |
+y  V
+```
+
 Il fluido contenuta nella cella $(i, j)$ è definito da tre proprietà:
 
 - $m_{ij} = V \rho_{ij}$ la massa,
@@ -67,9 +79,9 @@ S_{ab} =
 n_{abc} =
 \left|
     \begin{array}{rrr}
-        (-\frac{\sqrt 2}{2},-\frac{\sqrt 2}{2}) & (-1,0) & (-\frac{\sqrt 2}{2},\frac{\sqrt 2}{2}) \\
-        (0,-1) & (0,0) & (0,1) \\
-        (\frac{\sqrt 2}{2},-\frac{\sqrt 2}{2}) & (1,0) & (\frac{\sqrt 2}{2}, \frac{\sqrt 2}{2})
+        (-\frac{\sqrt 2}{2},-\frac{\sqrt 2}{2}) & (0,-1) & (\frac{\sqrt 2}{2},-\frac{\sqrt 2}{2}) \\
+        (-1,0) & (0,0) & (1,0) \\
+        (-\frac{\sqrt 2}{2},\frac{\sqrt 2}{2}) & (0,1) & (\frac{\sqrt 2}{2}, \frac{\sqrt 2}{2})
     \end{array}
 \right|
 ```
@@ -83,8 +95,8 @@ Il principio di conservazione della massa dice che
 Per ogni cella adiacente a $(i,j)$ abbiamo che il flusso netto di massa entrante è dato da
 
 ```math
-    \Phi^m_{ab}(i,j) = - (m'_{ab}(i,j) \vec u'_{ab}(i,j) + m'_{22}(i,j) \vec u'_{22}(i,j))\cdot \vec n_{ab} S_{ab} \\
-    = -(\vec q'_{ab}(i,j) + \vec q'_{22}(i,j)) \cdot \Phi^m_{ab}(i,j) \vec n_{ab} S_k
+    \Phi^m_{ab}(i,j) = - m'_{ab}(i,j) \vec u'_{ab}(i,j) \cdot \vec n_{ab} S_{ab} - m'_{22}(i,j) \vec u'_{22}(i,j) \cdot \vec n_{ab} S_{ab}\\
+    \Phi^m_{ab}(i,j) = -(\vec q'_{ab}(i,j) + \vec q'_{22}(i,j)) \cdot \vec n_{ab} S_k
 ```
 
 Quindi per la cella $(j,k)$ abbiamo
