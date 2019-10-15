@@ -220,7 +220,7 @@ public class LocalContext implements Constants {
 		final INDArray q22 = momentum.get(NDArrayIndex.point(1), NDArrayIndex.point(1)).div(context.getInterval());
 		final INDArray q = q22.add(freeMomentumFlux);
 		final List<Double> m = computeReactionSurfaces().stream().map(inds -> {
-			final INDArray n = NORMALS.get(NDArrayIndex.point(inds[0]), NDArrayIndex.point(inds[0]));
+			final INDArray n = NORMALS.get(NDArrayIndex.point(inds[0]), NDArrayIndex.point(inds[1]));
 			final double result = n.mul(q).sumNumber().doubleValue();
 			return result;
 		}).collect(Collectors.toList());

@@ -16,8 +16,8 @@ import org.nd4j.linalg.factory.Nd4j;
 
 public class LocalContextReactionsTest implements Constants {
 
-	private static final double DELTA_T = 1e-3;
-	private static final double EPSILON = 10e-3;
+	private static final double DELTA_T = SIZE / SPEED / 2;
+	private static final double EPSILON = 10e-6;
 
 	/**
 	 * <p>
@@ -142,6 +142,7 @@ public class LocalContextReactionsTest implements Constants {
 		final INDArray y = ctx.computeV();
 
 		assertThat(y.shape(), equalTo(new long[] { 1 }));
+		assertThat(y.getDouble(0), closeTo(0, EPSILON));
 	}
 
 	@Test

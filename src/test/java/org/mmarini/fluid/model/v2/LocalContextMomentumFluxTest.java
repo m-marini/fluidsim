@@ -20,10 +20,8 @@ public class LocalContextMomentumFluxTest implements Constants {
 	 */
 	private static SimulationContext contextDownward() {
 		final INDArray density = Nd4j.ones(3, 3).mul(ISA_DENSITY);
-		;
 		final INDArray speed = Utils.prefixBroadcast(Nd4j.create(new double[] { 0, SPEED }), 3, 3);
 		final INDArray temperature = Nd4j.ones(3, 3).mul(ISA_TEMPERATURE);
-		;
 		final INDArray massConstraints = Nd4j.zeros(DataType.DOUBLE, 3, 3);
 		return new SimulationContext(new UniverseImpl(SIZE, density, speed, temperature, 0, 0, massConstraints), 0);
 	}
