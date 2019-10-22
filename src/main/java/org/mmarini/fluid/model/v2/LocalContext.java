@@ -139,7 +139,6 @@ public class LocalContext implements Constants {
 		final INDArray result1 = q1k.add(q22k).neg();
 		final INDArray result = Utils.mmul(result1, SECTIONS).mul(context.getCellArea());
 
-		result.get(NDArrayIndex.point(1), NDArrayIndex.point(1), NDArrayIndex.all()).assign(0.0);
 		return result;
 	}
 
@@ -224,7 +223,6 @@ public class LocalContext implements Constants {
 			final double result = n.mul(q).sumNumber().doubleValue();
 			return result;
 		}).collect(Collectors.toList());
-		// TODO Auto-generated method stub
 		final INDArray v = Nd4j.create(m);
 		return v;
 	}
