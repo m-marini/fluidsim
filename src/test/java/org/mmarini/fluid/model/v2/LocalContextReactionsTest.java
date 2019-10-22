@@ -84,6 +84,40 @@ public class LocalContextReactionsTest implements Constants {
 				ISA_SPECIFIC_HEAT_CAPACITY, massConstraints), DELTA_T);
 	}
 
+	/**
+	 * <p>
+	 * speed
+	 *
+	 * <pre>
+	 * (0,0) (0,0) (0,0)
+	 * (1,1) (0,0) (0,0)
+	 * (0,0) (0,0) (0,0)
+	 * </pre>
+	 *
+	 * constraints
+	 *
+	 * <pre>
+	 * 0 0 0
+	 * 0 0 1
+	 * 0 1 0
+	 * </pre>
+	 * </p>
+	 *
+	 * @return
+	 */
+	private static SimulationContext contextWestAndSouth() {
+		final INDArray density = Nd4j.ones(3, 3).mul(ISA_DENSITY);
+		final INDArray speed = Nd4j.zeros(3, 3, 2);
+		speed.putScalar(new int[] { 1, 0, 0 }, SPEED);
+		speed.putScalar(new int[] { 1, 0, 1 }, SPEED);
+		final INDArray temperature = Nd4j.ones(3, 3).mul(ISA_TEMPERATURE);
+		final INDArray massConstraints = Nd4j.zeros(DataType.DOUBLE, 3, 3);
+		massConstraints.putScalar(new int[] { 1, 2 }, 1);
+		massConstraints.putScalar(new int[] { 2, 1 }, 1);
+		return new SimulationContext(new UniverseImpl(SIZE, density, speed, temperature, ISA_MOLECULAR_MASS_,
+				ISA_SPECIFIC_HEAT_CAPACITY, massConstraints), DELTA_T);
+	}
+
 	private static Integer[] toIntegerArray(final int[] ary) {
 		final Integer[] result = new Integer[ary.length];
 		for (int i = 0; i < ary.length; i++) {
@@ -188,7 +222,7 @@ public class LocalContextReactionsTest implements Constants {
 	 * expected v = -q u s = rho v u u s
 	 */
 	@Test
-	public void testComputeV() {
+	public void testComputeVWest() {
 		final LocalContext ctx = new LocalContext(contextWest(), 1, 1);
 		final INDArray y = ctx.computeV();
 
@@ -196,6 +230,46 @@ public class LocalContextReactionsTest implements Constants {
 
 		assertThat(y.shape(), equalTo(new long[] { 1 }));
 		assertThat(y.getDouble(0), closeTo(expected, EPSILON));
+	}
+
+	/**
+	 * Test compute V
+	 * <p>
+	 *
+	 * <pre>
+	 * V = (q22 + Delta q') n_k / Delta t
+	 * </pre>
+	 *
+	 * constraint
+	 *
+	 * <pre>
+	 * 0 0 0
+	 * 0 0 1
+	 * 0 0 0
+	 * </pre>
+	 *
+	 * speed
+	 *
+	 * <pre>
+	 * (0,0) (0,0) (0,0)
+	 * (1,0) (0,0) (0,0)
+	 * (0,0) (0,0) (0,0)
+	 * </pre>
+	 *
+	 * </p>
+	 *
+	 * expected v = -q u s = rho v u u s
+	 */
+	@Test
+	public void testComputeVWestAndSouth() {
+		final LocalContext ctx = new LocalContext(contextWestAndSouth(), 1, 1);
+		final INDArray y = ctx.computeV();
+
+		final double expected = ISA_DENSITY * VOLUME * SPEED * SPEED * AREA;
+
+		assertThat(y.shape(), equalTo(new long[] { 2 }));
+		assertThat(y.getDouble(0), closeTo(expected, EPSILON));
+		assertThat(y.getDouble(1), closeTo(expected, EPSILON));
 	}
 
 	@Test
