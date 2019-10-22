@@ -109,6 +109,23 @@ public class LocalContext implements Constants {
 		return result2;
 	}
 
+	INDArray computeM() {
+		final List<int[]> indices = computeReactionSurfaces();
+		final int n = indices.size();
+		final INDArray m = Nd4j.zeros(n, n);
+		for (int i = 0; i < n; i++) {
+			final int[] ii = indices.get(i);
+			final INDArray ni = NORMALS.get(NDArrayIndex.point(ii[0]), NDArrayIndex.point(ii[1]));
+			for (int j = 0; j < n; j++) {
+				final int[] jj = indices.get(j);
+				final INDArray nj = NORMALS.get(NDArrayIndex.point(jj[0]), NDArrayIndex.point(jj[1]));
+				final double r = ni.mmul(nj).getDouble(0);
+				m.putScalar(new int[] { i, j }, r);
+			}
+		}
+		return m;
+	}
+
 	/**
 	 * Returns the momentum flux
 	 * <p>
@@ -223,7 +240,7 @@ public class LocalContext implements Constants {
 			final double result = n.mul(q).sumNumber().doubleValue();
 			return result;
 		}).collect(Collectors.toList());
-		final INDArray v = Nd4j.create(m);
+		final INDArray v = Nd4j.create(m).reshape(1, m.size());
 		return v;
 	}
 

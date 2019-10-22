@@ -130,6 +130,51 @@ public class LocalContextReactionsTest implements Constants {
 		Nd4j.create(new double[0]);
 	}
 
+	/**
+	 * Test compute V
+	 * <p>
+	 *
+	 * <pre>
+	 * V = (q22 + Delta q') n_k / Delta t
+	 * </pre>
+	 *
+	 * constraint
+	 *
+	 * <pre>
+	 * 0 0 0
+	 * 0 0 1
+	 * 0 0 0
+	 * </pre>
+	 *
+	 * speed
+	 *
+	 * <pre>
+	 * (0,0) (0,0) (0,0)
+	 * (1,0) (0,0) (0,0)
+	 * (0,0) (0,0) (0,0)
+	 * </pre>
+	 *
+	 * </p>
+	 *
+	 * expected M =
+	 *
+	 * <pre>
+	 * 0 1
+	 * 0 0
+	 * </pre>
+	 */
+	@Test
+	public void testComputeMWestAndSouth() {
+		final LocalContext ctx = new LocalContext(contextWestAndSouth(), 1, 1);
+		final INDArray y = ctx.computeM();
+
+		assertThat(y.shape(), equalTo(new long[] { 2, 2 }));
+		assertThat(y.getDouble(0, 0), closeTo(1, EPSILON));
+		assertThat(y.getDouble(0, 1), closeTo(0, EPSILON));
+		assertThat(y.getDouble(1, 0), closeTo(0, EPSILON));
+		assertThat(y.getDouble(1, 1), closeTo(1, EPSILON));
+	}
+
 	@Test
 	public void testComputeReactionSurfaces00() {
 		final LocalContext ctx = new LocalContext(contextCenter(), 0, 0);
@@ -228,8 +273,8 @@ public class LocalContextReactionsTest implements Constants {
 
 		final double expected = ISA_DENSITY * VOLUME * SPEED * SPEED * AREA;
 
-		assertThat(y.shape(), equalTo(new long[] { 1 }));
-		assertThat(y.getDouble(0), closeTo(expected, EPSILON));
+		assertThat(y.shape(), equalTo(new long[] { 1, 1 }));
+		assertThat(y.getDouble(0, 0), closeTo(expected, EPSILON));
 	}
 
 	/**
@@ -267,9 +312,9 @@ public class LocalContextReactionsTest implements Constants {
 
 		final double expected = ISA_DENSITY * VOLUME * SPEED * SPEED * AREA;
 
-		assertThat(y.shape(), equalTo(new long[] { 2 }));
-		assertThat(y.getDouble(0), closeTo(expected, EPSILON));
-		assertThat(y.getDouble(1), closeTo(expected, EPSILON));
+		assertThat(y.shape(), equalTo(new long[] { 1, 2 }));
+		assertThat(y.getDouble(0, 0), closeTo(expected, EPSILON));
+		assertThat(y.getDouble(0, 1), closeTo(expected, EPSILON));
 	}
 
 	@Test
