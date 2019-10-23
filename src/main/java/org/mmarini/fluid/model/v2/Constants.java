@@ -36,6 +36,7 @@ package org.mmarini.fluid.model.v2;
 public interface Constants {
 
 	public static final double SIZE = 10e-3; // m
+	public static final double AREA = SIZE * SIZE; // m^2
 	public static final double VOLUME = SIZE * SIZE * SIZE; // m^3
 	public static final double R = 8.31446; // J / (Kg mol)
 	public static final double ISA_TEMPERATURE = 288.15; // 15 Celsius
