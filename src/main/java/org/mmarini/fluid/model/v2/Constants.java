@@ -41,8 +41,8 @@ public interface Constants {
 	public static final double R = 8.31446; // J / (Kg mol)
 	public static final double ISA_TEMPERATURE = 288.15; // 15 Celsius
 	public static final double ISA_PRESSURE = 101325; // Pa
-	public static final double ISA_MOLECULAR_MASS_ = 28.96e-3; // Kg/mol
-	public static final double ISA_DENSITY = ISA_MOLECULAR_MASS_ * ISA_PRESSURE / R / ISA_TEMPERATURE; // Kg
+	public static final double ISA_MOLECULAR_MASS = 28.96e-3; // Kg/mol
+	public static final double ISA_DENSITY = ISA_MOLECULAR_MASS * ISA_PRESSURE / R / ISA_TEMPERATURE; // Kg
 	public static final double SPEED = 10; // m/s
 	public static final double ISA_SPECIFIC_HEAT_CAPACITY = 1004.3; // J/(Kg K)
 }

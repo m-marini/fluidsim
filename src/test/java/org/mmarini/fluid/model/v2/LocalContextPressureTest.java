@@ -28,13 +28,13 @@ public class LocalContextPressureTest implements Constants {
 	 *
 	 * @return
 	 */
-	private static SimulationContext centralPressureContext() {
+	private static SimulationContext1 centralPressureContext() {
 		final INDArray density = Nd4j.create(new double[][] { { ISA_DENSITY, ISA_DENSITY, ISA_DENSITY },
 				{ ISA_DENSITY, ISA_DENSITY * 1.1, ISA_DENSITY }, { ISA_DENSITY, ISA_DENSITY, ISA_DENSITY }, });
 		final INDArray speed = Nd4j.zeros(3, 3, 2);
 		final INDArray temperature = Nd4j.ones(3, 3).mul(ISA_TEMPERATURE);
 		final INDArray massConstraints = Nd4j.zeros(DataType.DOUBLE, 3, 3);
-		return new SimulationContext(new UniverseImpl(1, density, speed, temperature, ISA_MOLECULAR_MASS_,
+		return new SimulationContext1(new UniverseImpl(1, density, speed, temperature, ISA_MOLECULAR_MASS,
 				ISA_SPECIFIC_HEAT_CAPACITY, massConstraints), 0);
 	}
 
@@ -43,12 +43,12 @@ public class LocalContextPressureTest implements Constants {
 	 *
 	 * @return
 	 */
-	private static SimulationContext homogeneousContext() {
+	private static SimulationContext1 homogeneousContext() {
 		final INDArray density = Nd4j.ones(3, 3).mul(ISA_DENSITY);
 		final INDArray speed = Nd4j.zeros(3, 3, 2);
 		final INDArray temperature = Nd4j.ones(3, 3).mul(ISA_TEMPERATURE);
 		final INDArray massConstraints = Nd4j.zeros(DataType.DOUBLE, 3, 3);
-		return new SimulationContext(new UniverseImpl(1, density, speed, temperature, ISA_MOLECULAR_MASS_,
+		return new SimulationContext1(new UniverseImpl(1, density, speed, temperature, ISA_MOLECULAR_MASS,
 				ISA_SPECIFIC_HEAT_CAPACITY, massConstraints), 0);
 	}
 
@@ -80,7 +80,7 @@ public class LocalContextPressureTest implements Constants {
 	 * </pre>
 	 * </p>
 	 */
-	private static SimulationContext northWestContext() {
+	private static SimulationContext1 northWestContext() {
 		final INDArray density = Nd4j.ones(3, 3).mul(ISA_DENSITY);
 		density.putScalar(new int[] { 0, 0 }, ISA_DENSITY * 1.1);
 		final INDArray speed = Nd4j.zeros(3, 3, 2);
@@ -89,7 +89,7 @@ public class LocalContextPressureTest implements Constants {
 		final INDArray temperature = Nd4j.ones(3, 3).mul(ISA_TEMPERATURE);
 		final INDArray massConstraints = Nd4j.zeros(DataType.DOUBLE, 3, 3);
 		massConstraints.putScalar(new int[] { 1, 1 }, 1);
-		return new SimulationContext(new UniverseImpl(1, density, speed, temperature, ISA_MOLECULAR_MASS_,
+		return new SimulationContext1(new UniverseImpl(1, density, speed, temperature, ISA_MOLECULAR_MASS,
 				ISA_SPECIFIC_HEAT_CAPACITY, massConstraints), 0);
 	}
 
@@ -98,13 +98,13 @@ public class LocalContextPressureTest implements Constants {
 	 *
 	 * @return
 	 */
-	private static SimulationContext westPressureContext() {
+	private static SimulationContext1 westPressureContext() {
 		final INDArray density = Nd4j.create(new double[][] { { ISA_DENSITY, ISA_DENSITY, ISA_DENSITY },
 				{ 2 * ISA_DENSITY, ISA_DENSITY, ISA_DENSITY }, { ISA_DENSITY, ISA_DENSITY, ISA_DENSITY }, });
 		final INDArray speed = Nd4j.zeros(3, 3, 2);
 		final INDArray temperature = Nd4j.ones(3, 3).mul(ISA_TEMPERATURE);
 		final INDArray massConstraints = Nd4j.zeros(DataType.DOUBLE, 3, 3);
-		return new SimulationContext(new UniverseImpl(1, density, speed, temperature, ISA_MOLECULAR_MASS_,
+		return new SimulationContext1(new UniverseImpl(1, density, speed, temperature, ISA_MOLECULAR_MASS,
 				ISA_SPECIFIC_HEAT_CAPACITY, massConstraints), 0);
 	}
 
@@ -114,8 +114,8 @@ public class LocalContextPressureTest implements Constants {
 
 	@Test
 	public void testComputePressureForce1() {
-		final LocalContext ctx = new LocalContext(homogeneousContext(), 1, 1);
-		final INDArray y = ctx.computePressureForce();
+		final LocalContext1 ctx = new LocalContext1(homogeneousContext(), 1, 1);
+		final INDArray y = ctx.getPressureForce();
 		assertThat(y.shape(), equalTo(new long[] { 3, 3, 2 }));
 
 		assertThat(y.getDouble(0, 0, 0), closeTo(0, EPSILON));
@@ -159,8 +159,8 @@ public class LocalContextPressureTest implements Constants {
 	 */
 	@Test
 	public void testComputePressureForce2() {
-		final LocalContext ctx = new LocalContext(westPressureContext(), 1, 1);
-		final INDArray y = ctx.computePressureForce();
+		final LocalContext1 ctx = new LocalContext1(westPressureContext(), 1, 1);
+		final INDArray y = ctx.getPressureForce();
 		assertThat(y.shape(), equalTo(new long[] { 3, 3, 2 }));
 
 		assertThat(y.getDouble(0, 0, 0), closeTo(0, EPSILON));
@@ -204,8 +204,8 @@ public class LocalContextPressureTest implements Constants {
 	 */
 	@Test
 	public void testComputePressureForce3() {
-		final LocalContext ctx = new LocalContext(northWestContext(), 0, 0);
-		final INDArray y = ctx.computePressureForce();
+		final LocalContext1 ctx = new LocalContext1(northWestContext(), 0, 0);
+		final INDArray y = ctx.getPressureForce();
 		assertThat(y.shape(), equalTo(new long[] { 3, 3, 2 }));
 
 		assertThat(y.getDouble(0, 0, 0), closeTo(0, EPSILON));
@@ -249,8 +249,8 @@ public class LocalContextPressureTest implements Constants {
 	 */
 	@Test
 	public void testComputePressureForce4() {
-		final LocalContext ctx = new LocalContext(centralPressureContext(), 1, 1);
-		final INDArray y = ctx.computePressureForce();
+		final LocalContext1 ctx = new LocalContext1(centralPressureContext(), 1, 1);
+		final INDArray y = ctx.getPressureForce();
 		assertThat(y.shape(), equalTo(new long[] { 3, 3, 2 }));
 
 		assertThat(y.getDouble(0, 0, 0), closeTo(0, EPSILON));

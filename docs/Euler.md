@@ -59,7 +59,7 @@ q'_{abc}(i,j) =
         (q_{i+1,j-1,2},q_{i+1,j-1,1}) & (q_{i+1,j,2},q_{i+1,j,1}) & (q_{i+1,j+1,2},q_{i+1,j+1,1})
     \end{array}
 \right| \\
-E'_{ab}(i,j) = 
+E'_{ab}(i,j) =
 \left|
     \begin{array}{rrr}
         E_{i-1,j-1} & E_{i-1,j} & E_{i-1,j+1} \\
@@ -165,13 +165,14 @@ Il flusso netto di energia entrante dalla superfice $k$ è dato da
 le potenze delle forze di pressione sono
 
 ```math
-\Pi_{ab}(i,j) = (p_{ab}(i,j) \vec u'_{ab}(i,j) - p_{22}(i,j) \vec u'_{22}(i,j)) \cdot \vec n_{ab} S_{ab}
+\Pi_{ab}(i,j) = \vec P_{ab}(i,j) \cdot \vec u'_{ab} + \vec P_{ab}(i,j) \cdot \vec u'_{22}(i,j) \\
+\Pi_{ab}(i,j) = \vec P_{ab}(i,j) \cdot (\vec u'_{ab} + \vec u'_{22}(i,j))
 ```
 
 le potenze delle forze di reazione sono
 
 ```math
-\Rho_{ab}(i,j) = \vec R_{ab}(i,j) \cdot \vec u'_{ab}(i,j)
+\Rho_{ab}(i,j) = \vec R_{ab}(i,j) \cdot (\vec u'_{ab}(i,j) + \vec u'_{22}(i,j))
 ```
 
 Quindi
@@ -213,22 +214,26 @@ La densità dell'aria è di $ 1.184 \frac{Kg}{m^2} $
 Vediamo ora l'effetto di una cella solida, ovvero una cella immobile, con densità costante ed capacità terminca nulla (nessun scambio di calore con l'esterno).
 
 ```math
-\frac{dm_{ij}}{dt} = 0 \\ 
+\frac{dm_{ij}}{dt} = 0 \\
 \vec q_{ij} = \vec 0 \\
 \frac{d E_{ij}}{dt} = 0
 ```
 
 Possiamo includere nell'equazione di continuità (principio di conservazione della massa)
-l'effetto del vincolo quindi definendo una matrice tale che 
+l'effetto del vincolo quindi definendo una matrice tale che
 
 $ \mu_{ij} = 1 \Rightarrow $ cella vincolata
 $ \mu_{ij} = 0 \Rightarrow $  cella non vincolata
 
-abbiamo
+### Prima equazione
+
+Per il principio di conservazione della massa abbiamo
 
 ```math
 \Delta m_{ij} =-(1 - \mu_{ij}) \sum_{ab} (\vec q'_{ab}(i,j) + \vec q'_{22}(i,j)) \cdot \vec n_{ab} S_k \Delta t
 ```
+
+### Seconda equazione
 
 Calcoliamo le sole forze di pressione delle celle adiacenti non vincolate
 
@@ -273,7 +278,7 @@ la superficie vincolata reagisce con un forza $ R_{ab} \cdot \vec n_{ab} $ tale 
     R_{cd}(i,j) \cdot \vec n_{cd} \Delta t
 \right) \cdot \vec n_{ab} = 0\\
 
-\sum_{cd} R_{cd}(i,j) \vec n_{cd} \cdot \vec n_{ab} = - \frac{1}{\Delta t} 
+\sum_{cd} R_{cd}(i,j) \vec n_{cd} \cdot \vec n_{ab} = - \frac{1}{\Delta t}
 \left(
     \vec q_{22}(i,j) + \Delta \vec {\tilde {q'}}(i,j)
 \right) \cdot \vec n_{ab} \\
@@ -318,205 +323,28 @@ Mentre per le rimanenti superfici abbiamo
 R_{ab} = 0
 ```
 
-Per quanto concerne il principio di conservazione dell'energia non essendoci scambio di calore
-tra le celle vincolate e le celle adiacenti rimane valida l'equazione principale.
+### Terza equazione
 
-## Ottimizzazione numerica
-
-### Proiezione lungo la direzione $ \vec n$
+Per quanto concerne il principio di conservazione dell'energia abbiamo che il flusso di energia è dato da
 
 ```math
-\vec b = (\vec a \cdot \vec n) \vec n
-\\
-b_i = (\sum_j a_j n_j) n_i
-= \sum_j a_j (n_j n_i)
-\\
-\vec b = (\vec n \otimes \vec n) \cdot \vec a
+\Phi^E_{ab}(i,j) =-(1 - \mu_{ij}) (E'_{ab}(i,j) \vec u'_{ab}(i,j)+ E'_{22}(i,j) \vec u'_{22}(i,j)) \cdot \vec n_{ab} S_k
 ```
 
-### Flusso netto
-
-Posto
+Le potenze delle forze di pressione sono
 
 ```math
-F(\vec A,i,j) = f_{ab}(\vec A,i,j) =
-\left|
-\begin{array}{lll}
-  \vec a_{i-1,j-1} & \vec a_{i-1,j} & \vec a_{i-1,j+1} \\
-  \vec a_{i,j-1}   & \vec a_{i,j}   & \vec a_{i,j+1} \\
-  \vec a_{i+1,j-1} & \vec a_{i+1,j} & \vec a_{i+1,j+1}
-\end{array}
-\right|\\
+    \Pi_{ab}(i,j) = (1-\mu'_{ab}) \vec P_{ab}(i,j) \cdot (\vec u'_{ab} + u'_{22}(i,j))
 ```
 
-abbiamo
+Le potenze delle forze di reazione sono
 
 ```math
-\vec A' = \vec F(\vec A,i,j) \\
-
-\vec B = \vec b_k = \vec b_{ab} = \vec a_{i_k j_k} + \vec a_{ij}\\
-
-\vec B = \left|
-\begin{array}{lll}
-  \vec a'_{11} + a'_{22} & \vec a'_{12} + a'_{22} & \vec a'_{13} + a'_{22} \\
-  \vec a'_{21} + a'_{22} & \vec 0                 &\vec a'_{23} + a'_{22} \\
- \vec  a'_{31} + a'_{22} & \vec a'_{32} + a'_{22} & \vec a'_{33} + a'_{22}
-\end{array}
-\right| = \\
-
-\vec B = \Phi_{3 \times 3 \times 3 \times 3} \vec A' = 
-\sum_{cd} \phi_{abcd} \vec a'_{cd}\\
-
-\vec b_{ab} = \vec a'_{ab} + \vec a'_{22} \Rightarrow \phi_{abab} = \phi_{ab22} = 1 \forall (a,b) \ne (2,2) \\
-
-b_{abc} = \sum_{d,e} \phi_{abde} c_{dec}
+    \Rho_{ab}(i,j) = R_{ab} \vec n_{ab} \cdot (\vec u'_{ab}(i,j) + u'_{22}(i,j))
 ```
 
-### Differenza di pressione
+La variazione di energia risultante è
 
 ```math
-A' = F(A,i,j) \\
-
-B = b_k = b_{ab} = a_{i_k j_k} - a_{ij}\\
-
-B = \left|
-\begin{array}{rrr}
-  a'_{11} - a'_{22} & a'_{12} - a'_{22} & a'_{13} - a'_{22} \\
-  a'_{21} - a'_{22} & 0 & a'_{23} - a'_{22} \\
-  a'_{31} - a'_{22} & a'_{32} - a'_{22} & a'_{33} - a'_{22}
-\end{array}
-\right| = \\
-
-B = \Theta_{3 \times 3 \times 3 \times 3} A' = 
-\sum_{cd} \theta_{abcd} a'_{cd}\\
-b_{ab} = a'_{ab} - a'_{22} \Rightarrow \phi_{abab} = -\phi_{ab22} = 1
-```
-
-```math
-\Delta m_{ij} = -\sum_k (\vec q_{i_k j_k} + \vec q_{ij}) \cdot \vec n_k S_k \Delta t
-```
-
-### Quantità per cella
-
-Estrapoliamo ora dalle equazioni le quantità condivise che possono quindi essere calcolate una volta sola.
-
-Quantità legate alle celle
-
-```math
-    \vec u_{ij} = \frac{\vec q_{ij}}{m} \\
-    \vec G_{ij} = m_{ij} \vec g_{ij} \\
-    p_{ij} = \frac{R}{V M_{mol}\varsigma} E_{ij} \\
-    \Gamma_{ij} = \vec g_{ij} \cdot \vec q_{ij} \\
-    \vec D_{ij} = \left[
-        (E_{ij} -p_{ij}) \vec u_{ij}
-    \right]
-```
-
-### Quantità per superficie
-
-Per superfice invece abbiamo
-
-```math
-    \vec S_k = \vec n_k S_k
-```
-
-### Equazioni tensoriali
-
-Posto
-
-```math
-    \mu_{ij}
-```
-
-La matrice di vincoli sulla massa con valore 1 se la cella è vincolata.
-
-le equazioni di variazione di massa risultano
-
-```math
-\Delta m_{ij} = -(1-\mu_{ij}) \sum_k (\vec q_{i_k j_k} + \vec q_{ij}) \cdot \vec  S_k \Delta t \\
-
-\Delta m_(i,j) = -(1-\mu_{ij}) \sum_{abcdf} \phi_{abcd} q'_{cdf}(i,j) s_{abf} \Delta t\\
-```
-
-deriviamo le equazioni di flusso di quantità di moto
-
-```math
-\vec q_{i_k j_k} (\vec u_{i_k j_k} \cdot \vec n_k) = \sum_d q'_{abc}(i,j) u'_{abd}(i,j) n_{abd}\\
-
-\vec q_{ij} (\vec u_{ij} \cdot \vec n_k) = \sum_d q'_{22c}(i,j) u'_{22d}(i,j) n_{abd} \\
-
-\vec q_{i_k j_k} (\vec u_{i_k j_k} \cdot \vec n_k)
-    - \vec q_{ij} (u_{ij} \cdot \vec n_k)
-= \sum_d
-\left(
-    q'_{abc}(i,j) u'_{abd}(i,j) + q'_{22c}(i,j) u'_{22d}(i,j)
-\right) n_{abd} = \\
-= \sum_{dfg} \phi_{abfg} q'_{fgc}(i,j) u'_{fgd}(i,j) n_{abd} \\
-
-\Phi^q_{abc}(i,j) = -\sum_{dfg} \phi_{abfg} q'_{fgc}(i,j) u'_{fgd}(i,j) s_{abd}
-```
-
-le equazioni delle forze di pressione agenti sull'elemento di volume sono
-
-```math
-\vec \Pi(i,j) = (p_{ij} - p_{i_k j_k}) \vec n_k S_k \\
-
-\Pi_{abc} = -(p_{ab} - p_{22}) n_{abc} s_{ab}
-
-```
-
-le equazioni delle forze di reazione sono
-
-```math
-\vec R_{ijk} = - \frac{1}{\Delta t }[(\vec q_{ij} + \Delta \vec {q'_{ij}}) \cdot \vec n_k] \vec n_k \\
-
-R_{abc}(i,j) = - \frac{1}{\Delta t}
-\sum_d
-\left[
-    q'_d(i,j) + \Delta q'_d(i,j)
-\right] n_{abd} n_{abc}\\
-
-\Delta q'_c(i,j) = - \Delta t \sum_{ab} \Phi^q_{abc}(i,j) + \Pi_{abc}(i,j)\\
-
-R_{abc}(i,j) = -\frac{1}{\Delta t}\sum_d
-\left[
-    q'_d(i,j)
-\right] n_{abd} n_{abc} + 
-\sum_{fgd}
-\left[
-    \Phi^q_{fgd}(i,j) + \Pi_{fgd}(i,j)
-\right] n_{abd} n_{abc} + 
-```
-
-...
-
-```math
-\frac{\Delta \vec {q'_{ij}}}{\Delta t} =  m_{ij} \vec g_{ij} + \sum_k
-\left[
-    - \vec q_{i_k j_k}
-    \left(
-        \vec u_{i_k j_k} \cdot \vec n_k
-    \right)
-    - \vec q_{ij}
-    \left(
-        u_{ij} \cdot \vec n_k
-    \right)
-    + (p_{ij} - p_{i_k j_k}) \vec n_k
-\right]
-S_k \\
-
-
-\Delta \vec q_{ij} =
-    \Delta \vec {q'_{ij}} + \sum_k \vec R_{ijk} \Delta t \\
-
-\Delta E_{ij} =
-\left[
-    \vec \Gamma_{ij} + \sum_k
-    \vec R_{ijk} \cdot u_{i_k j_k}
-     - \left(
-        D_{i_k j_k} \vec u_{i_k j_k}
-        + D_{ij} \vec u_{ij}
-    \right)
-    \cdot \vec S_k
-\right] \Delta t
+    \Delta E(i,j) = \sum_{ab} [\Phi^E_{ab}(i,j) + \Pi_{ab}(i,j) + \Rho_{ab}(i,j)] \Delta t
 ```

@@ -18,12 +18,12 @@ public class LocalContextMomentumFluxTest implements Constants {
 	 *
 	 * @return
 	 */
-	private static SimulationContext contextDownward() {
+	private static SimulationContext1 contextDownward() {
 		final INDArray density = Nd4j.ones(3, 3).mul(ISA_DENSITY);
 		final INDArray speed = Utils.prefixBroadcast(Nd4j.create(new double[] { 0, SPEED }), 3, 3);
 		final INDArray temperature = Nd4j.ones(3, 3).mul(ISA_TEMPERATURE);
 		final INDArray massConstraints = Nd4j.zeros(DataType.DOUBLE, 3, 3);
-		return new SimulationContext(new UniverseImpl(SIZE, density, speed, temperature, 0, 0, massConstraints), 0);
+		return new SimulationContext1(new UniverseImpl(SIZE, density, speed, temperature, 0, 0, massConstraints), 0);
 	}
 
 	/**
@@ -33,13 +33,13 @@ public class LocalContextMomentumFluxTest implements Constants {
 	 *
 	 * @return
 	 */
-	private static SimulationContext contextRightContraint() {
+	private static SimulationContext1 contextRightContraint() {
 		final INDArray density = Nd4j.ones(3, 3).mul(ISA_DENSITY);
 		final INDArray speed = Utils.prefixBroadcast(Nd4j.create(new double[] { SPEED, 0 }), 3, 3);
 		final INDArray temperature = Nd4j.ones(3, 3).mul(ISA_TEMPERATURE);
 		final INDArray massConstraints = Nd4j.zeros(DataType.DOUBLE, 3, 3);
 		massConstraints.putScalar(new int[] { 1, 1 }, 1.0);
-		return new SimulationContext(new UniverseImpl(SIZE, density, speed, temperature, ISA_MOLECULAR_MASS_,
+		return new SimulationContext1(new UniverseImpl(SIZE, density, speed, temperature, ISA_MOLECULAR_MASS,
 				ISA_SPECIFIC_HEAT_CAPACITY, massConstraints), 0);
 	}
 
@@ -48,13 +48,13 @@ public class LocalContextMomentumFluxTest implements Constants {
 	 *
 	 * @return
 	 */
-	private static SimulationContext contextRightInomogeneus() {
+	private static SimulationContext1 contextRightInomogeneus() {
 		final INDArray density = Nd4j.ones(3, 3).mul(ISA_DENSITY);
 		density.putScalar(new int[] { 1, 1 }, ISA_DENSITY * 2);
 		final INDArray speed = Utils.prefixBroadcast(Nd4j.create(new double[] { SPEED, 0 }), 3, 3);
 		final INDArray temperature = Nd4j.ones(3, 3).mul(ISA_TEMPERATURE);
 		final INDArray massConstraints = Nd4j.zeros(DataType.DOUBLE, 3, 3);
-		return new SimulationContext(new UniverseImpl(SIZE, density, speed, temperature, 0, 0, massConstraints), 0);
+		return new SimulationContext1(new UniverseImpl(SIZE, density, speed, temperature, 0, 0, massConstraints), 0);
 	}
 
 	/**
@@ -64,12 +64,12 @@ public class LocalContextMomentumFluxTest implements Constants {
 	 *
 	 * @return
 	 */
-	private static SimulationContext contextRightSpeed() {
+	private static SimulationContext1 contextRightSpeed() {
 		final INDArray density = Nd4j.ones(3, 3).mul(ISA_DENSITY);
 		final INDArray speed = Utils.prefixBroadcast(Nd4j.create(new double[] { SPEED, 0 }), 3, 3);
 		final INDArray temperature = Nd4j.ones(3, 3).mul(ISA_TEMPERATURE);
 		final INDArray massConstraints = Nd4j.zeros(DataType.DOUBLE, 3, 3);
-		return new SimulationContext(new UniverseImpl(SIZE, density, speed, temperature, ISA_MOLECULAR_MASS_,
+		return new SimulationContext1(new UniverseImpl(SIZE, density, speed, temperature, ISA_MOLECULAR_MASS,
 				ISA_SPECIFIC_HEAT_CAPACITY, massConstraints), 0);
 	}
 
@@ -112,7 +112,7 @@ public class LocalContextMomentumFluxTest implements Constants {
 	 */
 	@Test
 	public void testComputeFreeMomentumFlux00() {
-		final LocalContext ctx = new LocalContext(contextRightSpeed(), 1, 1);
+		final LocalContext1 ctx = new LocalContext1(contextRightSpeed(), 1, 1);
 		final INDArray y = ctx.getFreeMomentumFlux();
 
 		assertThat(y.shape(), equalTo(new long[] { 2 }));
@@ -156,7 +156,7 @@ public class LocalContextMomentumFluxTest implements Constants {
 	 */
 	@Test
 	public void testComputeFreeMomentumFlux10_1() {
-		final LocalContext ctx = new LocalContext(contextRightContraint(), 1, 1);
+		final LocalContext1 ctx = new LocalContext1(contextRightContraint(), 1, 1);
 		final INDArray y = ctx.getFreeMomentumFlux();
 
 		assertThat(y.shape(), equalTo(new long[] { 2 }));
@@ -184,7 +184,7 @@ public class LocalContextMomentumFluxTest implements Constants {
 	 */
 	@Test
 	public void testComputeFreeMomentumFlux11() {
-		final LocalContext ctx = new LocalContext(contextRightSpeed(), 1, 1);
+		final LocalContext1 ctx = new LocalContext1(contextRightSpeed(), 1, 1);
 		final INDArray y = ctx.getFreeMomentumFlux();
 
 		assertThat(y.shape(), equalTo(new long[] { 2 }));
@@ -215,7 +215,7 @@ public class LocalContextMomentumFluxTest implements Constants {
 	 */
 	@Test
 	public void testComputeMomentumFlux1() {
-		final LocalContext ctx = new LocalContext(contextRightSpeed(), 1, 1);
+		final LocalContext1 ctx = new LocalContext1(contextRightSpeed(), 1, 1);
 		final INDArray y = ctx.computeMomentumFlux();
 		assertThat(y.shape(), equalTo(new long[] { 3, 3, 2 }));
 
@@ -263,7 +263,7 @@ public class LocalContextMomentumFluxTest implements Constants {
 	 */
 	@Test
 	public void testComputeMomentumFlux2() {
-		final LocalContext ctx = new LocalContext(contextDownward(), 1, 1);
+		final LocalContext1 ctx = new LocalContext1(contextDownward(), 1, 1);
 		final INDArray y = ctx.computeMomentumFlux();
 		assertThat(y.shape(), equalTo(new long[] { 3, 3, 2 }));
 
@@ -311,7 +311,7 @@ public class LocalContextMomentumFluxTest implements Constants {
 	 */
 	@Test
 	public void testComputeMomentumFlux3() {
-		final LocalContext ctx = new LocalContext(contextRightInomogeneus(), 1, 1);
+		final LocalContext1 ctx = new LocalContext1(contextRightInomogeneus(), 1, 1);
 		final INDArray y = ctx.computeMomentumFlux();
 		assertThat(y.shape(), equalTo(new long[] { 3, 3, 2 }));
 
@@ -359,7 +359,7 @@ public class LocalContextMomentumFluxTest implements Constants {
 	 */
 	@Test
 	public void testComputeMomentumFlux4() {
-		final LocalContext ctx = new LocalContext(contextRightSpeed(), 0, 0);
+		final LocalContext1 ctx = new LocalContext1(contextRightSpeed(), 0, 0);
 		final INDArray y = ctx.computeMomentumFlux();
 		assertThat(y.shape(), equalTo(new long[] { 3, 3, 2 }));
 

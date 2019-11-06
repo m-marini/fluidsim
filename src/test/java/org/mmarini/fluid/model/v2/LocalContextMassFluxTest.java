@@ -12,22 +12,22 @@ public class LocalContextMassFluxTest implements Constants {
 
 	private static final double EPSILON = 1e-12;
 
-	private static SimulationContext context() {
+	private static SimulationContext1 context() {
 		final INDArray density = Nd4j.ones(3, 3).mul(ISA_DENSITY);
 		final INDArray speed = Utils.prefixBroadcast(Nd4j.create(new double[] { SPEED, 0 }), 3, 3);
 		final INDArray temperature = Nd4j.ones(3, 3).mul(ISA_TEMPERATURE);
 		final INDArray massConstraints = Nd4j.zeros(DataType.DOUBLE, 3, 3);
-		return new SimulationContext(new UniverseImpl(SIZE, density, speed, temperature, ISA_MOLECULAR_MASS_,
+		return new SimulationContext1(new UniverseImpl(SIZE, density, speed, temperature, ISA_MOLECULAR_MASS,
 				ISA_SPECIFIC_HEAT_CAPACITY, massConstraints), 0);
 	}
 
-	private static SimulationContext context1() {
+	private static SimulationContext1 context1() {
 		final INDArray density = Nd4j.ones(3, 3).mul(ISA_DENSITY);
 		final INDArray speed = Utils.prefixBroadcast(Nd4j.create(new double[] { SPEED, 0 }), 3, 3);
 		speed.putScalar(new int[] { 1, 0, 0 }, SPEED * 1.5);
 		final INDArray temperature = Nd4j.ones(3, 3).mul(ISA_TEMPERATURE);
 		final INDArray massConstraints = Nd4j.zeros(DataType.DOUBLE, 3, 3);
-		return new SimulationContext(new UniverseImpl(SIZE, density, speed, temperature, ISA_MOLECULAR_MASS_,
+		return new SimulationContext1(new UniverseImpl(SIZE, density, speed, temperature, ISA_MOLECULAR_MASS,
 				ISA_SPECIFIC_HEAT_CAPACITY, massConstraints), 0);
 	}
 
@@ -51,7 +51,7 @@ public class LocalContextMassFluxTest implements Constants {
 
 	@Test
 	public void testComputeDeltaMass() {
-		final LocalContext ctx = new LocalContext(context(), 1, 1);
+		final LocalContext1 ctx = new LocalContext1(context(), 1, 1);
 		final double y = ctx.computeDeltaMass();
 		assertThat(y, closeTo(0, EPSILON));
 	}
@@ -72,7 +72,7 @@ public class LocalContextMassFluxTest implements Constants {
 
 	@Test
 	public void testComputeDeltaMass1() {
-		final LocalContext ctx = new LocalContext(context1(), 1, 1);
+		final LocalContext1 ctx = new LocalContext1(context1(), 1, 1);
 		final double y = ctx.computeDeltaMass();
 		assertThat(y, closeTo(0.5 * SPEED * ISA_DENSITY * VOLUME * AREA, EPSILON));
 	}

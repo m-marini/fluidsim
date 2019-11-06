@@ -40,7 +40,7 @@ public class LocalContextReactionsTest implements Constants {
 	 *
 	 * @return
 	 */
-	private static SimulationContext contextCenter() {
+	private static SimulationContext1 contextCenter() {
 		final INDArray density = Nd4j.ones(3, 3).mul(ISA_DENSITY);
 		final INDArray speed = Utils.prefixBroadcast(Nd4j.create(new double[] { SPEED, 0 }), 3, 3);
 		speed.putScalar(new int[] { 1, 1, 0 }, 0);
@@ -48,7 +48,7 @@ public class LocalContextReactionsTest implements Constants {
 		final INDArray temperature = Nd4j.ones(3, 3).mul(ISA_TEMPERATURE);
 		final INDArray massConstraints = Nd4j.zeros(DataType.DOUBLE, 3, 3);
 		massConstraints.putScalar(new int[] { 1, 1 }, 1);
-		return new SimulationContext(new UniverseImpl(SIZE, density, speed, temperature, ISA_MOLECULAR_MASS_,
+		return new SimulationContext1(new UniverseImpl(SIZE, density, speed, temperature, ISA_MOLECULAR_MASS,
 				ISA_SPECIFIC_HEAT_CAPACITY, massConstraints), DELTA_T);
 	}
 
@@ -73,14 +73,14 @@ public class LocalContextReactionsTest implements Constants {
 	 *
 	 * @return
 	 */
-	private static SimulationContext contextWest() {
+	private static SimulationContext1 contextWest() {
 		final INDArray density = Nd4j.ones(3, 3).mul(ISA_DENSITY);
 		final INDArray speed = Nd4j.zeros(3, 3, 2);
 		speed.putScalar(new int[] { 1, 0, 0 }, SPEED);
 		final INDArray temperature = Nd4j.ones(3, 3).mul(ISA_TEMPERATURE);
 		final INDArray massConstraints = Nd4j.zeros(DataType.DOUBLE, 3, 3);
 		massConstraints.putScalar(new int[] { 1, 2 }, 1);
-		return new SimulationContext(new UniverseImpl(SIZE, density, speed, temperature, ISA_MOLECULAR_MASS_,
+		return new SimulationContext1(new UniverseImpl(SIZE, density, speed, temperature, ISA_MOLECULAR_MASS,
 				ISA_SPECIFIC_HEAT_CAPACITY, massConstraints), DELTA_T);
 	}
 
@@ -105,7 +105,7 @@ public class LocalContextReactionsTest implements Constants {
 	 *
 	 * @return
 	 */
-	private static SimulationContext contextWestAndSouth() {
+	private static SimulationContext1 contextWestAndSouth() {
 		final INDArray density = Nd4j.ones(3, 3).mul(ISA_DENSITY);
 		final INDArray speed = Nd4j.zeros(3, 3, 2);
 		speed.putScalar(new int[] { 1, 0, 0 }, SPEED);
@@ -114,7 +114,7 @@ public class LocalContextReactionsTest implements Constants {
 		final INDArray massConstraints = Nd4j.zeros(DataType.DOUBLE, 3, 3);
 		massConstraints.putScalar(new int[] { 1, 2 }, 1);
 		massConstraints.putScalar(new int[] { 2, 1 }, 1);
-		return new SimulationContext(new UniverseImpl(SIZE, density, speed, temperature, ISA_MOLECULAR_MASS_,
+		return new SimulationContext1(new UniverseImpl(SIZE, density, speed, temperature, ISA_MOLECULAR_MASS,
 				ISA_SPECIFIC_HEAT_CAPACITY, massConstraints), DELTA_T);
 	}
 
@@ -155,7 +155,7 @@ public class LocalContextReactionsTest implements Constants {
 	 * </pre>
 	 *
 	 * Expected
-	 * 
+	 *
 	 * <pre>
 	 * (0,0) (0,0) (0,0)
 	 * (-1,-1) (0,0) (0,0)
@@ -166,7 +166,7 @@ public class LocalContextReactionsTest implements Constants {
 	 */
 	@Test
 	public void testComputeDeltaMomentum() {
-		final LocalContext ctx = new LocalContext(contextWestAndSouth(), 1, 1);
+		final LocalContext1 ctx = new LocalContext1(contextWestAndSouth(), 1, 1);
 		final INDArray y = ctx.computeDeltaMomentum();
 
 		assertThat(y.shape(), equalTo(new long[] { 1, 2 }));
@@ -209,7 +209,7 @@ public class LocalContextReactionsTest implements Constants {
 	 */
 	@Test
 	public void testComputeMWestAndSouth() {
-		final LocalContext ctx = new LocalContext(contextWestAndSouth(), 1, 1);
+		final LocalContext1 ctx = new LocalContext1(contextWestAndSouth(), 1, 1);
 		final INDArray y = ctx.computeM();
 
 		assertThat(y.shape(), equalTo(new long[] { 2, 2 }));
@@ -244,7 +244,7 @@ public class LocalContextReactionsTest implements Constants {
 	 * </pre>
 	 *
 	 * Expected
-	 * 
+	 *
 	 * <pre>
 	 * (0,0) (0,0) (0,0)
 	 * (0,0) (0,0) (-1,0)
@@ -255,7 +255,7 @@ public class LocalContextReactionsTest implements Constants {
 	 */
 	@Test
 	public void testComputeReaction() {
-		final LocalContext ctx = new LocalContext(contextWestAndSouth(), 1, 1);
+		final LocalContext1 ctx = new LocalContext1(contextWestAndSouth(), 1, 1);
 		final INDArray y = ctx.computeReaction();
 
 		final double expected = ISA_DENSITY * VOLUME * SPEED * SPEED * AREA;
@@ -283,21 +283,21 @@ public class LocalContextReactionsTest implements Constants {
 
 	@Test
 	public void testComputeReactionSurfaces00() {
-		final LocalContext ctx = new LocalContext(contextCenter(), 0, 0);
+		final LocalContext1 ctx = new LocalContext1(contextCenter(), 0, 0);
 		final List<int[]> y = ctx.getReactionSurfaces();
 		assertThat(y, empty());
 	}
 
 	@Test
 	public void testComputeReactionSurfaces01() {
-		final LocalContext ctx = new LocalContext(contextCenter(), 0, 1);
+		final LocalContext1 ctx = new LocalContext1(contextCenter(), 0, 1);
 		final List<int[]> y = ctx.getReactionSurfaces();
 		assertThat(y, empty());
 	}
 
 	@Test
 	public void testComputeReactionSurfaces10() {
-		final LocalContext ctx = new LocalContext(contextCenter(), 1, 0);
+		final LocalContext1 ctx = new LocalContext1(contextCenter(), 1, 0);
 		final List<int[]> y = ctx.getReactionSurfaces();
 		assertThat(y, hasSize(1));
 		assertThat(toIntegerArray(y.get(0)), arrayContaining(1, 2));
@@ -305,14 +305,14 @@ public class LocalContextReactionsTest implements Constants {
 
 	@Test
 	public void testComputeReactionSurfaces11() {
-		final LocalContext ctx = new LocalContext(contextCenter(), 1, 1);
+		final LocalContext1 ctx = new LocalContext1(contextCenter(), 1, 1);
 		final List<int[]> y = ctx.getReactionSurfaces();
 		assertThat(y, empty());
 	}
 
 	@Test
 	public void testComputeReactiveSurfaces00() {
-		final LocalContext ctx = new LocalContext(contextCenter(), 0, 0);
+		final LocalContext1 ctx = new LocalContext1(contextCenter(), 0, 0);
 		final List<int[]> y = ctx.computeReactiveSurfaces();
 		assertThat(y, hasSize(2));
 		assertThat(toIntegerArray(y.get(0)), arrayContaining(0, 1));
@@ -321,7 +321,7 @@ public class LocalContextReactionsTest implements Constants {
 
 	@Test
 	public void testComputeReactiveSurfaces01() {
-		final LocalContext ctx = new LocalContext(contextCenter(), 0, 1);
+		final LocalContext1 ctx = new LocalContext1(contextCenter(), 0, 1);
 		final List<int[]> y = ctx.computeReactiveSurfaces();
 		assertThat(y, hasSize(2));
 		assertThat(toIntegerArray(y.get(0)), arrayContaining(0, 1));
@@ -330,7 +330,7 @@ public class LocalContextReactionsTest implements Constants {
 
 	@Test
 	public void testComputeReactiveSurfaces10() {
-		final LocalContext ctx = new LocalContext(contextCenter(), 1, 0);
+		final LocalContext1 ctx = new LocalContext1(contextCenter(), 1, 0);
 		final List<int[]> y = ctx.computeReactiveSurfaces();
 		assertThat(y, hasSize(2));
 		assertThat(toIntegerArray(y.get(0)), arrayContaining(1, 0));
@@ -339,7 +339,7 @@ public class LocalContextReactionsTest implements Constants {
 
 	@Test
 	public void testComputeReactiveSurfaces11() {
-		final LocalContext ctx = new LocalContext(contextCenter(), 1, 1);
+		final LocalContext1 ctx = new LocalContext1(contextCenter(), 1, 1);
 		final List<int[]> y = ctx.computeReactiveSurfaces();
 		assertThat(y, empty());
 	}
@@ -374,7 +374,7 @@ public class LocalContextReactionsTest implements Constants {
 	 */
 	@Test
 	public void testComputeVWest() {
-		final LocalContext ctx = new LocalContext(contextWest(), 1, 1);
+		final LocalContext1 ctx = new LocalContext1(contextWest(), 1, 1);
 		final INDArray y = ctx.computeV();
 
 		final double expected = ISA_DENSITY * VOLUME * SPEED * SPEED * AREA;
@@ -413,7 +413,7 @@ public class LocalContextReactionsTest implements Constants {
 	 */
 	@Test
 	public void testComputeVWestAndSouth() {
-		final LocalContext ctx = new LocalContext(contextWestAndSouth(), 1, 1);
+		final LocalContext1 ctx = new LocalContext1(contextWestAndSouth(), 1, 1);
 		final INDArray y = ctx.computeV();
 
 		final double expected = ISA_DENSITY * VOLUME * SPEED * SPEED * AREA;
@@ -425,7 +425,7 @@ public class LocalContextReactionsTest implements Constants {
 
 	@Test
 	public void testLocalConstraints00() {
-		final LocalContext ctx = new LocalContext(contextCenter(), 0, 0);
+		final LocalContext1 ctx = new LocalContext1(contextCenter(), 0, 0);
 
 		final INDArray y = ctx.getConstraints();
 
@@ -446,7 +446,7 @@ public class LocalContextReactionsTest implements Constants {
 
 	@Test
 	public void testLocalConstraints11() {
-		final LocalContext ctx = new LocalContext(contextCenter(), 1, 1);
+		final LocalContext1 ctx = new LocalContext1(contextCenter(), 1, 1);
 
 		final INDArray y = ctx.getConstraints();
 

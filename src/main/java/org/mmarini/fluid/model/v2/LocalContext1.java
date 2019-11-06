@@ -45,7 +45,7 @@ import org.nd4j.linalg.indexing.NDArrayIndex;
  * @author mmarini
  *
  */
-public class LocalContext implements Constants {
+public class LocalContext1 implements Constants {
 	private static final int[] CENTER = new int[] { 1, 1 };
 
 	private static final INDArray NORMALS = Nd4j.create(new double[][][] {
@@ -54,7 +54,7 @@ public class LocalContext implements Constants {
 
 	private static final INDArray SECTIONS = Nd4j.create(new double[][] { { 0, 1, 0 }, { 1, 0, 1 }, { 0, 1, 0 } });
 
-	private final SimulationContext context;
+	private final SimulationContext1 context;
 	private final INDArray momentum;
 	private final INDArray constraints;
 	private final INDArray energy;
@@ -63,13 +63,14 @@ public class LocalContext implements Constants {
 	private final INDArray speed;
 	private INDArray freeMomentumFlux;
 	private List<int[]> reactionSurfaces;
+	private INDArray pressureForce;
 
 	/**
-	 * 
+	 *
 	 * @param context
 	 * @param indices
 	 */
-	public LocalContext(final SimulationContext context, final int... indices) {
+	public LocalContext1(final SimulationContext1 context, final int... indices) {
 		this.context = context;
 		momentum = Utils.local(context.getPadMomentum(), indices);
 		constraints = Utils.local(context.getPadConstraints(), indices);
@@ -94,7 +95,7 @@ public class LocalContext implements Constants {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public INDArray computeDeltaMomentum() {
@@ -103,6 +104,20 @@ public class LocalContext implements Constants {
 		final INDArray dq = dqf.add(r).mul(context.getInterval());
 		final INDArray result = dq.sum(0, 1).reshape(1, 2);
 		return result;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	INDArray computeEnergyFlux() {
+		final INDArray ef = Utils.mmul(speed, energy);
+		final INDArray fx = Utils.cellAddStamp(ef);
+		final INDArray fxs = fx.mul(-context.getCellArea());
+		final INDArray incomeEnergyFluxes = Utils.mmul(fxs, NORMALS);
+		final INDArray notMu = constraints.sub(1.0).negi();
+		final INDArray withConstraints = incomeEnergyFluxes.mul(notMu);
+		return withConstraints;
 	}
 
 	/**
@@ -118,14 +133,14 @@ public class LocalContext implements Constants {
 	 */
 	private INDArray computeFreeMomentumFlux() {
 		final INDArray mFlux = computeMomentumFlux();
-		final INDArray pForce = computePressureForce();
+		final INDArray pForce = getPressureForce();
 		final INDArray result1 = mFlux.add(pForce);
 		final INDArray result2 = result1.reshape(9, 2).sum(0);
 		return result2;
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	INDArray computeM() {
@@ -178,26 +193,18 @@ public class LocalContext implements Constants {
 	}
 
 	/**
-	 * Returns the pressure force <code>
-	 * -(p(ab) - p(22)) n(abc) s(ab)
-	 * </code>
 	 *
-	 * @param indices
 	 * @return
 	 */
-	INDArray computePressureForce() {
-		final INDArray mu = constraints;
-		final INDArray mask = mu.sub(1.0).neg();
-		final INDArray p = pressure;
-		final INDArray dp = Utils.cellDifferences(p);
-		final INDArray fs = Utils.mmul(NORMALS, dp);
-		final INDArray f = Utils.mmul(fs, SECTIONS).mul(-context.getCellArea());
-		final INDArray fc = Utils.mmul(f, mask);
-		return fc;
+
+	INDArray computePressurePower() {
+		final INDArray uu = Utils.cellAddStamp(speed);
+		final INDArray power = Utils.mmul(getPressureForce(), uu);
+		return power;
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	INDArray computeReaction() {
@@ -322,7 +329,29 @@ public class LocalContext implements Constants {
 	}
 
 	/**
-	 * 
+	 * Returns the pressure force <code>
+	 * -(p(ab) - p(22)) n(abc) s(ab)
+	 * </code>
+	 *
+	 * @param indices
+	 * @return
+	 */
+	INDArray getPressureForce() {
+		if (pressureForce == null) {
+			final INDArray mu = constraints;
+			final INDArray mask = mu.sub(1.0).neg();
+			final INDArray p = pressure;
+			final INDArray dp = Utils.cellDifferences(p);
+			final INDArray fs = Utils.mmul(NORMALS, dp);
+			final INDArray f = Utils.mmul(fs, SECTIONS).mul(-context.getCellArea());
+			final INDArray fc = Utils.mmul(f, mask);
+			pressureForce = fc;
+		}
+		return pressureForce;
+	}
+
+	/**
+	 *
 	 * @return
 	 */
 	List<int[]> getReactionSurfaces() {

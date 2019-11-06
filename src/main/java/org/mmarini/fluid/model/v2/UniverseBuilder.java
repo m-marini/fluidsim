@@ -72,7 +72,7 @@ public class UniverseBuilder implements Constants {
 		}
 		final INDArray temperature = Nd4j.ones(DataType.DOUBLE, shape).mul(ISA_TEMPERATURE);
 		final INDArray massCostraints = Nd4j.zeros(DataType.DOUBLE, shape);
-		return new UniverseImpl(LENGTH, density, speed, temperature, ISA_SPECIFIC_HEAT_CAPACITY, ISA_MOLECULAR_MASS_,
+		return new UniverseImpl(LENGTH, density, speed, temperature, ISA_SPECIFIC_HEAT_CAPACITY, ISA_MOLECULAR_MASS,
 				massCostraints);
 	}
 
