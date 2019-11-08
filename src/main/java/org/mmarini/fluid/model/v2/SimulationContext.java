@@ -29,6 +29,10 @@
 
 package org.mmarini.fluid.model.v2;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.indexing.NDArrayIndex;
@@ -42,8 +46,39 @@ import org.nd4j.linalg.indexing.NDArrayIndex;
 public class SimulationContext implements Constants {
 	private static final INDArray NORTH = Nd4j.create(new float[] { 0, -1 });
 	private static final INDArray SOUTH = Nd4j.create(new double[] { 0, 1 });
-	private static final INDArray EAST = Nd4j.create(new double[] { -1, 0 });
-	private static final INDArray WEST = Nd4j.create(new double[] { 1, 0 });
+	private static final INDArray EAST = Nd4j.create(new double[] { 1, 0 });
+	private static final INDArray WEST = Nd4j.create(new double[] { -1, 0 });
+	private static final List<INDArray> NORMALS = Arrays.asList(NORTH, EAST, SOUTH, WEST);
+
+	/**
+	 *
+	 * @param temperature
+	 * @param density
+	 * @param volume
+	 * @param sigma
+	 * @return
+	 */
+	static private INDArray buildEnergy(final INDArray temperature, final INDArray density, final double volume,
+			final double sigma) {
+		return temperature.mul(density).mul(volume * sigma);
+	}
+
+	/**
+	 *
+	 * @param cells
+	 * @return
+	 */
+	static private INDArray buildHConstraints(final INDArray cells) {
+		final long[] sh = cells.shape();
+		final long n = sh[0];
+		final long m = sh[1];
+		final INDArray a = cells.get(NDArrayIndex.interval(0, n - 1), NDArrayIndex.interval(0, m));
+		final INDArray b = cells.get(NDArrayIndex.interval(1, n), NDArrayIndex.interval(0, m));
+		final INDArray c = a.mul(b);
+		final INDArray hd = Nd4j.zeros(n + 1, m);
+		hd.get(NDArrayIndex.interval(1, n), NDArrayIndex.interval(0, m)).assign(c);
+		return hd;
+	}
 
 	/**
 	 *
@@ -54,16 +89,17 @@ public class SimulationContext implements Constants {
 		final long[] sh = cells.shape();
 		final long n = sh[0];
 		final long m = sh[1];
-		final INDArray a = cells.get(NDArrayIndex.interval(0, n - 1), NDArrayIndex.interval(0, m));
-		final INDArray b = cells.get(NDArrayIndex.interval(1, n), NDArrayIndex.interval(0, m));
+		final INDArray a = cells.get(NDArrayIndex.interval(0, n - 1));
+		final INDArray b = cells.get(NDArrayIndex.interval(1, n));
 		final INDArray c = a.add(b).mul(0.5);
-		final INDArray hd = Nd4j.zeros(n + 1, m);
-		hd.get(NDArrayIndex.interval(1, n), NDArrayIndex.interval(0, m)).assign(c);
+		final INDArray north = cells.get(NDArrayIndex.point(0));
+		final INDArray south = cells.get(NDArrayIndex.point(n - 1));
+		final INDArray hd = Nd4j.concat(0, north.ravel(), c.ravel(), south.ravel()).reshape(n + 1, m);
 		return hd;
 	}
 
 	/**
-	 * 
+	 *
 	 * @param cells
 	 * @return
 	 */
@@ -81,6 +117,45 @@ public class SimulationContext implements Constants {
 
 	/**
 	 *
+	 * @param density
+	 * @param volume
+	 * @return
+	 */
+	static private INDArray buildMass(final INDArray density, final double volume) {
+		return density.mul(volume);
+	}
+
+	/**
+	 *
+	 * @param temperature
+	 * @param density
+	 * @param molecularMass
+	 * @return
+	 */
+	static private INDArray buildPressure(final INDArray temperature, final INDArray density,
+			final double molecularMass) {
+		return temperature.mul(density).mul(R / molecularMass);
+	}
+
+	/**
+	 *
+	 * @param cells
+	 * @return
+	 */
+	static private INDArray buildVConstraints(final INDArray cells) {
+		final long[] sh = cells.shape();
+		final long n = sh[0];
+		final long m = sh[1];
+		final INDArray vd = Nd4j.zeros(n, m + 1);
+		final INDArray a = cells.get(NDArrayIndex.interval(0, n), NDArrayIndex.interval(0, m - 1));
+		final INDArray b = cells.get(NDArrayIndex.interval(0, n), NDArrayIndex.interval(1, m));
+		final INDArray c = a.mul(b);
+		vd.get(NDArrayIndex.interval(0, n), NDArrayIndex.interval(1, m)).assign(c);
+		return vd;
+	}
+
+	/**
+	 *
 	 * @param cells
 	 * @return
 	 */
@@ -88,18 +163,71 @@ public class SimulationContext implements Constants {
 		final long[] sh = cells.shape();
 		final long n = sh[0];
 		final long m = sh[1];
-		final INDArray vd = Nd4j.zeros(n, m + 1);
-
-		final INDArray a = cells.get(NDArrayIndex.interval(0, n), NDArrayIndex.interval(0, m - 1));
-		final INDArray b = cells.get(NDArrayIndex.interval(0, n), NDArrayIndex.interval(1, m));
+		final INDArray a = cells.get(NDArrayIndex.all(), NDArrayIndex.interval(0, m - 1));
+		final INDArray b = cells.get(NDArrayIndex.all(), NDArrayIndex.interval(1, m));
 		final INDArray c = a.add(b).mul(0.5);
-		vd.get(NDArrayIndex.interval(0, n), NDArrayIndex.interval(1, m)).assign(c);
+		final INDArray left = cells.get(NDArrayIndex.all(), NDArrayIndex.point(0));
+		final INDArray right = cells.get(NDArrayIndex.all(), NDArrayIndex.point(n - 1));
+		final INDArray vd = Nd4j.concat(0, left.ravel(), c.transpose().ravel(), right.ravel()).reshape(m + 1, n)
+				.transpose();
 		return vd;
+	}
+
+	/**
+	 *
+	 * @param cells
+	 * @return
+	 */
+	private static INDArray buildVVector(final INDArray cells) {
+		final long[] sh = cells.shape();
+		final long n = sh[0];
+		final long m = sh[1];
+		final INDArray a = cells.get(NDArrayIndex.all(), NDArrayIndex.interval(0, m - 1), NDArrayIndex.all());
+		final INDArray b = cells.get(NDArrayIndex.interval(0, n), NDArrayIndex.interval(1, m), NDArrayIndex.all());
+		final INDArray c = a.add(b).mul(0.5);
+		final INDArray result = Nd4j.zeros(n, m + 1, 2);
+		result.get(NDArrayIndex.interval(0, n), NDArrayIndex.interval(1, m), NDArrayIndex.all()).assign(c);
+		return result;
+	}
+
+	/**
+	 *
+	 * @param dim
+	 * @return
+	 */
+	static private INDArray normals(final long... dim) {
+		final List<INDArray> x = NORMALS.stream().map(n -> Utils.prefixBroadcast(n, dim)).collect(Collectors.toList());
+		final long[] shape = new long[dim.length + 2];
+		System.arraycopy(dim, 0, shape, 1, dim.length);
+		shape[0] = NORMALS.size();
+		shape[dim.length + 1] = 2;
+		final INDArray result = Nd4j.create(x, shape);
+		return result;
+	}
+
+	/**
+	 *
+	 * @param horizontal
+	 * @param vertical
+	 * @return
+	 */
+	static private INDArray surfaces(final INDArray horizontal, final INDArray vertical) {
+		final long n = vertical.size(0);
+		final long m = horizontal.size(1);
+		final INDArray nSpeed = horizontal.get(NDArrayIndex.interval(0, n));
+		final INDArray sSpeed = horizontal.get(NDArrayIndex.interval(1, n + 1));
+		final INDArray wSpeed = vertical.get(NDArrayIndex.all(), NDArrayIndex.interval(0, m));
+		final INDArray eSpeed = vertical.get(NDArrayIndex.all(), NDArrayIndex.interval(1, m + 1));
+		final long[] shape = nSpeed.shape();
+		final long[] newShape = new long[shape.length + 1];
+		System.arraycopy(shape, 0, newShape, 1, shape.length);
+		newShape[0] = 4;
+		final INDArray result = Nd4j.create(Arrays.asList(nSpeed, eSpeed, sSpeed, wSpeed), newShape);
+		return result;
 	}
 
 	private final Universe universe;
 	private final INDArray mass;
-	private final INDArray momentum;
 	private final double interval;
 	private final INDArray energy;
 	private final INDArray pressure;
@@ -107,13 +235,15 @@ public class SimulationContext implements Constants {
 	private final INDArray vDensity;
 	private final INDArray vEnergy;
 	private final INDArray hEnergy;
-	private final INDArray hMomentum;
-	private final INDArray vMomentum;
-	private final INDArray vMassFlux;
 	private final INDArray vSpeed;
 	private final INDArray hSpeed;
-	private final INDArray hMassFlux;
-	private final INDArray deltaRho;
+	private final INDArray hFree;
+	private final INDArray vFree;
+	private final INDArray hPressure;
+	private final INDArray vPressure;
+	private final INDArray hFlux;
+	private final INDArray vFlux;
+	private final INDArray norms;
 
 	/**
 	 *
@@ -124,59 +254,40 @@ public class SimulationContext implements Constants {
 		super();
 		this.universe = universe;
 		this.interval = interval;
-		this.mass = universe.getDensity().mul(universe.getCellVolume());
-		this.momentum = Utils.mmul(universe.getSpeed(), mass);
-		this.energy = universe.getTemperature().mul(mass).mul(universe.getSpecificHeatCapacity());
-		this.pressure = universe.getTemperature().mul(mass)
-				.mul(R / universe.getCellVolume() / universe.getMolecularMass());
+		this.mass = buildMass(universe.getDensity(), universe.getCellVolume());
+		this.energy = buildEnergy(universe.getTemperature(), universe.getDensity(), universe.getCellVolume(),
+				universe.getSpecificHeatCapacity());
+		this.pressure = buildPressure(universe.getTemperature(), universe.getDensity(), universe.getMolecularMass());
+		this.norms = normals(universe.getDensity().shape());
 		this.hDensity = buildHSurface(universe.getDensity());
 		this.vDensity = buildVSurface(universe.getDensity());
-		this.hEnergy = buildHSurface(this.energy);
-		this.vEnergy = buildVSurface(this.energy);
 		this.hSpeed = buildHVector(universe.getSpeed());
 		this.vSpeed = buildVVector(universe.getSpeed());
-		this.hMomentum = buildHVector(momentum);
-		this.vMomentum = buildVVector(momentum);
-		this.vMassFlux = Utils.mmul(vSpeed, vDensity).muli(universe.getCellArea());
-		this.hMassFlux = Utils.mmul(hSpeed, hDensity).muli(universe.getCellArea());
-		this.deltaRho = buildDeltaRho();
+
+		final INDArray mu = universe.getMu();
+		this.hFree = buildHConstraints(mu);
+		this.vFree = buildVConstraints(mu);
+
+		final INDArray hTemperature = buildHSurface(universe.getTemperature());
+		final INDArray vTemperature = buildVSurface(universe.getTemperature());
+		this.hEnergy = buildEnergy(hTemperature, hDensity, universe.getCellVolume(),
+				universe.getSpecificHeatCapacity());
+		this.vEnergy = buildEnergy(vTemperature, vDensity, universe.getCellVolume(),
+				universe.getSpecificHeatCapacity());
+		this.hPressure = buildPressure(hTemperature, hDensity, universe.getMolecularMass());
+		this.vPressure = buildPressure(vTemperature, vDensity, universe.getMolecularMass());
+		this.hFlux = Utils.vsmul(hSpeed, hDensity);
+		this.vFlux = Utils.vsmul(vSpeed, vDensity);
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
-	private INDArray buildDeltaRho() {
-		final long[] sh = mass.shape();
-		final long n = sh[0];
-		final long m = sh[1];
-		final INDArray north = hMassFlux.get(NDArrayIndex.interval(0, n), NDArrayIndex.all());
-		final INDArray south = hMassFlux.get(NDArrayIndex.interval(1, n + 1), NDArrayIndex.all());
-		final INDArray east = vMassFlux.get(NDArrayIndex.all(), NDArrayIndex.interval(0, m));
-		final INDArray west = vMassFlux.get(NDArrayIndex.all(), NDArrayIndex.interval(1, m + 1));
-		final INDArray northDelta = Utils.mmul(north, Utils.prefixBroadcast(NORTH, n, m));
-		final INDArray southDelta = Utils.mmul(south, Utils.prefixBroadcast(SOUTH, n, m));
-		final INDArray eastDelta = Utils.mmul(east, Utils.prefixBroadcast(EAST, n, m));
-		final INDArray westDelta = Utils.mmul(west, Utils.prefixBroadcast(WEST, n, m));
-		final INDArray result = northDelta.add(southDelta).addi(eastDelta).addi(westDelta)
-				.muli(-interval / universe.getCellVolume());
-		return result;
-	}
-
-	/**
-	 * 
-	 * @param cells
-	 * @return
-	 */
-	private INDArray buildVVector(final INDArray cells) {
-		final long[] sh = cells.shape();
-		final long n = sh[0];
-		final long m = sh[1];
-		final INDArray a = cells.get(NDArrayIndex.interval(0, n), NDArrayIndex.interval(0, m - 1), NDArrayIndex.all());
-		final INDArray b = cells.get(NDArrayIndex.interval(0, n), NDArrayIndex.interval(1, m), NDArrayIndex.all());
-		final INDArray c = a.add(b).mul(0.5);
-		final INDArray result = Nd4j.zeros(n, m + 1, 2);
-		result.get(NDArrayIndex.interval(0, n), NDArrayIndex.interval(1, m), NDArrayIndex.all()).assign(c);
+	INDArray computeDeltaRho() {
+		final INDArray flux = surfaces(hFlux, vFlux);
+		final INDArray delta = Utils.vvmul(flux, norms);
+		final INDArray result = delta.sum(0).muli(-interval * universe.getCellArea() / universe.getCellVolume());
 		return result;
 	}
 
@@ -184,16 +295,77 @@ public class SimulationContext implements Constants {
 	 *
 	 * @return
 	 */
-	public double getCellArea() {
-		return universe.getCellArea();
+	INDArray computeDeltaSpeed() {
+		final INDArray cellFlux = computeMomentFlux();
+		final INDArray cellForce = computePressureForce();
+		final INDArray delta = cellFlux.add(cellForce);
+		final INDArray cellDensity = Utils.suffixBroadcast(universe.getDensity(), 2);
+		final INDArray ratio = delta.div(cellDensity);
+		final INDArray result = ratio.mul(interval * universe.getCellArea() / universe.getCellVolume());
+		return result;
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
-	INDArray getDeltaRho() {
-		return deltaRho;
+	INDArray computeDeltaTemperature() {
+		final INDArray energyFlux = computeEnergyFlux();
+		final INDArray power = computePower();
+		final INDArray surfEnergy = energyFlux.add(power);
+		final INDArray result = surfEnergy.div(universe.getDensity()).muli(interval * universe.getCellArea()
+				/ universe.getCellVolume() / universe.getCellVolume() / universe.getSpecificHeatCapacity());
+		return result;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	INDArray computeEnergyFlux() {
+		final INDArray surfSpeed = surfaces(hSpeed, vSpeed);
+		final INDArray nSpeed = Utils.vvmul(surfSpeed, norms);
+		final INDArray surfEnergy = surfaces(hEnergy, vEnergy);
+		final INDArray flux = surfEnergy.mul(nSpeed);
+		final INDArray result = flux.sum(0).negi();
+		return result;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	INDArray computeMomentFlux() {
+		final INDArray speed = surfaces(hSpeed, vSpeed);
+		final INDArray nSpeed = Utils.vvmul(speed, norms);
+		final INDArray speedFlux = surfaces(hFlux, vFlux);
+		final INDArray flux = Utils.vsmul(speedFlux, nSpeed);
+		final INDArray result = flux.sum(0).negi();
+		return result;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	INDArray computePower() {
+		final INDArray surfSpeed = surfaces(hSpeed, vSpeed);
+		final INDArray nSpeed = Utils.vvmul(surfSpeed, norms);
+		final INDArray surfPressure = surfaces(hPressure, vPressure);
+		final INDArray power = surfPressure.mul(nSpeed);
+		final INDArray result = power.sum(0).negi();
+		return result;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	INDArray computePressureForce() {
+		final INDArray p = surfaces(hPressure, vPressure);
+		final INDArray force = Utils.vsmul(norms, p);
+		final INDArray cellForce = force.sum(0).negi();
+		return cellForce;
 	}
 
 	/**
@@ -217,23 +389,27 @@ public class SimulationContext implements Constants {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
-	INDArray getHMassFlux() {
-		return hMassFlux;
+	INDArray getHFlux() {
+		return hFlux;
+	}
+
+	INDArray getHFree() {
+		return hFree;
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
-	INDArray getHMomentum() {
-		return hMomentum;
+	INDArray getHPressure() {
+		return hPressure;
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	INDArray getHSpeed() {
@@ -256,13 +432,6 @@ public class SimulationContext implements Constants {
 	 */
 	INDArray getMass() {
 		return mass;
-	}
-
-	/**
-	 * @return the momentum
-	 */
-	INDArray getMomentum() {
-		return momentum;
 	}
 
 	/**
@@ -297,23 +466,27 @@ public class SimulationContext implements Constants {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
-	INDArray getVMassFlux() {
-		return vMassFlux;
+	INDArray getVFlux() {
+		return vFlux;
+	}
+
+	INDArray getVFree() {
+		return vFree;
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
-	INDArray getVMomentum() {
-		return vMomentum;
+	INDArray getVPressure() {
+		return vPressure;
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	INDArray getVSpeed() {

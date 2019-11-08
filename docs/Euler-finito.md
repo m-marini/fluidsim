@@ -1,4 +1,4 @@
-# Equazioni di eulero
+# Equazioni di Eulero
 
 [TOC]
 
@@ -14,29 +14,26 @@ Le equazioni di Eulero sono:
 
 ### Conservazione della massa
 
-Dalla prima equazione per integrazione possiamo derivare
+Dalla prima equazione per integrazione otteniamo
 
 ```math
-    d \rho = -\int_V \nabla \cdot \rho \vec u \, dV \, dt
+    d  \int_V \rho dV = - \int_V \nabla \cdot \rho \vec u \, dV \, dt
 ```
 
-per $ V $ volume infinitesimale
-
-e dal teorima della divergenza diventa
+per $ V $ volume infinitesimale e dal teorima della divergenza diventa
 
 ```math
-    d \rho = -\oint_S \rho \vec u \cdot \vec n \, ds \, dt
+    d \int_V \rho dV = -\oint_S \rho \vec u \cdot \vec n \, ds \, dt
 ```
 
 per $ S $ la superficie di confine del volume infinitesimale e $ \vec n $ la normale uscente dal volume.
 
 ### Conservazione della quantità di moto
 
-Dalla seconda equazione per integrazione possiamo derivare
+Dalla seconda equazione per integrazione otteniamo (da verificare)
 
 ```math
     d \int_V \rho \vec u \, dV = -\int_V \nabla \cdot (\rho \vec u \otimes \vec u + p I) \, dV \, dt \\
-    d \int_V \rho \vec u \, dV = -\oint_S [(\rho \vec u) \vec u \cdot \vec n + p \vec n] \, ds \, dt
 ```
 
 ### Conservazione dell'energia
@@ -44,8 +41,8 @@ Dalla seconda equazione per integrazione possiamo derivare
 Dalla terza equazione per integrazione possiamo derivare
 
 ```math
-    d E = -\int_V \nabla \cdot \vec u (E + p) \, dV \, dt \\
-    d E = -\oint_S  \vec n \cdot \vec u (E + p) \, ds \, dt
+    d \int_V E dV = -\int_V \nabla \cdot \vec u (E + p) \, dV \, dt \\
+    d \int_V E dV = -\oint_S  \vec n \cdot \vec u (E + p) \, ds \, dt
 ```
 
 ## Condizioni a contorno
@@ -63,7 +60,7 @@ Questa superficie definisce una zona di discontinuità della densità e dell'ene
     E_k = E
 ```
 
-Quindi abbiamo che
+La superfice reagisce anche alla pressione del fluido con una forza uguale e contraria per cui
 
 ```math
     \frac{\partial}{\partial t} \oint_{S_k} \rho \vec u \cdot \vec n \, ds = 0 \\
@@ -158,9 +155,8 @@ Il fluido contenuto nella cella $(i, j)$ è definito da tre proprietà di base:
 dalle prorietà di base deriviamo altre proprietà con le equazioni di stato
 
 - $ m_{ij} = V \rho_{ij} $ la massa,
-- $ \vec q_{ij} = V \rho_{ij} \vec u_{ij} $ la quantità di moto ($ \vec u_{ij} $ è la velocità del fluido)
 - $ E_{ij} = \varsigma T_{ij} m_{ij} $ l'energia interna del fluido
-- $ p_{ij} = \frac{m_{ij}}{V M_{mol}} T_{ij} R $ pressione
+- $ p_{ij} = \frac{\rho_{ij}}{M_{mol}} T_{ij} R $ pressione
 
 dove $ \varsigma $ è il calore specifico del fluido,
 $ M_{mol} $ è la massa molecolare del fluido
@@ -176,30 +172,22 @@ La densità dell'aria è di $ 1.184 \frac{Kg}{m^2} $
 
 ### Proprietà delle superfici di confine
 
-Per ogni superficie di confine possiamo definire le seguenti proprietà come medie delle celle adiacenti
+Per ogni superficie di confine $ k $ possiamo definire le seguenti proprietà come medie delle celle adiacenti
 
-- $ \bar \rho = \frac{\rho + \rho_k}{2} $ densità media
-- $ \bar {\vec u} = \frac{\vec u  + \vec u_k}{2} $ velocità media
-- $ \bar {\vec q} = \frac{\vec q  + \vec q_k}{2} $ quantità di moto media
-- $ \bar E = \frac{E + E_k}{2} $ energia media
-- $ \vec \Phi^m = \bar \rho \bar {\vec u} S $ flusso di massa
-- $ \Phi^q = \bar {\vec q} \otimes \bar {\vec u} $ tensore di flusso di quantità di moto
-
-per le superfice isolanti invece
-
-- $ \bar \rho = 0 $ densità media
-- $ \bar {\vec u} = \vec 0 $ velocità media
-- $ \bar {\vec q} = \vec 0$ quantità di moto media
-- $ \bar E_k = 0 $ energia media
-- $ \vec \Phi^m = \vec 0 $ flusso di massa
-- $ \Phi^q = 0 $ tensore di flusso di quantità di moto
+- $ \mu_{kij} $ flag se superficie non isolante
+- $ \rho_{kij} = \mu_{kij} \frac{\rho_{ij} + \rho_{i_k j_k}}{2} $ densità media
+- $ {\vec u_{kij}} = \mu_{kij} \frac{\vec u_{ij}  + \vec u_{i_k j_k}}{2} $ velocità media
+- $ E_{kij} = \mu_{kij} \frac{E_{ij} + E_{i_k j_k}}{2} $ energia media
+- $ p_{kij} = \mu_{kij} \frac{p_{ij} + p_{i_k j_k}}{2} $ pressione media
+- $ \vec \phi _{kij} = \rho_{kij} \vec u_{kij} $ flusso di densità
 
 ### Simulazione del flusso di massa
 
 La variazione di massa di una cella
 
 ```math
-    \Delta m = - \sum _k \vec n_k \cdot \vec \Phi^m \Delta t
+    \Delta \int_V \rho_{ij}\, dV= - \sum _k \rho_{kij} \vec n_k \cdot \vec u_{kij} S \Delta t \\
+    \Delta \rho_{ij} = - \frac{S \Delta t}{V} \sum _k \vec \phi_{kij} \cdot \vec n_k
 ```
 
 ### Simulazione del flusso di quantità di moto
@@ -207,7 +195,13 @@ La variazione di massa di una cella
 La variazione di quantità di moto di una cella è quindi
 
 ```math
-    \Delta \vec q = - \sum_k [\Phi^q + p I] \cdot \vec n_k S \Delta t
+    \Delta \int_V (\rho_{ij} \vec u_{ij}) dV= - \sum_k [\rho_{kij} \vec u_{kij} (\vec u_{kij} \cdot \vec n_k) + p_{kij} \vec n_k] S \Delta t \\
+    \Delta (\rho_{ij} \vec u_{ij}) = - \frac{1}{V} \sum_k [\vec \phi_{kij} (\vec u_{kij} \cdot \vec n_k) + p_{kij} \vec n_k] S \Delta t \\
+    \Delta \vec u_{ij} = - \frac{S \Delta t}{V \rho_{ij}}
+    \left[
+        \sum_k \vec \phi_{kij} (\vec u_{kij} \cdot \vec n_k)
+        + \sum_k p_{kij} \vec n_k
+    \right]
 ```
 
 ### Simulazione di flusso di energia
@@ -215,13 +209,10 @@ La variazione di quantità di moto di una cella è quindi
 La variazione di energia è quindi
 
 ```math
-    \Delta E = - \sum_k \vec n_k \cdot \bar {\vec u} (\bar E + p) S \Delta t
-```
-
-dalle variazioni di massa, quantita di moto ed energia si possono calcolare le variazioni delle proprietà di base
-
-```math
-    \Delta \rho_{ij} = \frac{\Delta m_{ij}}{V} \\
-    \Delta \vec u_{ij} = \frac{\Delta \vec q_{ij}}{m_{ij}} \\
-    \Delta T_{ij} = \frac{\Delta E_{ij}}{\varsigma m_{ij}}
+    \Delta \int_V  E_{ij} \, dV = - \sum_k \vec n_k \cdot \vec u_{kij} ( E_{kij} + p_{kij}) S \Delta t \\
+    \Delta E_{ij} = - \frac{S \Delta t}{V}
+    \left[
+        \sum_k \vec n_k \cdot \vec u_{kij} E_{kij} + \sum_k \vec n_k \cdot \vec u_{kij}p_{kij}
+    \right] \\
+    \Delta T_{ij} = \frac{\Delta E_{ij}}{\varsigma \rho_{ij} V}
 ```

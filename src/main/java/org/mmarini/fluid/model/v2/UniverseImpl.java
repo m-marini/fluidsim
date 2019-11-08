@@ -39,8 +39,7 @@ public class UniverseImpl implements Universe {
 	private final INDArray speed;
 	private final INDArray temperature;
 	private final double cellVolume;
-	private final INDArray massConstraints;
-	private final double lenght;
+	private final INDArray mu;
 	private final double cellArea;
 	private final double specificHeatCapacity;
 	private final double molecularMass;
@@ -48,10 +47,10 @@ public class UniverseImpl implements Universe {
 	/**
 	 * Creates the universe
 	 *
-	 * @param massConstraints
+	 * @param mu
 	 */
 	public UniverseImpl(final double length, final INDArray density, final INDArray speed, final INDArray temperature,
-			final double molecularMass, final double specificHeatCapacity, final INDArray massConstraints) {
+			final double molecularMass, final double specificHeatCapacity, final INDArray mu) {
 		super();
 		assert (density.rank() == 2);
 		assert (speed.rank() == 3);
@@ -62,10 +61,9 @@ public class UniverseImpl implements Universe {
 		this.density = density;
 		this.speed = speed;
 		this.temperature = temperature;
-		this.lenght = length;
 		this.cellArea = length * length;
 		this.cellVolume = length * length * length;
-		this.massConstraints = massConstraints;
+		this.mu = mu;
 		this.molecularMass = molecularMass;
 		this.specificHeatCapacity = specificHeatCapacity;
 	}
@@ -92,13 +90,13 @@ public class UniverseImpl implements Universe {
 	}
 
 	@Override
-	public INDArray getMassContraints() {
-		return massConstraints;
+	public double getMolecularMass() {
+		return molecularMass;
 	}
 
 	@Override
-	public double getMolecularMass() {
-		return molecularMass;
+	public INDArray getMu() {
+		return mu;
 	}
 
 	@Override

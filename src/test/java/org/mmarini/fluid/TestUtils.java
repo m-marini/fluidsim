@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.mmarini.fluid;
 
@@ -17,7 +17,7 @@ public class TestUtils {
 	/**
 	 * Returns a matcher of Double that matches a double within a 0.001 relative
 	 * range
-	 * 
+	 *
 	 * @param value
 	 * @return
 	 */
@@ -28,7 +28,7 @@ public class TestUtils {
 	/**
 	 * Returns a matcher of Double that matches a double within a relative range
 	 * epsilon
-	 * 
+	 *
 	 * @param value
 	 * @param epsilon
 	 * @return

@@ -60,13 +60,13 @@ public interface Universe {
 	 *
 	 * @return
 	 */
-	public INDArray getMassContraints();
+	public double getMolecularMass();
 
 	/**
 	 *
 	 * @return
 	 */
-	public double getMolecularMass();
+	public INDArray getMu();
 
 	/**
 	 *
