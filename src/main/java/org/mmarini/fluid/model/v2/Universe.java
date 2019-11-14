@@ -31,6 +31,8 @@ package org.mmarini.fluid.model.v2;
 
 import org.nd4j.linalg.api.ndarray.INDArray;
 
+import io.reactivex.rxjava3.core.Single;
+
 /**
  * The rappresentatin of the fluid environment
  *
@@ -60,6 +62,12 @@ public interface Universe {
 	 *
 	 * @return
 	 */
+	public double getLength();
+
+	/**
+	 *
+	 * @return
+	 */
 	public double getMolecularMass();
 
 	/**
@@ -72,24 +80,18 @@ public interface Universe {
 	 *
 	 * @return
 	 */
-	public double getSpecificHeatCapacity();
-
-	/**
-	 *
-	 * @return
-	 */
 	public INDArray getSpeed();
 
 	/**
 	 *
 	 * @return
 	 */
-	public INDArray getTemperature();
+	public double getTemperature();
 
 	/**
 	 *
 	 * @param dt
 	 * @return
 	 */
-	public Universe step(double dt);
+	public Single<Universe> step(double dt);
 }

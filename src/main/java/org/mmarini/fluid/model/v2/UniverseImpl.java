@@ -31,33 +31,35 @@ package org.mmarini.fluid.model.v2;
 
 import org.nd4j.linalg.api.ndarray.INDArray;
 
+import io.reactivex.rxjava3.core.Single;
+
 /**
  * @author mmarini
  */
 public class UniverseImpl implements Universe {
 	private final INDArray density;
 	private final INDArray speed;
-	private final INDArray temperature;
+	private final double temperature;
 	private final double cellVolume;
 	private final INDArray mu;
 	private final double cellArea;
-	private final double specificHeatCapacity;
 	private final double molecularMass;
+	private final double length;
 
 	/**
 	 * Creates the universe
 	 *
 	 * @param mu
 	 */
-	public UniverseImpl(final double length, final INDArray density, final INDArray speed, final INDArray temperature,
-			final double molecularMass, final double specificHeatCapacity, final INDArray mu) {
+	public UniverseImpl(final double length, final INDArray density, final INDArray speed, final double temperature,
+			final double molecularMass, final INDArray mu) {
 		super();
 		assert (density.rank() == 2);
 		assert (speed.rank() == 3);
 		assert (speed.shape()[0] == density.shape()[0]);
 		assert (speed.shape()[1] == density.shape()[1]);
 		assert (speed.shape()[2] == 2);
-		assert (temperature.equalShapes(density));
+		this.length = length;
 		this.density = density;
 		this.speed = speed;
 		this.temperature = temperature;
@@ -65,7 +67,6 @@ public class UniverseImpl implements Universe {
 		this.cellVolume = length * length * length;
 		this.mu = mu;
 		this.molecularMass = molecularMass;
-		this.specificHeatCapacity = specificHeatCapacity;
 	}
 
 	@Override
@@ -89,6 +90,14 @@ public class UniverseImpl implements Universe {
 		return density;
 	}
 
+	/**
+	 *
+	 */
+	@Override
+	public double getLength() {
+		return length;
+	}
+
 	@Override
 	public double getMolecularMass() {
 		return molecularMass;
@@ -97,11 +106,6 @@ public class UniverseImpl implements Universe {
 	@Override
 	public INDArray getMu() {
 		return mu;
-	}
-
-	@Override
-	public double getSpecificHeatCapacity() {
-		return specificHeatCapacity;
 	}
 
 	/**
@@ -116,7 +120,7 @@ public class UniverseImpl implements Universe {
 	 * @return the energy
 	 */
 	@Override
-	public INDArray getTemperature() {
+	public double getTemperature() {
 		return temperature;
 	}
 
@@ -124,7 +128,7 @@ public class UniverseImpl implements Universe {
 	 *
 	 */
 	@Override
-	public Universe step(final double dt) {
-		return this;
+	public Single<Universe> step(final double dt) {
+		return new SimulationContext(this, dt).build();
 	}
 }

@@ -36,50 +36,60 @@ import org.nd4j.linalg.factory.Nd4j;
 public class UniverseBuilder implements Constants {
 
 	private static final long[] DEFAULT_SHAPE = new long[] { 80, 80 };
-	private static final double LENGTH = 0.01;
+	private static final double DEFAULT_LENGTH = 0.01;
 
 	/**
-	 * Create universe builder with default parameters
+	 *
+	 * @return
 	 */
-	public static UniverseBuilder create() {
-		return new UniverseBuilder(DEFAULT_SHAPE);
+	public static UniverseBuilder createISA() {
+		return new UniverseBuilder(DEFAULT_SHAPE, DEFAULT_LENGTH, ISA_TEMPERATURE, ISA_DENSITY, ISA_MOLECULAR_MASS);
 	}
 
 	private final long[] shape;
+	private final double length;
+	private final double molecularMass;
+	private final INDArray density;
+	private final double temperature;
 
 	/**
 	 * Create a universe builder with given parameters
 	 *
-	 * @param massCostraint
-	 *
-	 * @param siz           universe size
+	 * @param shape
+	 * @param length
+	 * @param molecularMass
+	 * @param density
+	 * @param temperature
 	 */
-	public UniverseBuilder(final long[] shape) {
+	protected UniverseBuilder(final long[] shape, final double length, final double temperature, final double density,
+			final double molecularMass) {
 		this.shape = shape;
+		this.length = length;
+		this.density = Nd4j.ones(DataType.DOUBLE, shape).mul(density);
+		this.molecularMass = molecularMass;
+		this.temperature = temperature;
 	}
 
 	/**
 	 * Returns the universe built from parameters
 	 */
 	public Universe build() {
-		final INDArray density = Nd4j.randn(DataType.DOUBLE, shape).mul(ISA_DENSITY / 100).add(ISA_DENSITY);
-//		density.putScalar(new int[] { 40, 40, 0 }, 4);
 		final INDArray speed = Nd4j.zeros(DataType.DOUBLE, new long[] { shape[0], shape[1], 2 });
-		for (int i = 0; i < shape[0]; i++) {
-			for (int j = 0; j < shape[1]; j++) {
-				speed.putScalar(new long[] { i, j, 0 }, SPEED);
-			}
-		}
-		final INDArray temperature = Nd4j.ones(DataType.DOUBLE, shape).mul(ISA_TEMPERATURE);
-		final INDArray massCostraints = Nd4j.zeros(DataType.DOUBLE, shape);
-		return new UniverseImpl(LENGTH, density, speed, temperature, ISA_SPECIFIC_HEAT_CAPACITY, ISA_MOLECULAR_MASS,
-				massCostraints);
+		final INDArray mu = Nd4j.ones(DataType.DOUBLE, shape);
+		return new UniverseImpl(length, density, speed, temperature, molecularMass, mu);
+	}
+
+	/**
+	 * Returns the universe builder for a give length
+	 */
+	public UniverseBuilder length(final double length) {
+		return new UniverseBuilder(shape, length, length, length, molecularMass);
 	}
 
 	/**
 	 * Returns the universe builder for a give shape
 	 */
-	public UniverseBuilder setShape(final long[] shape) {
-		return new UniverseBuilder(shape);
+	public UniverseBuilder shape(final long[] shape) {
+		return new UniverseBuilder(shape, length, length, length, molecularMass);
 	}
 }

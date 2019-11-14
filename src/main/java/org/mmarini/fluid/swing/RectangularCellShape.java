@@ -66,6 +66,7 @@ public class RectangularCellShape implements CellShape {
 	 * @param h  the heigh of the cell
 	 */
 	@Override
+
 	public void draw(final Graphics gr, final int x, final int y, final int w, final int h) {
 		gr.fillRect(x, y, w, h);
 	}

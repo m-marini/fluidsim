@@ -144,31 +144,52 @@ e una seconda matrice di $ (n+1) \times m $ superfici orizzontali
 
 Per una cella $ (i,j) $ abbiamo due superfici orizzontali identificate dagli indici $ (i, j) $ e $ (i + 1, j) $.
 
+Le variazioni di pressione e densità del fluido viaggiano alla velocità del suono. Per simulare adeguatamente il fluido è necessario che la distanza percorsa da una variazione di pressine o densità nell'intervallo di tempo simulato sia inferiore alla dimensione della cella quindi:
+
+```math
+    \Delta s < a \Delta t
+```
+
+
 ### Proprietà del fluido
+
+Per semplificare il modello consideriamo solo processi adiabatici (senza scambio di calore) e quindi un fluido a temperatura costante $ T $
 
 Il fluido contenuto nella cella $(i, j)$ è definito da tre proprietà di base:
 
 - $ \rho_{ij} $ la densità del fluido
 - $ \vec u_{ij} $ la velocità del fluido
-- $ T_{ij} $ la temperatura del fluido
+- $ E_{ij} $ densità di energia del fluido
 
 dalle prorietà di base deriviamo altre proprietà con le equazioni di stato
 
 - $ m_{ij} = V \rho_{ij} $ la massa,
-- $ E_{ij} = \varsigma T_{ij} m_{ij} $ l'energia interna del fluido
+- $ E_{ij} = ? $ l'energia interna del fluido
 - $ p_{ij} = \frac{\rho_{ij}}{M_{mol}} T_{ij} R $ pressione
 
-dove $ \varsigma $ è il calore specifico del fluido,
 $ M_{mol} $ è la massa molecolare del fluido
+
+#### Aria
 
 Nel caso dell'aria in condizioni ISA abbiamo
 
+- pressione $ 101325 Pa (\frac{Kg}{m s^2})$
+- temperatura $ 298 K $
+- la massa molecare dell'aria è di $28.96 \frac{g}{mol}$
+- il calore specifico è di $ 1004.3 \frac{J}{Kg \, K} (\frac{m^2}{s^2 K}) $
+
+il numero di moli di un metro cubo d'aria è di
+
 ```math
-n = \frac{pV}{RT} = \frac{101 325 \cdot 1}{8.31446 \cdot 298} = 40,89 mol
+n = \frac{pV}{RT} = \frac{101 325 \cdot 1}{8.31446 \cdot 298} = 40,89 \, mol
 ```
 
-la massa molecare dell'aria è di $28.96 \frac{g}{mol}$ quindi il peso dell'aria è di $ 40.89 \cdot 28.96 = 1184 g $
-La densità dell'aria è di $ 1.184 \frac{Kg}{m^2} $
+- il peso di un metro cubo di aria è di $ 40.89 \cdot 28.96 = 1184 g $
+- la densità dell'aria è di $ 1.184 \frac{Kg}{m^3} $
+- l'indice adiabatico è $\gamma = 1.4$
+- la velocità del suono è $ a = \sqrt{\gamma T \frac{R}{Mmol}} = 346,1 \frac{m}{s} $
+- potenza di un flusso alla velocità di $1 \frac{m}{s}$ su una superfice di $1 m^2$ =  $ 101325 \,W (\frac{Kg \, m^2}{s^3}) $
+
 
 ### Proprietà delle superfici di confine
 

@@ -47,8 +47,8 @@ public class Main implements Constants {
 	public static final String DISABLED_ICON = "selectedIcon"; //$NON-NLS-1$
 	private static final int INITIAL_WIDTH = 400;
 	private static final int INITIAL_HEIGHT = 300;
-	private static final double DENSITY_OFFSET = ISA_DENSITY / 2;
-	private static final double DENSITY_SCALE = ISA_DENSITY;
+	private static final double DENSITY_OFFSET = ISA_DENSITY * 0.975;
+	private static final double DENSITY_SCALE = ISA_DENSITY / 20;
 	private static final double SPEED_OFFSET = 0;
 	private static final double SPEED_SCALE = SPEED * 2;
 	private static final long RATE_INTERVAL = 300;

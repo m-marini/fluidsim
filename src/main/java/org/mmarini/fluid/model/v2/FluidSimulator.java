@@ -62,7 +62,8 @@ public class FluidSimulator {
 	}
 
 	public FluidSimulator createNew() {
-		universe = UniverseBuilder.create().build();
+		universe = UniverseBuilder.createISA().build();
+		universe.getDensity().putScalar(new int[] { 40, 40 }, Constants.ISA_DENSITY * 1.05);
 		counter = 0;
 		time = 0;
 		return single();
@@ -86,22 +87,24 @@ public class FluidSimulator {
 	 * @param universe
 	 * @return
 	 */
-	private Universe next(final Universe universe) {
+	private Single<Universe> next(final Universe universe) {
 		final long now = System.nanoTime();
 		final long elapsed = now - prevTime;
 		prevTime = now;
 		time += elapsed;
-		final double dt = elapsed * NANOS;
+//		final double dt = elapsed * NANOS;
 		final double t = time * NANOS;
 		counter++;
-		rateSubj.onNext(counter / t);
-		return universe.step(dt);
+		rateSubj.onNext(counter / t);//
+		return universe.step(Constants.CELL_PERIOD / 2);
 	}
 
+	/**
+	 *
+	 */
 	private void scheduleNext() {
 		final Universe u = universe;
-		Single.fromSupplier(() -> next(u)).subscribeOn(Schedulers.computation())
-				.subscribe(universe -> universeSubj.onNext(universe));
+		next(u).subscribeOn(Schedulers.computation()).subscribe(universe -> universeSubj.onNext(universe));
 	}
 
 	/**

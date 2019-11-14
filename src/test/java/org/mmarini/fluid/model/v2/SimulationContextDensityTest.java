@@ -11,15 +11,13 @@ import org.nd4j.linalg.factory.Nd4j;
 
 public class SimulationContextDensityTest implements Constants, TamperConstants {
 
-	private static final double INTERVAL = SIZE / SPEED / 10;
+	private static final double INTERVAL = CELL_PERIOD / 10;
 
 	private static SimulationContext centerContext() {
 		final INDArray density = TAMPER.mul(ISA_DENSITY);
-		final INDArray temperature = TAMPER.mul(ISA_TEMPERATURE);
 		final INDArray speed = Utils.vsmul(Utils.prefixBroadcast(Nd4j.ones(2).mul(SPEED), 3, 3), TAMPER);
 		final INDArray mu = Nd4j.ones(DataType.DOUBLE, 3, 3);
-		return new SimulationContext(
-				new UniverseImpl(SIZE, density, speed, temperature, ISA_MOLECULAR_MASS, ISA_SPECIFIC_HEAT_CAPACITY, mu),
+		return new SimulationContext(new UniverseImpl(SIZE, density, speed, ISA_TEMPERATURE, ISA_MOLECULAR_MASS, mu),
 				INTERVAL);
 	}
 

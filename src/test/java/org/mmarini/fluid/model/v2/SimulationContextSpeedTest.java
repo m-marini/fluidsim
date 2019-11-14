@@ -11,15 +11,13 @@ import org.nd4j.linalg.factory.Nd4j;
 
 public class SimulationContextSpeedTest implements Constants, TamperConstants {
 
-	private static final double INTERVAL = SIZE / SPEED / 10;
+	private static final double INTERVAL = CELL_PERIOD / 10;
 
 	private static SimulationContext centerContext() {
 		final INDArray density = TAMPER.mul(ISA_DENSITY);
-		final INDArray temperature = TAMPER.mul(ISA_TEMPERATURE);
 		final INDArray speed = Utils.vsmul(Utils.prefixBroadcast(Nd4j.ones(2).mul(SPEED), 3, 3), TAMPER);
 		final INDArray mu = Nd4j.ones(DataType.DOUBLE, 3, 3);
-		return new SimulationContext(
-				new UniverseImpl(SIZE, density, speed, temperature, ISA_MOLECULAR_MASS, ISA_SPECIFIC_HEAT_CAPACITY, mu),
+		return new SimulationContext(new UniverseImpl(SIZE, density, speed, ISA_TEMPERATURE, ISA_MOLECULAR_MASS, mu),
 				INTERVAL);
 	}
 
@@ -48,46 +46,54 @@ public class SimulationContextSpeedTest implements Constants, TamperConstants {
 		final INDArray y = ctx.computeDeltaSpeed();
 		assertThat(y.shape(), equalTo(new long[] { 3, 3, 2 }));
 
-		assertThat(y.getDouble(0, 0, 0), around(
-				(flux * (-TAMPERH10_POW3 - TAMPERV01_POW3) + force * -(-TAMPERV00_POW2 + TAMPERV01_POW2)) / TAMPER00));
-		assertThat(y.getDouble(0, 0, 1), around(
-				(flux * (-TAMPERH10_POW3 - TAMPERV01_POW3) + force * -(-TAMPERH00_POW2 + TAMPERH10_POW2)) / TAMPER00));
-		assertThat(y.getDouble(0, 1, 0), around((flux * (-TAMPERH11_POW3 + TAMPERV01_POW3 - TAMPERV02_POW3)
-				+ force * -(-TAMPERV01_POW2 + TAMPERV02_POW2)) / TAMPER01));
-		assertThat(y.getDouble(0, 1, 1), around((flux * (-TAMPERH11_POW3 + TAMPERV01_POW3 - TAMPERV02_POW3)
-				+ force * -(-TAMPERH01_POW2 + TAMPERH11_POW2)) / TAMPER01));
-		assertThat(y.getDouble(0, 2, 0), around(
-				(flux * (-TAMPERH12_POW3 + TAMPERV02_POW3) + force * -(-TAMPERV02_POW2 + TAMPERV03_POW2)) / TAMPER02));
-		assertThat(y.getDouble(0, 2, 1), around(
-				(flux * (-TAMPERH12_POW3 + TAMPERV02_POW3) + force * -(-TAMPERH02_POW2 + TAMPERH12_POW2)) / TAMPER02));
+		assertThat(y.getDouble(0, 0, 0),
+				around((flux * (-TAMPERH10_POW3 - TAMPERV01_POW3) + force * -(-TAMPERV00 + TAMPERV01)) / TAMPER00));
+		assertThat(y.getDouble(0, 0, 1),
+				around((flux * (-TAMPERH10_POW3 - TAMPERV01_POW3) + force * -(-TAMPERH00 + TAMPERH10)) / TAMPER00));
+		assertThat(y.getDouble(0, 1, 0),
+				around((flux * (-TAMPERH11_POW3 + TAMPERV01_POW3 - TAMPERV02_POW3) + force * -(-TAMPERV01 + TAMPERV02))
+						/ TAMPER01));
+		assertThat(y.getDouble(0, 1, 1),
+				around((flux * (-TAMPERH11_POW3 + TAMPERV01_POW3 - TAMPERV02_POW3) + force * -(-TAMPERH01 + TAMPERH11))
+						/ TAMPER01));
+		assertThat(y.getDouble(0, 2, 0),
+				around((flux * (-TAMPERH12_POW3 + TAMPERV02_POW3) + force * -(-TAMPERV02 + TAMPERV03)) / TAMPER02));
+		assertThat(y.getDouble(0, 2, 1),
+				around((flux * (-TAMPERH12_POW3 + TAMPERV02_POW3) + force * -(-TAMPERH02 + TAMPERH12)) / TAMPER02));
 
-		assertThat(y.getDouble(1, 0, 0), around((flux * (TAMPERH10_POW3 - TAMPERH20_POW3 - TAMPERV11_POW3)
-				+ force * -(-TAMPERV10_POW2 + TAMPERV11_POW2)) / TAMPER10));
-		assertThat(y.getDouble(1, 0, 1), around((flux * (TAMPERH10_POW3 - TAMPERH20_POW3 - TAMPERV11_POW3)
-				+ force * -(-TAMPERH10_POW2 + TAMPERH20_POW2)) / TAMPER10));
+		assertThat(y.getDouble(1, 0, 0),
+				around((flux * (TAMPERH10_POW3 - TAMPERH20_POW3 - TAMPERV11_POW3) + force * -(-TAMPERV10 + TAMPERV11))
+						/ TAMPER10));
+		assertThat(y.getDouble(1, 0, 1),
+				around((flux * (TAMPERH10_POW3 - TAMPERH20_POW3 - TAMPERV11_POW3) + force * -(-TAMPERH10 + TAMPERH20))
+						/ TAMPER10));
 		assertThat(y.getDouble(1, 1, 0),
 				around((flux * (TAMPERH11_POW3 - TAMPERH21_POW3 + TAMPERV11_POW3 - TAMPERV12_POW3)
-						+ force * -(-TAMPERV11_POW2 + TAMPERV12_POW2)) / TAMPER11));
+						+ force * -(-TAMPERV11 + TAMPERV12)) / TAMPER11));
 		assertThat(y.getDouble(1, 1, 1),
 				around((flux * (TAMPERH11_POW3 - TAMPERH21_POW3 + TAMPERV11_POW3 - TAMPERV12_POW3)
-						+ force * -(-TAMPERH11_POW2 + TAMPERH21_POW2)) / TAMPER11));
-		assertThat(y.getDouble(1, 2, 0), around((flux * (TAMPERH12_POW3 - TAMPERH22_POW3 + TAMPERV12_POW3)
-				+ force * -(-TAMPERV12_POW2 + TAMPERV13_POW2)) / TAMPER12));
-		assertThat(y.getDouble(1, 2, 1), around((flux * (TAMPERH12_POW3 - TAMPERH22_POW3 + TAMPERV12_POW3)
-				+ force * -(-TAMPERH12_POW2 + TAMPERH22_POW2)) / TAMPER12));
+						+ force * -(-TAMPERH11 + TAMPERH21)) / TAMPER11));
+		assertThat(y.getDouble(1, 2, 0),
+				around((flux * (TAMPERH12_POW3 - TAMPERH22_POW3 + TAMPERV12_POW3) + force * -(-TAMPERV12 + TAMPERV13))
+						/ TAMPER12));
+		assertThat(y.getDouble(1, 2, 1),
+				around((flux * (TAMPERH12_POW3 - TAMPERH22_POW3 + TAMPERV12_POW3) + force * -(-TAMPERH12 + TAMPERH22))
+						/ TAMPER12));
 
-		assertThat(y.getDouble(2, 0, 0), around(
-				(flux * (TAMPERH20_POW3 - TAMPERV21_POW3) + force * -(-TAMPERV20_POW2 + TAMPERV21_POW2)) / TAMPER20));
-		assertThat(y.getDouble(2, 0, 1), around(
-				(flux * (TAMPERH20_POW3 - TAMPERV21_POW3) + force * -(-TAMPERH20_POW2 + TAMPERH30_POW2)) / TAMPER20));
-		assertThat(y.getDouble(2, 1, 0), around((flux * (TAMPERH21_POW3 + TAMPERV21_POW3 - TAMPERV22_POW3)
-				+ force * -(-TAMPERV21_POW2 + TAMPERV22_POW2)) / TAMPER21));
-		assertThat(y.getDouble(2, 1, 1), around((flux * (TAMPERH21_POW3 + TAMPERV21_POW3 - TAMPERV22_POW3)
-				+ force * -(-TAMPERH21_POW2 + TAMPERH31_POW2)) / TAMPER21));
-		assertThat(y.getDouble(2, 2, 0), around(
-				(flux * (TAMPERH22_POW3 + TAMPERV22_POW3) + force * -(-TAMPERV22_POW2 + TAMPERV23_POW2)) / TAMPER22));
-		assertThat(y.getDouble(2, 2, 1), around(
-				(flux * (TAMPERH22_POW3 + TAMPERV22_POW3) + force * -(-TAMPERH22_POW2 + TAMPERH32_POW2)) / TAMPER22));
+		assertThat(y.getDouble(2, 0, 0),
+				around((flux * (TAMPERH20_POW3 - TAMPERV21_POW3) + force * -(-TAMPERV20 + TAMPERV21)) / TAMPER20));
+		assertThat(y.getDouble(2, 0, 1),
+				around((flux * (TAMPERH20_POW3 - TAMPERV21_POW3) + force * -(-TAMPERH20 + TAMPERH30)) / TAMPER20));
+		assertThat(y.getDouble(2, 1, 0),
+				around((flux * (TAMPERH21_POW3 + TAMPERV21_POW3 - TAMPERV22_POW3) + force * -(-TAMPERV21 + TAMPERV22))
+						/ TAMPER21));
+		assertThat(y.getDouble(2, 1, 1),
+				around((flux * (TAMPERH21_POW3 + TAMPERV21_POW3 - TAMPERV22_POW3) + force * -(-TAMPERH21 + TAMPERH31))
+						/ TAMPER21));
+		assertThat(y.getDouble(2, 2, 0),
+				around((flux * (TAMPERH22_POW3 + TAMPERV22_POW3) + force * -(-TAMPERV22 + TAMPERV23)) / TAMPER22));
+		assertThat(y.getDouble(2, 2, 1),
+				around((flux * (TAMPERH22_POW3 + TAMPERV22_POW3) + force * -(-TAMPERH22 + TAMPERH32)) / TAMPER22));
 	}
 
 	/**
@@ -159,25 +165,25 @@ public class SimulationContextSpeedTest implements Constants, TamperConstants {
 		final INDArray y = ctx.computePressureForce();
 		assertThat(y.shape(), equalTo(new long[] { 3, 3, 2 }));
 
-		assertThat(y.getDouble(0, 0, 0), around(force * -(-TAMPERV00_POW2 + TAMPERV01_POW2)));
-		assertThat(y.getDouble(0, 0, 1), around(force * -(-TAMPERH00_POW2 + TAMPERH10_POW2)));
-		assertThat(y.getDouble(0, 1, 0), around(force * -(-TAMPERV01_POW2 + TAMPERV02_POW2)));
-		assertThat(y.getDouble(0, 1, 1), around(force * -(-TAMPERH01_POW2 + TAMPERH11_POW2)));
-		assertThat(y.getDouble(0, 2, 0), around(force * -(-TAMPERV02_POW2 + TAMPERV03_POW2)));
-		assertThat(y.getDouble(0, 2, 1), around(force * -(-TAMPERH02_POW2 + TAMPERH12_POW2)));
+		assertThat(y.getDouble(0, 0, 0), around(force * -(-TAMPERV00 + TAMPERV01)));
+		assertThat(y.getDouble(0, 0, 1), around(force * -(-TAMPERH00 + TAMPERH10)));
+		assertThat(y.getDouble(0, 1, 0), around(force * -(-TAMPERV01 + TAMPERV02)));
+		assertThat(y.getDouble(0, 1, 1), around(force * -(-TAMPERH01 + TAMPERH11)));
+		assertThat(y.getDouble(0, 2, 0), around(force * -(-TAMPERV02 + TAMPERV03)));
+		assertThat(y.getDouble(0, 2, 1), around(force * -(-TAMPERH02 + TAMPERH12)));
 
-		assertThat(y.getDouble(1, 0, 0), around(force * -(-TAMPERV10_POW2 + TAMPERV11_POW2)));
-		assertThat(y.getDouble(1, 0, 1), around(force * -(-TAMPERH10_POW2 + TAMPERH20_POW2)));
-		assertThat(y.getDouble(1, 1, 0), around(force * -(-TAMPERV11_POW2 + TAMPERV12_POW2)));
-		assertThat(y.getDouble(1, 1, 1), around(force * -(-TAMPERH11_POW2 + TAMPERH21_POW2)));
-		assertThat(y.getDouble(1, 2, 0), around(force * -(-TAMPERV12_POW2 + TAMPERV13_POW2)));
-		assertThat(y.getDouble(1, 2, 1), around(force * -(-TAMPERH12_POW2 + TAMPERH22_POW2)));
+		assertThat(y.getDouble(1, 0, 0), around(force * -(-TAMPERV10 + TAMPERV11)));
+		assertThat(y.getDouble(1, 0, 1), around(force * -(-TAMPERH10 + TAMPERH20)));
+		assertThat(y.getDouble(1, 1, 0), around(force * -(-TAMPERV11 + TAMPERV12)));
+		assertThat(y.getDouble(1, 1, 1), around(force * -(-TAMPERH11 + TAMPERH21)));
+		assertThat(y.getDouble(1, 2, 0), around(force * -(-TAMPERV12 + TAMPERV13)));
+		assertThat(y.getDouble(1, 2, 1), around(force * -(-TAMPERH12 + TAMPERH22)));
 
-		assertThat(y.getDouble(2, 0, 0), around(force * -(-TAMPERV20_POW2 + TAMPERV21_POW2)));
-		assertThat(y.getDouble(2, 0, 1), around(force * -(-TAMPERH20_POW2 + TAMPERH30_POW2)));
-		assertThat(y.getDouble(2, 1, 0), around(force * -(-TAMPERV21_POW2 + TAMPERV22_POW2)));
-		assertThat(y.getDouble(2, 1, 1), around(force * -(-TAMPERH21_POW2 + TAMPERH31_POW2)));
-		assertThat(y.getDouble(2, 2, 0), around(force * -(-TAMPERV22_POW2 + TAMPERV23_POW2)));
-		assertThat(y.getDouble(2, 2, 1), around(force * -(-TAMPERH22_POW2 + TAMPERH32_POW2)));
+		assertThat(y.getDouble(2, 0, 0), around(force * -(-TAMPERV20 + TAMPERV21)));
+		assertThat(y.getDouble(2, 0, 1), around(force * -(-TAMPERH20 + TAMPERH30)));
+		assertThat(y.getDouble(2, 1, 0), around(force * -(-TAMPERV21 + TAMPERV22)));
+		assertThat(y.getDouble(2, 1, 1), around(force * -(-TAMPERH21 + TAMPERH31)));
+		assertThat(y.getDouble(2, 2, 0), around(force * -(-TAMPERV22 + TAMPERV23)));
+		assertThat(y.getDouble(2, 2, 1), around(force * -(-TAMPERH22 + TAMPERH32)));
 	}
 }

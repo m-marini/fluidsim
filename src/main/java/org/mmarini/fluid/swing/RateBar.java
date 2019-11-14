@@ -54,7 +54,7 @@ public class RateBar extends JProgressBar {
 		if (rate > maxValue || rate < minValue) {
 			scaleBar(rate);
 		}
-		log.debug("Simulation Speed = {} step/sec", rate); //$NON-NLS-1$
+//		log.debug("Simulation Speed = {} step/sec", rate); //$NON-NLS-1$
 		final int bar = (int) Math.round(getMaximum() * rate / maxValue);
 		setString(format("RateBar.stepPerSec.message", rate >= 1 ? rate : 1 / rate));
 		setValue(bar);
